@@ -1,5 +1,5 @@
 --- 
-title: "A Practical Guide for Machine Learning"
+title: "A Practical Guide for Machine Learning and R Shiny"
 author: "Cardy Moten III"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
