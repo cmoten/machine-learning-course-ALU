@@ -1,14 +1,4 @@
----
-title: "Machine Learning"
-author: "Cardy Moten III"
-date: "January 22, 2018"
-output: html_document
----
-
-
-
-
-#Machine Learning Overview
+# Machine Learning Overview
 
 ## What is machine Learning?
 

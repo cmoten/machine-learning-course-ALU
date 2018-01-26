@@ -1,16 +1,4 @@
----
-title: "Machine Learning"
-author: "Cardy Moten III"
-date: "January 22, 2018"
-output: html_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-
-#Machine Learning Overview
+# Machine Learning Overview
 
 ## What is machine Learning?
 
