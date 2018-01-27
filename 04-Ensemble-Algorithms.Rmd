@@ -1,2 +1,2 @@
-# Ensemble Algorithms
+# Ensemble Algorithms {#ens-algs}
 

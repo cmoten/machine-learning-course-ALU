@@ -1,14 +1,14 @@
 --- 
-title: "A Practical Guide for Machine Learning"
+title: "A Practical Guide for Machine Learning and R Shiny"
 author: "Cardy Moten III"
-date: "2018-01-26"
+date: "2018-01-27"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [book.bib]
 biblio-style: apalike
 link-citations: yes
 github-repo: cmoten/machine-learning-course-ALU
-url: ''
+url: 'https://cmoten.github.io/machine-learning-course-ALU'
 description: "Everything you need (and nothing more) to start a bookdown book."
 ---
 
@@ -18,4 +18,7 @@ description: "Everything you need (and nothing more) to start a bookdown book."
 
 
 
-For the next xx days, we will learn the how of machine learning. This does not mean we are simply glossing over the why of machine learning, but quite frankly, we will not have the time in this short course. That being said, a good textbook reference to start learning the about the why of machine learning is the book [The Elements of Statistical Learning](https://web.stanford.edu/~hastie/ElemStatLearn/) by Hastie, Tibshirani, and Friedman. 
+For the next two days, we will learn the "how" of machine learning. This does not mean we are simply glossing over the "why" of machine learning, but quite frankly, we will not have the time in this short course. Having said all that, a good textbook reference to start learning the about the why of machine learning is the book [The Elements of Statistical Learning](https://web.stanford.edu/~hastie/ElemStatLearn/) by @friedman2001elements. After we cover machine learning we will spend two days learning about R Shiny and will build a couple of web applications with it.
+
+## Structure of the book {-}
+Chapter \@ref(ml-overview) provides a general overveiw of machine learning. Chapters \@ref(lin-algs) - \@ref(ml-pe) covers machine learning algorithms and a practical exercise. Chapters \@ref(shiny-tut) and \@ref(shiny-pe) focus on R shiny and a practical exercise. 
