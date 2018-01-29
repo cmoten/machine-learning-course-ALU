@@ -25,7 +25,7 @@
 <meta name="author" content="Cardy Moten III">
 
 
-<meta name="date" content="2018-01-28">
+<meta name="date" content="2018-01-29">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -122,12 +122,18 @@
 <p>One of the most common concepts for all machine learning algorithms is optimization. Of the many optimization methods, the most widely used optimization method is gradient descent. This is because, gradient descent is simple to learn and can be used in tandem with any machine learning algorithm. For this section, we will use gradient descent with linear and logistic regression.</p>
 <div id="gradient-descent-intuition" class="section level3 unnumbered">
 <h3>Gradient Descent Intuition</h3>
+<p>Before discussing the gradient descent algorithm, let’s review the linear regression. Recall the general linear regression equation is:</p>
+<p><span class="math display">\[y = h(x) =  w_0 + \sum_{i=1}^{N}w_ix_i + \epsilon\]</span></p>
+<p>where <span class="math inline">\(y\)</span> is the target variable, <span class="math inline">\(x\)</span> is the feature variables, <span class="math inline">\(w_0\)</span> is the bias, <span class="math inline">\(w_i\)</span> are the weights of the <span class="math inline">\(i\)</span>th feature variable, and <span class="math inline">\(\epsilon\)</span> is the irreducible error. We use machine learning algorithms to estimate the bias and the weights of the feature variables. This is done by creating a cost (loss) function, <span class="math inline">\(J(w)\)</span>.</p>
+<p>Figure <a href="lin-algs.html#fig:grad-descent-intuition">2.1</a> demonstrates the basic intuition behind the gradient algorithm.</p>
 <div class="figure" style="text-align: center"><span id="fig:grad-descent-intuition"></span>
 <img src="img/gradient-descent-example.png" alt="A simple example of gradient descent." width="90%" />
 <p class="caption">
 Figure 2.1: A simple example of gradient descent.
 </p>
 </div>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/8zdo6cnCW2w" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+</iframe>
 <div class="figure" style="text-align: center"><span id="fig:surface-plot"></span>
 <img src="img/surface-plot.png" alt="A surface plot of a quadratic cost function." width="90%" />
 <p class="caption">
@@ -194,6 +200,17 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

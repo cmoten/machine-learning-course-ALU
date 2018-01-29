@@ -52,7 +52,7 @@ The key takeaway here is that supervised learning models predict a value; unsupe
 
 ### The bias-variance tradeoff {-}
 
-The company [EliteDataScience.com](https://elitedatascience.com/bias-variance-tradeoff) created an infographic that provides a vivid explanation of the importance of the bias-variance tradeoff. The key to this concept is to understand that bias is the degree to which the predictions or classifications are different from the actual value. Parametric models tend to have higher bias than nonparametric models. Conversely, variance refers to how sensitive the model is to noise in the data. For variance error, nonparametric models will tend to be more sensitive to different sets of training data than parametric models. 
+The company EliteDataScience created an [infographic](https://elitedatascience.com/bias-variance-tradeoff) that provides a vivid explanation of the importance of the bias-variance tradeoff. The key to this concept is to understand that bias is the degree to which the predictions or classifications are different from the actual value. Parametric models tend to have higher bias than nonparametric models. Conversely, variance refers to how sensitive the model is to noise in the data. For variance error, nonparametric models will tend to be more sensitive to different sets of training data than parametric models. 
 
 Another critical aspect is that bias and variance have an inverse relationship. In other words, models that usually have a high bias also have low variance. By contrast, models that have low bias will usually exhibit high variance. Hence, it is essential that you tune your modeling parameters and try as many different models as possible to evaluate model performance. 
 
