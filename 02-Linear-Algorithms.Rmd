@@ -1,5 +1,19 @@
 # Linear Algorithms {#lin-algs}
 
 
+## Gradient Descent
+
+One of the most common concepts for all machine learning algorithms is optimization. Of the many optimization methods, the most widely used optimization method is gradient descent. This is because, gradient descent is simple to learn and can be used in tandem with any machine learning algorithm. For this section, we will use gradient descent with linear and logistic regression. 
+
+### Gradient Descent Intuition {-}
+
+```{r grad-descent-intuition, echo=FALSE,fig.asp=.7, fig.width=6, fig.cap='A simple example of gradient descent.', fig.align='center', out.width='90%'}
+knitr::include_graphics('img/gradient-descent-example.png')
+```
+
+```{r surface-plot, echo=FALSE,fig.asp=.7, fig.width=6, fig.cap='A surface plot of a quadratic cost function.', fig.align='center', out.width='90%'}
+knitr::include_graphics('img/surface-plot.png')
+```
+
 
 This practical exerciese is based on code provided by @fortuner2017mlcheat and @brownlee2017mlmastery.

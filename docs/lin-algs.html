@@ -84,7 +84,11 @@
 <li class="chapter" data-level="" data-path="ml-overview.html"><a href="ml-overview.html#overfitting-and-underfitting-and-what-to-do-about-it"><i class="fa fa-check"></i>Overfitting and underfitting and what to do about it</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="lin-algs.html"><a href="lin-algs.html"><i class="fa fa-check"></i><b>2</b> Linear Algorithms</a></li>
+<li class="chapter" data-level="2" data-path="lin-algs.html"><a href="lin-algs.html"><i class="fa fa-check"></i><b>2</b> Linear Algorithms</a><ul>
+<li class="chapter" data-level="2.1" data-path="lin-algs.html"><a href="lin-algs.html#gradient-descent"><i class="fa fa-check"></i><b>2.1</b> Gradient Descent</a><ul>
+<li class="chapter" data-level="" data-path="lin-algs.html"><a href="lin-algs.html#gradient-descent-intuition"><i class="fa fa-check"></i>Gradient Descent Intuition</a></li>
+</ul></li>
+</ul></li>
 <li class="chapter" data-level="3" data-path="non-lin-algs.html"><a href="non-lin-algs.html"><i class="fa fa-check"></i><b>3</b> Non-linear Algorithms</a></li>
 <li class="chapter" data-level="4" data-path="ens-algs.html"><a href="ens-algs.html"><i class="fa fa-check"></i><b>4</b> Ensemble Algorithms</a></li>
 <li class="chapter" data-level="5" data-path="ml-pe.html"><a href="ml-pe.html"><i class="fa fa-check"></i><b>5</b> Machine Learning Practical Exercise</a></li>
@@ -113,8 +117,27 @@
             <section class="normal" id="section-">
 <div id="lin-algs" class="section level1">
 <h1><span class="header-section-number">Chapter 2</span> Linear Algorithms</h1>
+<div id="gradient-descent" class="section level2">
+<h2><span class="header-section-number">2.1</span> Gradient Descent</h2>
+<p>One of the most common concepts for all machine learning algorithms is optimization. Of the many optimization methods, the most widely used optimization method is gradient descent. This is because, gradient descent is simple to learn and can be used in tandem with any machine learning algorithm. For this section, we will use gradient descent with linear and logistic regression.</p>
+<div id="gradient-descent-intuition" class="section level3 unnumbered">
+<h3>Gradient Descent Intuition</h3>
+<div class="figure" style="text-align: center"><span id="fig:grad-descent-intuition"></span>
+<img src="img/gradient-descent-example.png" alt="A simple example of gradient descent." width="90%" />
+<p class="caption">
+Figure 2.1: A simple example of gradient descent.
+</p>
+</div>
+<div class="figure" style="text-align: center"><span id="fig:surface-plot"></span>
+<img src="img/surface-plot.png" alt="A surface plot of a quadratic cost function." width="90%" />
+<p class="caption">
+Figure 2.2: A surface plot of a quadratic cost function.
+</p>
+</div>
 <p>This practical exerciese is based on code provided by <span class="citation">Fortuner (<a href="#ref-fortuner2017mlcheat">2017</a>)</span> and <span class="citation">Brownlee (<a href="#ref-brownlee2017mlmastery">2017</a>)</span>.</p>
 
+</div>
+</div>
 </div>
 <h3>References</h3>
 <div id="refs" class="references">
@@ -171,17 +194,6 @@ gitbook.start({
 });
 </script>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(script.src))
-      script.src  = script.src.replace(/^https?:/, '');
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 </body>
 
 </html>
