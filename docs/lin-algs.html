@@ -25,7 +25,7 @@
 <meta name="author" content="Cardy Moten III">
 
 
-<meta name="date" content="2018-01-29">
+<meta name="date" content="2018-01-30">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -49,6 +49,43 @@
 
 
 
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -86,7 +123,13 @@
 </ul></li>
 <li class="chapter" data-level="2" data-path="lin-algs.html"><a href="lin-algs.html"><i class="fa fa-check"></i><b>2</b> Linear Algorithms</a><ul>
 <li class="chapter" data-level="2.1" data-path="lin-algs.html"><a href="lin-algs.html#gradient-descent"><i class="fa fa-check"></i><b>2.1</b> Gradient Descent</a><ul>
+<li class="chapter" data-level="" data-path="lin-algs.html"><a href="lin-algs.html#linear-regression-model"><i class="fa fa-check"></i>Linear Regression Model</a></li>
+<li class="chapter" data-level="" data-path="lin-algs.html"><a href="lin-algs.html#cost-function"><i class="fa fa-check"></i>Cost Function</a></li>
+<li class="chapter" data-level="" data-path="lin-algs.html"><a href="lin-algs.html#gradient-descent-algorithm"><i class="fa fa-check"></i>Gradient Descent Algorithm</a></li>
 <li class="chapter" data-level="" data-path="lin-algs.html"><a href="lin-algs.html#gradient-descent-intuition"><i class="fa fa-check"></i>Gradient Descent Intuition</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="lin-algs.html"><a href="lin-algs.html#practical-exercises"><i class="fa fa-check"></i><b>2.2</b> Practical Exercises</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="lin-algs.html"><a href="lin-algs.html#simple-linear-regression"><i class="fa fa-check"></i><b>2.2.1</b> Simple Linear Regression</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="non-lin-algs.html"><a href="non-lin-algs.html"><i class="fa fa-check"></i><b>3</b> Non-linear Algorithms</a></li>
@@ -120,28 +163,167 @@
 <div id="gradient-descent" class="section level2">
 <h2><span class="header-section-number">2.1</span> Gradient Descent</h2>
 <p>One of the most common concepts for all machine learning algorithms is optimization. Of the many optimization methods, the most widely used optimization method is gradient descent. This is because, gradient descent is simple to learn and can be used in tandem with any machine learning algorithm. For this section, we will use gradient descent with linear and logistic regression.</p>
+<div id="linear-regression-model" class="section level3 unnumbered">
+<h3>Linear Regression Model</h3>
+<p>Before discussing the gradient descent algorithm, let’s review the linear regression. Recall the general linear regression equation is:</p>
+<p><span class="math display">\[y = h(x) =  \sum_{i=1}^{N}w_ix_i + b + \epsilon\]</span></p>
+<p>where <span class="math inline">\(y\)</span> is the target variable, <span class="math inline">\(x\)</span> is the feature variables, <span class="math inline">\(w_i\)</span> are the weights of the <span class="math inline">\(i\)</span>th feature variable, <span class="math inline">\(b\)</span> is the bias, and <span class="math inline">\(\epsilon\)</span> is the irreducible error. We use machine learning algorithms to estimate the bias and the weights of the feature variables.</p>
+</div>
+<div id="cost-function" class="section level3 unnumbered">
+<h3>Cost Function</h3>
+<p>In order to optimize the weight and the bias variable, we need to optimize the cost (loss) function. For linear regression this function, <span class="math inline">\(J(w,b)\)</span> is the Mean Squared Error (MSE) and we can calculate it by:</p>
+<p><span class="math display">\[MSE = J(w,b) = \frac{1}{N}\sum_{i = 1}^{n}\left(y_i - \left(wx_i+b\right)\right)^2\]</span></p>
+<p>Since we are adjusting the cost function by the weight and the bias parameters, we must take the parital derivative with respect to each of these to calculate the gradient.</p>
+<p><span class="math display">\[
+J&#39;(w,b) = 
+\begin{bmatrix}
+\frac{\partial J}{\partial w}\\
+\frac{\partial J}{\partial b}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\frac{1}{N}\sum-2*x_i(y_i - (wx_i + b)) = \delta_w\\
+\frac{1}{N}\sum-2*(y_i - (wx_i + b)) = \delta_b
+\end{bmatrix}
+\]</span></p>
+</div>
+<div id="gradient-descent-algorithm" class="section level3 unnumbered">
+<h3>Gradient Descent Algorithm</h3>
+<p>Finally, to solve for the optimal weight and bias, we will add a learning parameter, <span class="math inline">\(\alpha\)</span>, to adjust the steps of the gradient. Thus, the algorithm we will use is:</p>
+<p><span class="math display">\[
+\text{Repat until convergence} \{\\
+w := w -  \alpha\delta_w\\
+b := b - \alpha\delta_b\\
+\}
+\]</span></p>
+</div>
 <div id="gradient-descent-intuition" class="section level3 unnumbered">
 <h3>Gradient Descent Intuition</h3>
-<p>Before discussing the gradient descent algorithm, let’s review the linear regression. Recall the general linear regression equation is:</p>
-<p><span class="math display">\[y = h(x) =  w_0 + \sum_{i=1}^{N}w_ix_i + \epsilon\]</span></p>
-<p>where <span class="math inline">\(y\)</span> is the target variable, <span class="math inline">\(x\)</span> is the feature variables, <span class="math inline">\(w_0\)</span> is the bias, <span class="math inline">\(w_i\)</span> are the weights of the <span class="math inline">\(i\)</span>th feature variable, and <span class="math inline">\(\epsilon\)</span> is the irreducible error. We use machine learning algorithms to estimate the bias and the weights of the feature variables. This is done by creating a cost (loss) function, <span class="math inline">\(J(w)\)</span>.</p>
-<p>Figure <a href="lin-algs.html#fig:grad-descent-intuition">2.1</a> demonstrates the basic intuition behind the gradient algorithm.</p>
+<p>Figure <a href="lin-algs.html#fig:grad-descent-intuition">2.1</a> demonstrates the basic intuition behind the gradient algorithm. Fundamentally, if we pick a point along the graph of the cost function, and the gradient is negative, the algorithm will update by moving the more to the right. Conversely, if the gradient is positive, the algorithm will move the cost value more to the left.</p>
 <div class="figure" style="text-align: center"><span id="fig:grad-descent-intuition"></span>
 <img src="img/gradient-descent-example.png" alt="A simple example of gradient descent." width="90%" />
 <p class="caption">
 Figure 2.1: A simple example of gradient descent.
 </p>
 </div>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/8zdo6cnCW2w" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
-</iframe>
+<p>Figure <a href="lin-algs.html#fig:surface-plot">2.2</a> is a multi-dimensional view of the cost function, and the underlying concept is still the same.</p>
 <div class="figure" style="text-align: center"><span id="fig:surface-plot"></span>
 <img src="img/surface-plot.png" alt="A surface plot of a quadratic cost function." width="90%" />
 <p class="caption">
 Figure 2.2: A surface plot of a quadratic cost function.
 </p>
 </div>
-<p>This practical exerciese is based on code provided by <span class="citation">Fortuner (<a href="#ref-fortuner2017mlcheat">2017</a>)</span> and <span class="citation">Brownlee (<a href="#ref-brownlee2017mlmastery">2017</a>)</span>.</p>
+<p>While the ideal cost function to minimize would be a convex function, this is not always practical and there are ways to deal with that as discussed in the following video.</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/8zdo6cnCW2w" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+</iframe>
+</div>
+</div>
+<div id="practical-exercises" class="section level2">
+<h2><span class="header-section-number">2.2</span> Practical Exercises</h2>
+<p>This practical exercieses are based on code provided by <span class="citation">Fortuner (<a href="#ref-fortuner2017mlcheat">2017</a>)</span> and <span class="citation">Brownlee (<a href="#ref-brownlee2017mlmastery">2017</a>)</span>.</p>
+<div id="simple-linear-regression" class="section level3">
+<h3><span class="header-section-number">2.2.1</span> Simple Linear Regression</h3>
+<div id="data" class="section level4 unnumbered">
+<h4>Data</h4>
+<p>Suppose we have the following dataset in which we have a unique Company ID, radio advertising expenses in dollars, and annual sales as a result of those expenses in dollars.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/Advertising-Radio.csv&quot;</span>,<span class="dt">header=</span><span class="ot">TRUE</span>)
+<span class="kw">head</span>(data)</code></pre></div>
+<pre><code>##   company radio sales
+## 1       1  37.8  22.1
+## 2       2  39.3  10.4
+## 3       3  45.9   9.3
+## 4       4  41.3  18.5
+## 5       5  10.8  12.9
+## 6       6  48.9   7.2</code></pre>
+<p>A view of the data shows that there appears to be a positive correlation between radio advertising spending and sales.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(data<span class="op">$</span>radio,data<span class="op">$</span>sales,<span class="dt">xlab=</span> <span class="st">&quot;Radio&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;Sales&quot;</span>, <span class="dt">col=</span><span class="st">&quot;dodgerblue&quot;</span>,<span class="dt">pch=</span><span class="dv">20</span>)</code></pre></div>
+<p><img src="02-Linear-Algorithms_files/figure-html/sales-plot-1.png" width="672" /></p>
+</div>
+<div id="making-predictions" class="section level4 unnumbered">
+<h4>Making Predictions</h4>
+<p>For this model, we want to predict sales based on the amount spent for radio advertising. Thus our formula will be</p>
+<p><span class="math display">\[\text{Sales} = \text{Weight} \times \text{Radio} + \text{Bias}\]</span></p>
+<p>The gradient descent algorithm will attempt to learn the optimal values for the Weight and Bias.</p>
+</div>
+<div id="simple-regression-function" class="section level4 unnumbered">
+<h4>Simple Regression Function</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">simple_regress &lt;-<span class="st"> </span><span class="cf">function</span>(features,weight,bias){
+  <span class="kw">return</span>(weight<span class="op">*</span>features <span class="op">+</span><span class="st"> </span>bias)
+}</code></pre></div>
+</div>
+<div id="cost-function-code" class="section level4 unnumbered">
+<h4>Cost function Code</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cost_function &lt;-<span class="st"> </span><span class="cf">function</span>(features,targets,weight,bias){
+  num_items &lt;-<span class="st"> </span><span class="kw">length</span>(targets)
+  total_error &lt;-<span class="st"> </span><span class="dv">0</span>
+  <span class="cf">for</span>(i <span class="cf">in</span> <span class="kw">seq_along</span>(<span class="dv">1</span><span class="op">:</span>num_items)){
+    total_error &lt;-<span class="st"> </span>total_error <span class="op">+</span><span class="st"> </span>(targets[i] <span class="op">-</span><span class="st"> </span>(weight <span class="op">*</span><span class="st"> </span>features[i] <span class="op">+</span><span class="st"> </span>bias))<span class="op">^</span><span class="dv">2</span>
+  }
+  <span class="kw">return</span>(total_error<span class="op">/</span>num_items)
+}</code></pre></div>
+</div>
+<div id="gradient-descent-code" class="section level4 unnumbered">
+<h4>Gradient Descent Code</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">update_weight &lt;-<span class="st"> </span><span class="cf">function</span>(features,targets,weight,bias,learning_rate){
+  delta_weight &lt;-<span class="st"> </span><span class="dv">0</span>
+  delta_bias &lt;-<span class="st"> </span><span class="dv">0</span>
+  num_items &lt;-<span class="st"> </span><span class="kw">length</span>(targets)
+  
+  <span class="cf">for</span>(i <span class="cf">in</span> <span class="kw">seq_along</span>(<span class="dv">1</span><span class="op">:</span>num_items)){
+    <span class="co">#Calculate gradients</span>
+    error &lt;-<span class="st"> </span>(targets[i] <span class="op">-</span><span class="st"> </span>(weight <span class="op">*</span><span class="st"> </span>features[i] <span class="op">+</span><span class="st"> </span>bias))
+    delta_weight &lt;-<span class="st"> </span>delta_weight <span class="op">+</span><span class="st"> </span><span class="op">-</span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>features[i] <span class="op">*</span><span class="st">  </span>error
+    delta_bias &lt;-<span class="st"> </span>delta_bias <span class="op">+</span><span class="st"> </span><span class="op">-</span><span class="dv">2</span> <span class="op">*</span><span class="st"> </span>error
 
+  }
+  
+  weight &lt;-<span class="st"> </span>weight <span class="op">-</span><span class="st"> </span>learning_rate <span class="op">*</span><span class="st"> </span>(delta_weight<span class="op">/</span>num_items)
+  bias &lt;-<span class="st"> </span>bias <span class="op">-</span><span class="st"> </span>learning_rate <span class="op">*</span><span class="st"> </span>(delta_bias<span class="op">/</span>num_items)
+  
+
+  
+  res &lt;-<span class="st"> </span><span class="kw">c</span>(weight,bias)
+  res
+}</code></pre></div>
+</div>
+<div id="training-the-model" class="section level4 unnumbered">
+<h4>Training the model</h4>
+<p>We are now ready to train the final model. To do this we will iterate over a set number of trials and update the weight and bias parameters at each iteration. We will also track the cost history.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">train &lt;-<span class="st"> </span><span class="cf">function</span>(features,targets,weight,bias,learning_rate,iters){
+  cost_history &lt;-<span class="st"> </span><span class="kw">numeric</span>(iters)
+  
+  <span class="cf">for</span>(i <span class="cf">in</span> <span class="kw">seq_along</span>(<span class="dv">1</span><span class="op">:</span>iters)){
+    tmp_coef &lt;-<span class="st"> </span><span class="kw">update_weight</span>(features,targets,weight,bias,learning_rate)
+    weight &lt;-<span class="st"> </span>tmp_coef[<span class="dv">1</span>]
+    bias &lt;-<span class="st"> </span>tmp_coef[<span class="dv">2</span>]
+    cost &lt;-<span class="st"> </span><span class="kw">cost_function</span>(features,targets,<span class="dt">weight =</span> weight, <span class="dt">bias =</span> bias)
+    cost_history[i] &lt;-<span class="st"> </span>cost
+    
+    <span class="cf">if</span>(i <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>i <span class="op">%%</span><span class="st"> </span><span class="dv">10</span> <span class="op">==</span><span class="st"> </span><span class="dv">0</span>){
+       <span class="kw">cat</span>(<span class="st">&quot;iter: &quot;</span>, i, <span class="st">&quot;weight: &quot;</span>, weight, <span class="st">&quot;bias: &quot;</span>, bias, <span class="st">&quot;cost: &quot;</span>, cost, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)
+    }
+   
+  }
+  res &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Weight =</span> weight, <span class="dt">Bias =</span> bias, <span class="dt">Cost =</span> cost_history)
+  res
+}
+
+fit &lt;-<span class="st"> </span><span class="kw">train</span>(<span class="dt">features =</span> data<span class="op">$</span>radio,<span class="dt">targets =</span> data<span class="op">$</span>sales,<span class="dt">weight =</span> <span class="fl">0.03</span>, <span class="dt">bias =</span> <span class="fl">0.0014</span>, <span class="dt">learning_rate =</span> <span class="fl">0.001</span>,<span class="dt">iters =</span> <span class="dv">30</span>)</code></pre></div>
+<pre><code>## iter:  1 weight:  0.7255664 bias:  0.02804636 cost:  86.42445 
+## iter:  10 weight:  0.484637 bias:  0.06879067 cost:  42.72917 
+## iter:  20 weight:  0.4837035 bias:  0.1219333 cost:  42.44643 
+## iter:  30 weight:  0.4820883 bias:  0.1747496 cost:  42.1673</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(fit<span class="op">$</span>Cost,<span class="dt">type=</span><span class="st">&quot;l&quot;</span>,<span class="dt">col=</span><span class="st">&quot;blue&quot;</span>)</code></pre></div>
+<p><img src="02-Linear-Algorithms_files/figure-html/train-simple-model-1.png" width="672" /></p>
+</div>
+<div id="exercise-1" class="section level4 unnumbered">
+<h4>Exercise 1</h4>
+<ol style="list-style-type: decimal">
+<li>Run the command <code>lm(data$sales ~ data$radio)</code> and note the values for the weight and bias.</li>
+<li>Adjust the fit object to obtain an estimate close to the noted parameters.</li>
+</ol>
+
+</div>
 </div>
 </div>
 </div>
