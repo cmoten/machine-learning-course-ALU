@@ -25,7 +25,7 @@
 <meta name="author" content="Cardy Moten III">
 
 
-<meta name="date" content="2018-01-30">
+<meta name="date" content="2018-01-31">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -291,11 +291,13 @@ Figure 2.2: A surface plot of a quadratic cost function.
 <p>We are now ready to train the final model. To do this we will iterate over a set number of trials and update the weight and bias parameters at each iteration. We will also track the cost history.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">train &lt;-<span class="st"> </span><span class="cf">function</span>(features,targets,weight,bias,learning_rate,iters){
   cost_history &lt;-<span class="st"> </span><span class="kw">numeric</span>(iters)
+  coef_history &lt;-<span class="st"> </span><span class="kw">list</span>()
   
   <span class="cf">for</span>(i <span class="cf">in</span> <span class="kw">seq_along</span>(<span class="dv">1</span><span class="op">:</span>iters)){
     tmp_coef &lt;-<span class="st"> </span><span class="kw">update_weight</span>(features,targets,weight,bias,learning_rate)
     weight &lt;-<span class="st"> </span>tmp_coef[<span class="dv">1</span>]
     bias &lt;-<span class="st"> </span>tmp_coef[<span class="dv">2</span>]
+    coef_history[[i]] &lt;-<span class="st"> </span><span class="kw">c</span>(bias,weight)
     cost &lt;-<span class="st"> </span><span class="kw">cost_function</span>(features,targets,<span class="dt">weight =</span> weight, <span class="dt">bias =</span> bias)
     cost_history[i] &lt;-<span class="st"> </span>cost
     
@@ -304,7 +306,7 @@ Figure 2.2: A surface plot of a quadratic cost function.
     }
    
   }
-  res &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Weight =</span> weight, <span class="dt">Bias =</span> bias, <span class="dt">Cost =</span> cost_history)
+  res &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Weight =</span> weight, <span class="dt">Bias =</span> bias, <span class="dt">Cost =</span> cost_history,<span class="dt">Coefs =</span> coef_history)
   res
 }
 
@@ -313,13 +315,22 @@ fit &lt;-<span class="st"> </span><span class="kw">train</span>(<span class="dt"
 ## iter:  10 weight:  0.484637 bias:  0.06879067 cost:  42.72917 
 ## iter:  20 weight:  0.4837035 bias:  0.1219333 cost:  42.44643 
 ## iter:  30 weight:  0.4820883 bias:  0.1747496 cost:  42.1673</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(fit<span class="op">$</span>Cost,<span class="dt">type=</span><span class="st">&quot;l&quot;</span>,<span class="dt">col=</span><span class="st">&quot;blue&quot;</span>)</code></pre></div>
-<p><img src="02-Linear-Algorithms_files/figure-html/train-simple-model-1.png" width="672" /></p>
+<p>The plot below shows how the <code>train()</code> funtion iterated through the coefficient history.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(data<span class="op">$</span>radio,data<span class="op">$</span>sales,<span class="dt">xlab=</span> <span class="st">&quot;Radio&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;Sales&quot;</span>, <span class="dt">col=</span><span class="st">&quot;dodgerblue&quot;</span>,<span class="dt">pch=</span><span class="dv">20</span>,<span class="dt">main=</span><span class="st">&quot;Final Plot With Coefficient History&quot;</span>)
+<span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span><span class="dv">30</span>){
+  <span class="kw">abline</span>(<span class="dt">coef=</span>fit<span class="op">$</span>Coefs[[i]], <span class="dt">col =</span> <span class="kw">rgb</span>(<span class="fl">0.8</span>,<span class="dv">0</span>,<span class="dv">0</span>,<span class="fl">0.3</span>))
+}
+<span class="kw">abline</span>(<span class="dt">coef =</span> <span class="kw">c</span>(fit<span class="op">$</span>Bias,fit<span class="op">$</span>Weight),<span class="dt">col=</span><span class="st">&quot;red&quot;</span>)</code></pre></div>
+<p><img src="02-Linear-Algorithms_files/figure-html/final-plot-1.png" width="672" /></p>
+<p>This is a plot of the cost history.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(fit<span class="op">$</span>Cost,<span class="dt">type=</span><span class="st">&quot;l&quot;</span>,<span class="dt">col=</span><span class="st">&quot;blue&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;Iteration&quot;</span>,<span class="dt">ylab=</span><span class="st">&quot;Cost&quot;</span>,<span class="dt">main =</span> <span class="st">&quot;Error Rate Per Iteration&quot;</span>)</code></pre></div>
+<p><img src="02-Linear-Algorithms_files/figure-html/cost-plot-1.png" width="672" /></p>
 </div>
-<div id="exercise-1" class="section level4 unnumbered">
-<h4>Exercise 1</h4>
+<div id="simple-regression-exercise" class="section level4 unnumbered">
+<h4>Simple Regression Exercise</h4>
 <ol style="list-style-type: decimal">
-<li>Run the command <code>lm(data$sales ~ data$radio)</code> and note the values for the weight and bias.</li>
+<li>Run the command <code>res &lt;- lm(data$sales ~ data$radio)</code> and note the values for the weight and bias.</li>
+<li>Plot the fitted line from <code>res</code> with the data and comapre that line to the trained model.</li>
 <li>Adjust the fit object to obtain an estimate close to the noted parameters.</li>
 </ol>
 

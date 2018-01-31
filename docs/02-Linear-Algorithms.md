@@ -172,11 +172,13 @@ We are now ready to train the final model. To do this we will iterate over a set
 ```r
 train <- function(features,targets,weight,bias,learning_rate,iters){
   cost_history <- numeric(iters)
+  coef_history <- list()
   
   for(i in seq_along(1:iters)){
     tmp_coef <- update_weight(features,targets,weight,bias,learning_rate)
     weight <- tmp_coef[1]
     bias <- tmp_coef[2]
+    coef_history[[i]] <- c(bias,weight)
     cost <- cost_function(features,targets,weight = weight, bias = bias)
     cost_history[i] <- cost
     
@@ -185,7 +187,7 @@ train <- function(features,targets,weight,bias,learning_rate,iters){
     }
    
   }
-  res <- list(Weight = weight, Bias = bias, Cost = cost_history)
+  res <- list(Weight = weight, Bias = bias, Cost = cost_history,Coefs = coef_history)
   res
 }
 
@@ -199,15 +201,32 @@ fit <- train(features = data$radio,targets = data$sales,weight = 0.03, bias = 0.
 ## iter:  30 weight:  0.4820883 bias:  0.1747496 cost:  42.1673
 ```
 
+
+The plot below shows how the ``train()`` funtion iterated through the coefficient history.
+
+
 ```r
-plot(fit$Cost,type="l",col="blue")
+plot(data$radio,data$sales,xlab= "Radio", ylab = "Sales", col="dodgerblue",pch=20,main="Final Plot With Coefficient History")
+for(i in 1:30){
+  abline(coef=fit$Coefs[[i]], col = rgb(0.8,0,0,0.3))
+}
+abline(coef = c(fit$Bias,fit$Weight),col="red")
 ```
 
-<img src="02-Linear-Algorithms_files/figure-html/train-simple-model-1.png" width="672" />
+<img src="02-Linear-Algorithms_files/figure-html/final-plot-1.png" width="672" />
 
-#### Exercise 1 {-}
-1. Run the command ``lm(data$sales ~ data$radio)`` and note the values for the weight and bias.
-2. Adjust the fit object to obtain an estimate close to the noted parameters.
+This is a plot of the cost history.
+
+```r
+plot(fit$Cost,type="l",col="blue", xlab = "Iteration",ylab="Cost",main = "Error Rate Per Iteration")
+```
+
+<img src="02-Linear-Algorithms_files/figure-html/cost-plot-1.png" width="672" />
+
+#### Simple Regression Exercise {-}
+1. Run the command `` res <- lm(data$sales ~ data$radio)`` and note the values for the weight and bias.
+2. Plot the fitted line from ``res`` with the data and comapre that line to the trained model.
+3. Adjust the fit object to obtain an estimate close to the noted parameters.
 
 
 
