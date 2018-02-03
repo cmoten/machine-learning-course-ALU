@@ -3,7 +3,7 @@
 
 ## Gradient Descent
 
-One of the most common concepts for all machine learning algorithms is optimization. Of the many optimization methods, the most widely used optimization method is gradient descent. This is because, gradient descent is simple to learn and can be used in tandem with any machine learning algorithm. For this section, we will use gradient descent with linear and logistic regression. 
+One of the most common concepts for all machine learning algorithms is optimization. Of the many optimization methods, the most widely used optimization method in machine learning is gradient descent. This extensive use of gradient descent is because gradient descent is straightforward to learn and compatible with any machine learning algorithm. For this section, we will use gradient descent with linear and logistic regression. 
 
 
 
@@ -18,11 +18,13 @@ where $y$ is the target variable, $x$ is the feature variables, $w_i$ are the we
 
 ### Cost Function {-}
 
+#### Simple Linear Regression {-}
+
 In order to optimize the weight and the bias variable, we need to optimize the cost (loss) function. For linear regression this function, $J(w,b)$ is the Mean Squared Error (MSE) and we can calculate it by:
 
-$$MSE = J(w,b) = \frac{1}{N}\sum_{i = 1}^{n}\left(y_i - \left(wx_i+b\right)\right)^2$$
+$$MSE = J(w,b) = \frac{1}{m}\sum_{i = 1}^{m}\left(y_i - \left(wx_i+b\right)\right)^2$$
 
-Since we are adjusting the cost function by the weight and the bias parameters, we must take the parital derivative with respect to each of these to calculate the gradient.
+Since we are adjusting the cost function by the weight and the bias parameters, we must take the partial derivative with respect to each of these to calculate the gradient.
 
 $$
 J'(w,b) = 
@@ -32,19 +34,78 @@ J'(w,b) =
 \end{bmatrix}
 =
 \begin{bmatrix}
-\frac{1}{N}\sum-2*x_i(y_i - (wx_i + b)) = \delta_w\\
-\frac{1}{N}\sum-2*(y_i - (wx_i + b)) = \delta_b
+\frac{1}{m}\sum-2*x_i(y_i - (wx_i + b)) = \delta_w\\
+\frac{1}{m}\sum-2*(y_i - (wx_i + b)) = \delta_b
 \end{bmatrix}
 $$
 
-### Gradient Descent Algorithm {-}
+#### Multiple Linear Regression {-}
 
-Finally, to solve for the optimal weight and bias, we will add a learning parameter, $\alpha$, to adjust the steps of the gradient. Thus, the algorithm we will use is:
+For multiple linear regression, we introduce a parameter matrix $\theta$ that contains the bias and weight parameters where:
 
 $$
-\text{Repat until convergence} \{\\
+\begin{align}
+h_\theta(x) &= \theta_0 + \theta_1x_1 + \dots + \theta_nx_n\\
+h(x) &= \sum_{i=0}^{n} \theta_ix_i = \theta^Tx
+\end{align}
+$$
+
+The cost function is:
+
+$$
+J(\theta) = \frac{1}{2m}\sum_{i=1}^{m} \left(h_\theta(x^{(i)})-y^{(i)}\right)^2
+$$
+
+In matrix form, the cost function becomes
+
+$$
+J(\theta) = \frac{1}{2m}(X\theta - y)^T(X\theta-y)
+$$
+where $X$ is a $m \times n$ design matrix, $\theta$ is a $n \times 1$ parameter matrix and $y$ is a $m \times 1$ vector of observed targets.
+
+Taking the derivative with respect to $\theta$ yields:
+
+$$
+J'(\theta) = \frac{1}{m}X^T(X\theta - y)
+$$
+
+See the video below for an example derivation of the derivative of the cost matrix:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/tGkMr57ZvAk" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+### Gradient Descent Algorithm {-}
+
+Finally, to solve for the optimal weight and bias, we will add a learning parameter, $\alpha$, to adjust the steps of the gradient. 
+
+#### Simple Linear Regression {-}
+
+The algorithm we will use is:
+
+$$
+\text{Repat until convergence } \{\\
 w := w -  \alpha\delta_w\\
 b := b - \alpha\delta_b\\
+\}
+$$
+
+#### Multiple Linear Regression {-}
+
+For multiple linear regression the algorithm changes to:
+
+$$
+\text{Repat until convergence } \{\\
+\theta_j := \theta_j - \alpha \frac{1}{m}\sum_{i=1}^{m}\left(h_\theta(x^{(i)}-y^{(i)}\right)x_{j}^{(i)}\\
+\}
+$$
+
+In this algorithm we are simultaneously updating the weights, $\theta_j$, for all $j\in{(0,\dots,n)}$. Recall that $\theta_0$ is the bias term and $x_0^{1}=1$.
+
+In matrix form, our algorithm will look like this:
+
+$$
+\text{Repat until convergence } \{\\
+\delta = \frac{1}{m}X^T(X\theta - y)\\
+\theta:=\theta-\alpha\delta\\
 \}
 $$
 
@@ -190,10 +251,119 @@ This is a plot of the cost history.
 plot(fit$Cost,type="l",col="blue", xlab = "Iteration",ylab="Cost",main = "Error Rate Per Iteration")
 ```
 
-#### Simple Regression Exercise {-}
+#### Exercises {-}
 1. Run the command `` res <- lm(data$sales ~ data$radio)`` and note the values for the weight and bias.
 2. Plot the fitted line from ``res`` with the data and comapre that line to the trained model.
 3. Adjust the fit object to obtain an estimate close to the noted parameters.
+
+### Multiple Linear Regression
+
+For this exercise, we will predict total sales based on TV, Radio, and Newspaper advertising costs.
+
+#### Data {-}
+
+```{r,multi-data}
+multi_data <- read.csv("data/Advertising.csv", header = TRUE)
+head(multi_data)
+```
+
+Since we are now dealing with multiple variables, we will need to view a pairs plot
+
+```{r, pairs}
+# Code for panel.cor found at https://www.r-bloggers.com/scatter-plot-matrices-in-r/
+
+panel.cor <- function(x, y, digits = 2, cex.cor, ...)
+{
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  # correlation coefficient
+  r <- cor(x, y)
+  txt <- format(c(r, 0.123456789), digits = digits)[1]
+  txt <- paste("r= ", txt, sep = "")
+  text(0.5, 0.6, txt)
+
+  # p-value calculation
+  p <- cor.test(x, y)$p.value
+  txt2 <- format(c(p, 0.123456789), digits = digits)[1]
+  txt2 <- paste("p= ", txt2, sep = "")
+  if(p<0.01) txt2 <- paste("p= ", "<0.01", sep = "")
+  text(0.5, 0.4, txt2)
+}
+
+pairs(multi_data[,2:5],lower.panel = panel.smooth, upper.panel = panel.cor)
+```
+
+#### Cost Function Code
+
+```{r,multi-cost}
+multi_cost <- function(features,target,theta){
+  sum((features %*% theta - target)^2) / (2*length(target))
+}
+```
+
+#### Training Function Code {-}
+
+```{r,multi-train}
+multi_train <- function(features,target,theta,learn_rate,iters){
+  cost_history <- double(iters)
+  for(i in seq_along(cost_history)){
+    error <- (features %*% theta - target)
+    delta <- t(features) %*% error / length(target)
+    theta <- theta  - learn_rate * delta
+    cost_history[i] <- multi_cost(features,target,theta)
+  }
+  
+  res <- list(Coefs = theta, Costs = cost_history)
+  res
+}
+  
+
+```
+
+#### Results {-}
+
+To make computing the gradient easier, we will normalize the data to fall within the range of -1 to 1. 
+
+```{r,normalize}
+normalize_data <- function(data){
+  cols <- ncol(data)
+  for(i in 1:cols){
+    tmp_mean <- mean(data[,i])
+    tmp_range <- range(data[,i])[2] - range(data[,i])[1]
+    res <- (data[,i] - tmp_mean) / tmp_range
+    data[,i] <- res
+  }
+  data
+}
+```
+
+
+```{r, multi-reults}
+multi_features <- multi_data[,2:4]
+multi_features <- normalize_data(multi_features)
+#names(multi_features) <- NULL
+multi_target <- multi_data[,5]
+#names(multi_target) <- NULL
+features_matrix <- cbind(1,as.matrix(multi_features))
+theta <- matrix(0,nrow=ncol(features_matrix))
+rownames(theta) <- c("Intercept",names(multi_features))
+num_iters <- 1000
+learn_rate <- 0.0005
+multi_fit <- multi_train(features_matrix,multi_target,theta,learn_rate,num_iters)
+multi_fit$Coefs
+plot(multi_fit$Costs,type="l",col="blue",xlab="Iteration",ylab="Cost",main="Error Rate Per Iteration")
+test_fit <- lm(sales ~ TV + radio + newspaper, data = multi_data)
+```
+
+
+#### Exercises {-}
+1. Tune the iterations and the learning rate and attempt to reduce the model cost.
+2. Run the command ``test_fit <- lm(sales ~ TV + radio + sales, data = multi_data)``
+3. Compute the cost of ``test_fit`` (Hint: use ``names(test_fit)`` to find out how to extract the coefficients of the model ) 
+
+## Linear Discriminant Analysis
+
+
 
 
 

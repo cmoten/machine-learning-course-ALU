@@ -25,7 +25,7 @@
 <meta name="author" content="Cardy Moten III">
 
 
-<meta name="date" content="2018-01-31">
+<meta name="date" content="2018-02-03">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -129,8 +129,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="lin-algs.html"><a href="lin-algs.html#gradient-descent-intuition"><i class="fa fa-check"></i>Gradient Descent Intuition</a></li>
 </ul></li>
 <li class="chapter" data-level="2.2" data-path="lin-algs.html"><a href="lin-algs.html#practical-exercises"><i class="fa fa-check"></i><b>2.2</b> Practical Exercises</a><ul>
-<li class="chapter" data-level="2.2.1" data-path="lin-algs.html"><a href="lin-algs.html#simple-linear-regression"><i class="fa fa-check"></i><b>2.2.1</b> Simple Linear Regression</a></li>
+<li class="chapter" data-level="2.2.1" data-path="lin-algs.html"><a href="lin-algs.html#simple-linear-regression-2"><i class="fa fa-check"></i><b>2.2.1</b> Simple Linear Regression</a></li>
+<li class="chapter" data-level="2.2.2" data-path="lin-algs.html"><a href="lin-algs.html#multiple-linear-regression-2"><i class="fa fa-check"></i><b>2.2.2</b> Multiple Linear Regression</a></li>
 </ul></li>
+<li class="chapter" data-level="2.3" data-path="lin-algs.html"><a href="lin-algs.html#linear-discriminant-analysis"><i class="fa fa-check"></i><b>2.3</b> Linear Discriminant Analysis</a></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="non-lin-algs.html"><a href="non-lin-algs.html"><i class="fa fa-check"></i><b>3</b> Non-linear Algorithms</a></li>
 <li class="chapter" data-level="4" data-path="ens-algs.html"><a href="ens-algs.html"><i class="fa fa-check"></i><b>4</b> Ensemble Algorithms</a></li>
@@ -162,7 +164,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h1><span class="header-section-number">Chapter 2</span> Linear Algorithms</h1>
 <div id="gradient-descent" class="section level2">
 <h2><span class="header-section-number">2.1</span> Gradient Descent</h2>
-<p>One of the most common concepts for all machine learning algorithms is optimization. Of the many optimization methods, the most widely used optimization method is gradient descent. This is because, gradient descent is simple to learn and can be used in tandem with any machine learning algorithm. For this section, we will use gradient descent with linear and logistic regression.</p>
+<p>One of the most common concepts for all machine learning algorithms is optimization. Of the many optimization methods, the most widely used optimization method in machine learning is gradient descent. This extensive use of gradient descent is because gradient descent is straightforward to learn and compatible with any machine learning algorithm. For this section, we will use gradient descent with linear and logistic regression.</p>
 <div id="linear-regression-model" class="section level3 unnumbered">
 <h3>Linear Regression Model</h3>
 <p>Before discussing the gradient descent algorithm, let’s review the linear regression. Recall the general linear regression equation is:</p>
@@ -171,9 +173,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="cost-function" class="section level3 unnumbered">
 <h3>Cost Function</h3>
+<div id="simple-linear-regression" class="section level4 unnumbered">
+<h4>Simple Linear Regression</h4>
 <p>In order to optimize the weight and the bias variable, we need to optimize the cost (loss) function. For linear regression this function, <span class="math inline">\(J(w,b)\)</span> is the Mean Squared Error (MSE) and we can calculate it by:</p>
-<p><span class="math display">\[MSE = J(w,b) = \frac{1}{N}\sum_{i = 1}^{n}\left(y_i - \left(wx_i+b\right)\right)^2\]</span></p>
-<p>Since we are adjusting the cost function by the weight and the bias parameters, we must take the parital derivative with respect to each of these to calculate the gradient.</p>
+<p><span class="math display">\[MSE = J(w,b) = \frac{1}{m}\sum_{i = 1}^{m}\left(y_i - \left(wx_i+b\right)\right)^2\]</span></p>
+<p>Since we are adjusting the cost function by the weight and the bias parameters, we must take the partial derivative with respect to each of these to calculate the gradient.</p>
 <p><span class="math display">\[
 J&#39;(w,b) = 
 \begin{bmatrix}
@@ -182,20 +186,67 @@ J&#39;(w,b) =
 \end{bmatrix}
 =
 \begin{bmatrix}
-\frac{1}{N}\sum-2*x_i(y_i - (wx_i + b)) = \delta_w\\
-\frac{1}{N}\sum-2*(y_i - (wx_i + b)) = \delta_b
+\frac{1}{m}\sum-2*x_i(y_i - (wx_i + b)) = \delta_w\\
+\frac{1}{m}\sum-2*(y_i - (wx_i + b)) = \delta_b
 \end{bmatrix}
 \]</span></p>
 </div>
+<div id="multiple-linear-regression" class="section level4 unnumbered">
+<h4>Multiple Linear Regression</h4>
+<p>For multiple linear regression, we introduce a parameter matrix <span class="math inline">\(\theta\)</span> that contains the bias and weight parameters where:</p>
+<p><span class="math display">\[
+\begin{align}
+h_\theta(x) &amp;= \theta_0 + \theta_1x_1 + \dots + \theta_nx_n\\
+h(x) &amp;= \sum_{i=0}^{n} \theta_ix_i = \theta^Tx
+\end{align}
+\]</span></p>
+<p>The cost function is:</p>
+<p><span class="math display">\[
+J(\theta) = \frac{1}{2m}\sum_{i=1}^{m} \left(h_\theta(x^{(i)})-y^{(i)}\right)^2
+\]</span></p>
+<p>In matrix form, the cost function becomes</p>
+<p><span class="math display">\[
+J(\theta) = \frac{1}{2m}(X\theta - y)^T(X\theta-y)
+\]</span> where <span class="math inline">\(X\)</span> is a <span class="math inline">\(m \times n\)</span> design matrix, <span class="math inline">\(\theta\)</span> is a <span class="math inline">\(n \times 1\)</span> parameter matrix and <span class="math inline">\(y\)</span> is a <span class="math inline">\(m \times 1\)</span> vector of observed targets.</p>
+<p>Taking the derivative with respect to <span class="math inline">\(\theta\)</span> yields:</p>
+<p><span class="math display">\[
+J&#39;(\theta) = \frac{1}{m}X^T(X\theta - y)
+\]</span></p>
+<p>See the video below for an example derivation of the derivative of the cost matrix:</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/tGkMr57ZvAk" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+</iframe>
+</div>
+</div>
 <div id="gradient-descent-algorithm" class="section level3 unnumbered">
 <h3>Gradient Descent Algorithm</h3>
-<p>Finally, to solve for the optimal weight and bias, we will add a learning parameter, <span class="math inline">\(\alpha\)</span>, to adjust the steps of the gradient. Thus, the algorithm we will use is:</p>
+<p>Finally, to solve for the optimal weight and bias, we will add a learning parameter, <span class="math inline">\(\alpha\)</span>, to adjust the steps of the gradient.</p>
+<div id="simple-linear-regression-1" class="section level4 unnumbered">
+<h4>Simple Linear Regression</h4>
+<p>The algorithm we will use is:</p>
 <p><span class="math display">\[
-\text{Repat until convergence} \{\\
+\text{Repat until convergence } \{\\
 w := w -  \alpha\delta_w\\
 b := b - \alpha\delta_b\\
 \}
 \]</span></p>
+</div>
+<div id="multiple-linear-regression-1" class="section level4 unnumbered">
+<h4>Multiple Linear Regression</h4>
+<p>For multiple linear regression the algorithm changes to:</p>
+<p><span class="math display">\[
+\text{Repat until convergence } \{\\
+\theta_j := \theta_j - \alpha \frac{1}{m}\sum_{i=1}^{m}\left(h_\theta(x^{(i)}-y^{(i)}\right)x_{j}^{(i)}\\
+\}
+\]</span></p>
+<p>In this algorithm we are simultaneously updating the weights, <span class="math inline">\(\theta_j\)</span>, for all <span class="math inline">\(j\in{(0,\dots,n)}\)</span>. Recall that <span class="math inline">\(\theta_0\)</span> is the bias term and <span class="math inline">\(x_0^{1}=1\)</span>.</p>
+<p>In matrix form, our algorithm will look like this:</p>
+<p><span class="math display">\[
+\text{Repat until convergence } \{\\
+\delta = \frac{1}{m}X^T(X\theta - y)\\
+\theta:=\theta-\alpha\delta\\
+\}
+\]</span></p>
+</div>
 </div>
 <div id="gradient-descent-intuition" class="section level3 unnumbered">
 <h3>Gradient Descent Intuition</h3>
@@ -221,7 +272,7 @@ Figure 2.2: A surface plot of a quadratic cost function.
 <div id="practical-exercises" class="section level2">
 <h2><span class="header-section-number">2.2</span> Practical Exercises</h2>
 <p>This practical exercieses are based on code provided by <span class="citation">Fortuner (<a href="#ref-fortuner2017mlcheat">2017</a>)</span> and <span class="citation">Brownlee (<a href="#ref-brownlee2017mlmastery">2017</a>)</span>.</p>
-<div id="simple-linear-regression" class="section level3">
+<div id="simple-linear-regression-2" class="section level3">
 <h3><span class="header-section-number">2.2.1</span> Simple Linear Regression</h3>
 <div id="data" class="section level4 unnumbered">
 <h4>Data</h4>
@@ -326,16 +377,121 @@ fit &lt;-<span class="st"> </span><span class="kw">train</span>(<span class="dt"
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(fit<span class="op">$</span>Cost,<span class="dt">type=</span><span class="st">&quot;l&quot;</span>,<span class="dt">col=</span><span class="st">&quot;blue&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;Iteration&quot;</span>,<span class="dt">ylab=</span><span class="st">&quot;Cost&quot;</span>,<span class="dt">main =</span> <span class="st">&quot;Error Rate Per Iteration&quot;</span>)</code></pre></div>
 <p><img src="02-Linear-Algorithms_files/figure-html/cost-plot-1.png" width="672" /></p>
 </div>
-<div id="simple-regression-exercise" class="section level4 unnumbered">
-<h4>Simple Regression Exercise</h4>
+<div id="exercises" class="section level4 unnumbered">
+<h4>Exercises</h4>
 <ol style="list-style-type: decimal">
 <li>Run the command <code>res &lt;- lm(data$sales ~ data$radio)</code> and note the values for the weight and bias.</li>
 <li>Plot the fitted line from <code>res</code> with the data and comapre that line to the trained model.</li>
 <li>Adjust the fit object to obtain an estimate close to the noted parameters.</li>
 </ol>
+</div>
+</div>
+<div id="multiple-linear-regression-2" class="section level3">
+<h3><span class="header-section-number">2.2.2</span> Multiple Linear Regression</h3>
+<p>For this exercise, we will predict total sales based on TV, Radio, and Newspaper advertising costs.</p>
+<div id="data-1" class="section level4 unnumbered">
+<h4>Data</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">multi_data &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/Advertising.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>)
+<span class="kw">head</span>(multi_data)</code></pre></div>
+<pre><code>##   company    TV radio newspaper sales
+## 1       1 230.1  37.8      69.2  22.1
+## 2       2  44.5  39.3      45.1  10.4
+## 3       3  17.2  45.9      69.3   9.3
+## 4       4 151.5  41.3      58.5  18.5
+## 5       5 180.8  10.8      58.4  12.9
+## 6       6   8.7  48.9      75.0   7.2</code></pre>
+<p>Since we are now dealing with multiple variables, we will need to view a pairs plot</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Code for panel.cor found at https://www.r-bloggers.com/scatter-plot-matrices-in-r/</span>
 
+panel.cor &lt;-<span class="st"> </span><span class="cf">function</span>(x, y, <span class="dt">digits =</span> <span class="dv">2</span>, cex.cor, ...)
+{
+  usr &lt;-<span class="st"> </span><span class="kw">par</span>(<span class="st">&quot;usr&quot;</span>); <span class="kw">on.exit</span>(<span class="kw">par</span>(usr))
+  <span class="kw">par</span>(<span class="dt">usr =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>))
+  <span class="co"># correlation coefficient</span>
+  r &lt;-<span class="st"> </span><span class="kw">cor</span>(x, y)
+  txt &lt;-<span class="st"> </span><span class="kw">format</span>(<span class="kw">c</span>(r, <span class="fl">0.123456789</span>), <span class="dt">digits =</span> digits)[<span class="dv">1</span>]
+  txt &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;r= &quot;</span>, txt, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
+  <span class="kw">text</span>(<span class="fl">0.5</span>, <span class="fl">0.6</span>, txt)
+
+  <span class="co"># p-value calculation</span>
+  p &lt;-<span class="st"> </span><span class="kw">cor.test</span>(x, y)<span class="op">$</span>p.value
+  txt2 &lt;-<span class="st"> </span><span class="kw">format</span>(<span class="kw">c</span>(p, <span class="fl">0.123456789</span>), <span class="dt">digits =</span> digits)[<span class="dv">1</span>]
+  txt2 &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;p= &quot;</span>, txt2, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
+  <span class="cf">if</span>(p<span class="op">&lt;</span><span class="fl">0.01</span>) txt2 &lt;-<span class="st"> </span><span class="kw">paste</span>(<span class="st">&quot;p= &quot;</span>, <span class="st">&quot;&lt;0.01&quot;</span>, <span class="dt">sep =</span> <span class="st">&quot;&quot;</span>)
+  <span class="kw">text</span>(<span class="fl">0.5</span>, <span class="fl">0.4</span>, txt2)
+}
+
+<span class="kw">pairs</span>(multi_data[,<span class="dv">2</span><span class="op">:</span><span class="dv">5</span>],<span class="dt">lower.panel =</span> panel.smooth, <span class="dt">upper.panel =</span> panel.cor)</code></pre></div>
+<p><img src="02-Linear-Algorithms_files/figure-html/pairs-1.png" width="672" /></p>
+</div>
+<div id="cost-function-code-1" class="section level4">
+<h4><span class="header-section-number">2.2.2.1</span> Cost Function Code</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">multi_cost &lt;-<span class="st"> </span><span class="cf">function</span>(features,target,theta){
+  <span class="kw">sum</span>((features <span class="op">%*%</span><span class="st"> </span>theta <span class="op">-</span><span class="st"> </span>target)<span class="op">^</span><span class="dv">2</span>) <span class="op">/</span><span class="st"> </span>(<span class="dv">2</span><span class="op">*</span><span class="kw">length</span>(target))
+}</code></pre></div>
+</div>
+<div id="training-function-code" class="section level4 unnumbered">
+<h4>Training Function Code</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">multi_train &lt;-<span class="st"> </span><span class="cf">function</span>(features,target,theta,learn_rate,iters){
+  cost_history &lt;-<span class="st"> </span><span class="kw">double</span>(iters)
+  <span class="cf">for</span>(i <span class="cf">in</span> <span class="kw">seq_along</span>(cost_history)){
+    error &lt;-<span class="st"> </span>(features <span class="op">%*%</span><span class="st"> </span>theta <span class="op">-</span><span class="st"> </span>target)
+    delta &lt;-<span class="st"> </span><span class="kw">t</span>(features) <span class="op">%*%</span><span class="st"> </span>error <span class="op">/</span><span class="st"> </span><span class="kw">length</span>(target)
+    theta &lt;-<span class="st"> </span>theta  <span class="op">-</span><span class="st"> </span>learn_rate <span class="op">*</span><span class="st"> </span>delta
+    cost_history[i] &lt;-<span class="st"> </span><span class="kw">multi_cost</span>(features,target,theta)
+  }
+  
+  res &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Coefs =</span> theta, <span class="dt">Costs =</span> cost_history)
+  res
+}</code></pre></div>
+</div>
+<div id="results" class="section level4 unnumbered">
+<h4>Results</h4>
+<p>To make computing the gradient easier, we will normalize the data to fall within the range of -1 to 1.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">normalize_data &lt;-<span class="st"> </span><span class="cf">function</span>(data){
+  cols &lt;-<span class="st"> </span><span class="kw">ncol</span>(data)
+  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>cols){
+    tmp_mean &lt;-<span class="st"> </span><span class="kw">mean</span>(data[,i])
+    tmp_range &lt;-<span class="st"> </span><span class="kw">range</span>(data[,i])[<span class="dv">2</span>] <span class="op">-</span><span class="st"> </span><span class="kw">range</span>(data[,i])[<span class="dv">1</span>]
+    res &lt;-<span class="st"> </span>(data[,i] <span class="op">-</span><span class="st"> </span>tmp_mean) <span class="op">/</span><span class="st"> </span>tmp_range
+    data[,i] &lt;-<span class="st"> </span>res
+  }
+  data
+}</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">multi_features &lt;-<span class="st"> </span>multi_data[,<span class="dv">2</span><span class="op">:</span><span class="dv">4</span>]
+multi_features &lt;-<span class="st"> </span><span class="kw">normalize_data</span>(multi_features)
+<span class="co">#names(multi_features) &lt;- NULL</span>
+multi_target &lt;-<span class="st"> </span>multi_data[,<span class="dv">5</span>]
+<span class="co">#names(multi_target) &lt;- NULL</span>
+features_matrix &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="dv">1</span>,<span class="kw">as.matrix</span>(multi_features))
+theta &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>,<span class="dt">nrow=</span><span class="kw">ncol</span>(features_matrix))
+<span class="kw">rownames</span>(theta) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Intercept&quot;</span>,<span class="kw">names</span>(multi_features))
+num_iters &lt;-<span class="st"> </span><span class="dv">1000</span>
+learn_rate &lt;-<span class="st"> </span><span class="fl">0.0005</span>
+multi_fit &lt;-<span class="st"> </span><span class="kw">multi_train</span>(features_matrix,multi_target,theta,learn_rate,num_iters)
+multi_fit<span class="op">$</span>Coefs</code></pre></div>
+<pre><code>##                [,1]
+## Intercept 5.5184872
+## TV        0.5767349
+## radio     0.4366550
+## newspaper 0.1098191</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(multi_fit<span class="op">$</span>Costs,<span class="dt">type=</span><span class="st">&quot;l&quot;</span>,<span class="dt">col=</span><span class="st">&quot;blue&quot;</span>,<span class="dt">xlab=</span><span class="st">&quot;Iteration&quot;</span>,<span class="dt">ylab=</span><span class="st">&quot;Cost&quot;</span>,<span class="dt">main=</span><span class="st">&quot;Error Rate Per Iteration&quot;</span>)</code></pre></div>
+<p><img src="02-Linear-Algorithms_files/figure-html/multi-reults-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">test_fit &lt;-<span class="st"> </span><span class="kw">lm</span>(sales <span class="op">~</span><span class="st"> </span>TV <span class="op">+</span><span class="st"> </span>radio <span class="op">+</span><span class="st"> </span>newspaper, <span class="dt">data =</span> multi_data)</code></pre></div>
+</div>
+<div id="exercises-1" class="section level4 unnumbered">
+<h4>Exercises</h4>
+<ol style="list-style-type: decimal">
+<li>Tune the iterations and the learning rate and attempt to reduce the model cost.</li>
+<li>Run the command <code>test_fit &lt;- lm(sales ~ TV + radio + sales, data = multi_data)</code></li>
+<li>Compute the cost of <code>test_fit</code> (Hint: use <code>names(test_fit)</code> to find out how to extract the coefficients of the model )</li>
+</ol>
 </div>
 </div>
+</div>
+<div id="linear-discriminant-analysis" class="section level2">
+<h2><span class="header-section-number">2.3</span> Linear Discriminant Analysis</h2>
+
 </div>
 </div>
 <h3>References</h3>
