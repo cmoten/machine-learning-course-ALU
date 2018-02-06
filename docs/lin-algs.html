@@ -25,7 +25,7 @@
 <meta name="author" content="Cardy Moten III">
 
 
-<meta name="date" content="2018-02-03">
+<meta name="date" content="2018-02-05">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -125,12 +125,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="2.1" data-path="lin-algs.html"><a href="lin-algs.html#gradient-descent"><i class="fa fa-check"></i><b>2.1</b> Gradient Descent</a><ul>
 <li class="chapter" data-level="" data-path="lin-algs.html"><a href="lin-algs.html#linear-regression-model"><i class="fa fa-check"></i>Linear Regression Model</a></li>
 <li class="chapter" data-level="" data-path="lin-algs.html"><a href="lin-algs.html#cost-function"><i class="fa fa-check"></i>Cost Function</a></li>
+<li class="chapter" data-level="" data-path="lin-algs.html"><a href="lin-algs.html#logistic-regression"><i class="fa fa-check"></i>Logistic Regression</a></li>
 <li class="chapter" data-level="" data-path="lin-algs.html"><a href="lin-algs.html#gradient-descent-algorithm"><i class="fa fa-check"></i>Gradient Descent Algorithm</a></li>
 <li class="chapter" data-level="" data-path="lin-algs.html"><a href="lin-algs.html#gradient-descent-intuition"><i class="fa fa-check"></i>Gradient Descent Intuition</a></li>
 </ul></li>
 <li class="chapter" data-level="2.2" data-path="lin-algs.html"><a href="lin-algs.html#practical-exercises"><i class="fa fa-check"></i><b>2.2</b> Practical Exercises</a><ul>
 <li class="chapter" data-level="2.2.1" data-path="lin-algs.html"><a href="lin-algs.html#simple-linear-regression-2"><i class="fa fa-check"></i><b>2.2.1</b> Simple Linear Regression</a></li>
 <li class="chapter" data-level="2.2.2" data-path="lin-algs.html"><a href="lin-algs.html#multiple-linear-regression-2"><i class="fa fa-check"></i><b>2.2.2</b> Multiple Linear Regression</a></li>
+<li class="chapter" data-level="2.2.3" data-path="lin-algs.html"><a href="lin-algs.html#logistic-regression-2"><i class="fa fa-check"></i><b>2.2.3</b> Logistic Regression</a></li>
 </ul></li>
 <li class="chapter" data-level="2.3" data-path="lin-algs.html"><a href="lin-algs.html#linear-discriminant-analysis"><i class="fa fa-check"></i><b>2.3</b> Linear Discriminant Analysis</a></li>
 </ul></li>
@@ -217,6 +219,52 @@ J&#39;(\theta) = \frac{1}{m}X^T(X\theta - y)
 </iframe>
 </div>
 </div>
+<div id="logistic-regression" class="section level3 unnumbered">
+<h3>Logistic Regression</h3>
+<p>Another application of the gradient descent algorithm is for logistic regression. Recall that we use logistic regression when the target variable is categorical, and there are only two possible classifications. We show the general equation as</p>
+<p><span class="math display">\[
+h_\theta(x) = g(\theta^Tx) = \frac{1}{1 + e^{-\theta^Tx}}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+g(z) = \frac{1}{1 + e^{-z}}
+\]</span> The above equation is called a sigmoid or logistic function. Essentially, we first perform a linear regression on the weights and bias and then feed that predicted value into the sigmoid function to map a real value between 0 and 1.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sigmoid &lt;-<span class="st"> </span><span class="cf">function</span>(z){
+  res &lt;-<span class="st"> </span><span class="dv">1</span> <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw">exp</span>(<span class="op">-</span>z))
+  res
+}</code></pre></div>
+<div class="figure" style="text-align: center"><span id="fig:sigmoid-plot"></span>
+<img src="02-Linear-Algorithms_files/figure-html/sigmoid-plot-1.png" alt="Example Sigmoid function plot." width="90%" />
+<p class="caption">
+Figure 2.1: Example Sigmoid function plot.
+</p>
+</div>
+<p>The cost function for logistic regression will differ now, that the function we are analyzing is non-linear. First let’s assume the following:</p>
+<p><span class="math display">\[
+\begin{align}
+P(y=1|x;\theta) &amp;= h_\theta(x)\\
+P(y=0|x;\theta) &amp;= 1-h_\theta(x)\\
+P(y|x;\theta) &amp;= \left(h_\theta(x)\right)^y\left(1-h_\theta(x)\right)^{1-y}
+\end{align}
+\]</span> We now can find the log cross-entropy cost by:</p>
+<p><span class="math display">\[
+J(\theta) = -\frac{1}{m}\sum_{i=0}^m\left[y^{(i)}log(h_\theta(x^{(i)}))+(1-y^{(i)})log(1-h_\theta(x^{(i)})\right]
+\]</span> where <span class="math inline">\(h_\theta(x)\)</span> is the sigmoid function.</p>
+<p>When taking the derivative with respect to <span class="math inline">\(\theta\)</span>, recall that <span class="math inline">\(g&#39;(z) = g(z)(1-g(z))\)</span>. Thus,</p>
+<p><span class="math display">\[
+\begin{align}
+J&#39;(\theta) &amp;= \frac{\partial}{\partial\theta_j}-\frac{1}{m}\sum_{i=0}^m\left[y^{(i)}log(h_\theta(x^{(i)}))+(1-y^{(i)})log(1-h_\theta(x^{(i)})\right]\\
+&amp;= -\frac{1}{m}\left(y\frac{1}{g(\theta^Tx)}-(1-y)\frac{1}{1-g(\theta^Tx)}\right)\frac{\partial}{\partial\theta_j}g(\theta^Tx)\\
+&amp;=-\frac{1}{m}\left(y\frac{1}{g(\theta^Tx)}-(1-y)\frac{1}{1-g(\theta^Tx)}\right)g(\theta^Tx)(1-g(\theta^Tx))\frac{\partial}{\partial\theta_j}\theta^Tx\\
+&amp;=-\frac{1}{m}\left(y(1-g(\theta^Tx)-(1-y)g(\theta^Tx)\right)x_j\\
+&amp;=-\frac{1}{m}\left(y(1-g(\theta^Tx)-(1-y)g(\theta^Tx)\right)x_j\\
+&amp;= -\frac{1}{m}\left(y-g(\theta^Tx)\right)x_j\\
+&amp;=\frac{1}{m}\left(g(\theta^Tx)-y\right)x_j\\
+&amp;=\frac{1}{m}\left(h_\theta(x)-y\right)x_j\\
+\end{align}
+\]</span></p>
+<p>What is interesting to note is that this gradient function looks precisely like the gradient function for linear regression. The difference, however, is that the function <span class="math inline">\(h_\theta(x)\)</span> is a sigmoid function and not a linear function of the weights and bias parameters. For further details of the above derivations see <span class="citation">Ng (<a href="#ref-ng2000cs229">2000</a>)</span> and <span class="citation">Fortuner (<a href="#ref-fortuner2017mlcheat">2017</a>)</span>.</p>
+</div>
 <div id="gradient-descent-algorithm" class="section level3 unnumbered">
 <h3>Gradient Descent Algorithm</h3>
 <p>Finally, to solve for the optimal weight and bias, we will add a learning parameter, <span class="math inline">\(\alpha\)</span>, to adjust the steps of the gradient.</p>
@@ -247,21 +295,38 @@ b := b - \alpha\delta_b\\
 \}
 \]</span></p>
 </div>
+<div id="logistic-regression-1" class="section level4 unnumbered">
+<h4>Logistic Regression</h4>
+<p>The matrix form of the stochastic gradient descent algorithm has the form:</p>
+<p><span class="math display">\[
+\text{Repat until convergence } \{\\
+\delta = \frac{1}{m}X^T(sigmoid(X\theta) - y)\\
+\theta:=\theta-\alpha\delta\\
+\}
+\]</span></p>
+</div>
 </div>
 <div id="gradient-descent-intuition" class="section level3 unnumbered">
 <h3>Gradient Descent Intuition</h3>
-<p>Figure <a href="lin-algs.html#fig:grad-descent-intuition">2.1</a> demonstrates the basic intuition behind the gradient algorithm. Fundamentally, if we pick a point along the graph of the cost function, and the gradient is negative, the algorithm will update by moving the more to the right. Conversely, if the gradient is positive, the algorithm will move the cost value more to the left.</p>
+<p>Figure <a href="lin-algs.html#fig:grad-descent-intuition">2.2</a> demonstrates the basic intuition behind the gradient algorithm. Fundamentally, if we pick a point along the graph of the cost function, and the gradient is negative, the algorithm will update by moving the more to the right. Conversely, if the gradient is positive, the algorithm will move the cost value more to the left.</p>
 <div class="figure" style="text-align: center"><span id="fig:grad-descent-intuition"></span>
 <img src="img/gradient-descent-example.png" alt="A simple example of gradient descent." width="90%" />
 <p class="caption">
-Figure 2.1: A simple example of gradient descent.
+Figure 2.2: A simple example of gradient descent.
 </p>
 </div>
-<p>Figure <a href="lin-algs.html#fig:surface-plot">2.2</a> is a multi-dimensional view of the cost function, and the underlying concept is still the same.</p>
+<p>Figure <a href="lin-algs.html#fig:surface-plot">2.3</a> is a multi-dimensional view of the cost function, and the underlying concept is still the same.</p>
 <div class="figure" style="text-align: center"><span id="fig:surface-plot"></span>
 <img src="img/surface-plot.png" alt="A surface plot of a quadratic cost function." width="90%" />
 <p class="caption">
-Figure 2.2: A surface plot of a quadratic cost function.
+Figure 2.3: A surface plot of a quadratic cost function.
+</p>
+</div>
+<p>Figure <a href="lin-algs.html#fig:log-entropy">2.4</a> is a plot of the log-entropy function for logistic regression.</p>
+<div class="figure" style="text-align: center"><span id="fig:log-entropy"></span>
+<img src="img/log-entropy-cost.png" alt="A simple example of gradient descent." width="90%" />
+<p class="caption">
+Figure 2.4: A simple example of gradient descent.
 </p>
 </div>
 <p>While the ideal cost function to minimize would be a convex function, this is not always practical and there are ways to deal with that as discussed in the following video.</p>
@@ -447,7 +512,7 @@ panel.cor &lt;-<span class="st"> </span><span class="cf">function</span>(x, y, <
 </div>
 <div id="results" class="section level4 unnumbered">
 <h4>Results</h4>
-<p>To make computing the gradient easier, we will normalize the data to fall within the range of -1 to 1.</p>
+<p>To make computing the gradient easier, we will normalize the feature data such that <span class="math inline">\(x \in \{-1,1\}\)</span>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">normalize_data &lt;-<span class="st"> </span><span class="cf">function</span>(data){
   cols &lt;-<span class="st"> </span><span class="kw">ncol</span>(data)
   <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>cols){
@@ -460,9 +525,7 @@ panel.cor &lt;-<span class="st"> </span><span class="cf">function</span>(x, y, <
 }</code></pre></div>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">multi_features &lt;-<span class="st"> </span>multi_data[,<span class="dv">2</span><span class="op">:</span><span class="dv">4</span>]
 multi_features &lt;-<span class="st"> </span><span class="kw">normalize_data</span>(multi_features)
-<span class="co">#names(multi_features) &lt;- NULL</span>
 multi_target &lt;-<span class="st"> </span>multi_data[,<span class="dv">5</span>]
-<span class="co">#names(multi_target) &lt;- NULL</span>
 features_matrix &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="dv">1</span>,<span class="kw">as.matrix</span>(multi_features))
 theta &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>,<span class="dt">nrow=</span><span class="kw">ncol</span>(features_matrix))
 <span class="kw">rownames</span>(theta) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Intercept&quot;</span>,<span class="kw">names</span>(multi_features))
@@ -488,6 +551,119 @@ multi_fit<span class="op">$</span>Coefs</code></pre></div>
 </ol>
 </div>
 </div>
+<div id="logistic-regression-2" class="section level3">
+<h3><span class="header-section-number">2.2.3</span> Logistic Regression</h3>
+<p>During this exercise, we will classify whether studens will pass (1) or fail (0) a test based on the amount of hours spent studying and hours slept.</p>
+<div id="data-2" class="section level4 unnumbered">
+<h4>Data</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">log_data &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/data_classification.csv&quot;</span>,<span class="dt">header=</span><span class="ot">TRUE</span>)
+<span class="kw">head</span>(log_data)</code></pre></div>
+<pre><code>##    studied      slept passed
+## 1 4.855064 9.63996157      1
+## 2 8.625440 0.05892653      0
+## 3 3.828192 0.72319923      0
+## 4 7.150955 3.89942042      1
+## 5 6.477900 8.19818055      1
+## 6 1.922270 1.33142727      0</code></pre>
+<p>The plot below shows the current data</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">color_vec &lt;-<span class="st"> </span><span class="kw">ifelse</span>(log_data<span class="op">$</span>passed<span class="op">==</span><span class="dv">1</span>,<span class="st">&quot;orange&quot;</span>,<span class="st">&quot;blue&quot;</span>)
+<span class="kw">plot</span>(log_data<span class="op">$</span>slept,log_data<span class="op">$</span>studied,<span class="dt">col=</span>color_vec,<span class="dt">xlab=</span><span class="st">&quot;Hours Slept&quot;</span>,<span class="dt">ylab=</span><span class="st">&quot;Hours Studied&quot;</span>)
+<span class="kw">legend</span>(<span class="st">&quot;topright&quot;</span>,<span class="kw">c</span>(<span class="st">&quot;Pass&quot;</span>,<span class="st">&quot;Fail&quot;</span>),<span class="dt">col=</span><span class="kw">c</span>(<span class="st">&quot;orange&quot;</span>,<span class="st">&quot;blue&quot;</span>),<span class="dt">pch=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</code></pre></div>
+<p><img src="02-Linear-Algorithms_files/figure-html/log-plot-1.png" width="672" /></p>
+</div>
+<div id="generate-a-vector-of-predictions" class="section level4 unnumbered">
+<h4>Generate a vector of predictions</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">log_predict &lt;-<span class="st"> </span><span class="cf">function</span>(features, theta){
+  z &lt;-<span class="st"> </span>features <span class="op">%*%</span><span class="st"> </span>theta
+  res &lt;-<span class="st"> </span><span class="kw">sigmoid</span>(z)
+  res
+}</code></pre></div>
+</div>
+<div id="cost-function-code-2" class="section level4 unnumbered">
+<h4>Cost function code</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">log_cost &lt;-<span class="st"> </span><span class="cf">function</span>(features, theta, targets){
+  m &lt;-<span class="st"> </span><span class="kw">length</span>(targets)
+  g &lt;-<span class="st"> </span><span class="kw">log_predict</span>(features,theta)
+  res &lt;-<span class="st"> </span>(<span class="dv">1</span><span class="op">/</span>m) <span class="op">*</span><span class="st"> </span><span class="kw">sum</span>((<span class="op">-</span>targets <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(g)) <span class="op">-</span><span class="st"> </span>((<span class="dv">1</span><span class="op">-</span>targets) <span class="op">*</span><span class="st"> </span><span class="kw">log</span>(<span class="dv">1</span><span class="op">-</span>g)))
+  res
+}</code></pre></div>
+</div>
+<div id="training-model-code" class="section level4 unnumbered">
+<h4>Training model code</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">log_train &lt;-<span class="st"> </span><span class="cf">function</span>(features,theta,targets,learn_rate, iters){
+    cost_history &lt;-<span class="st"> </span><span class="kw">double</span>(iters)
+  <span class="cf">for</span>(i <span class="cf">in</span> <span class="kw">seq_along</span>(cost_history)){
+    preds &lt;-<span class="st"> </span><span class="kw">log_predict</span>(features,theta)
+    error &lt;-<span class="st"> </span>(preds <span class="op">-</span><span class="st"> </span>targets)
+    delta &lt;-<span class="st"> </span><span class="kw">t</span>(features) <span class="op">%*%</span><span class="st"> </span>error <span class="op">/</span><span class="st"> </span><span class="kw">length</span>(targets)
+    theta &lt;-<span class="st"> </span>theta  <span class="op">-</span><span class="st"> </span>learn_rate <span class="op">*</span><span class="st"> </span>delta
+    cost &lt;-<span class="st"> </span><span class="kw">log_cost</span>(features,theta,targets)
+    cost_history[i] &lt;-<span class="st"> </span>cost
+    
+    <span class="cf">if</span>(i <span class="op">==</span><span class="st"> </span><span class="dv">1</span> <span class="op">|</span><span class="st"> </span>i <span class="op">%%</span><span class="st"> </span><span class="dv">1000</span> <span class="op">==</span><span class="st"> </span><span class="dv">0</span>){
+       <span class="kw">cat</span>(<span class="st">&quot;iter: &quot;</span>, i, <span class="st">&quot;cost: &quot;</span>, cost, <span class="st">&quot;</span><span class="ch">\n</span><span class="st">&quot;</span>)
+    }
+  }
+  
+  res &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Coefs =</span> theta, <span class="dt">Costs =</span> cost_history)
+  res
+}</code></pre></div>
+</div>
+<div id="decision-boundary-code" class="section level4 unnumbered">
+<h4>Decision boundary code</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">boundary &lt;-<span class="st"> </span><span class="cf">function</span>(prob){
+  res &lt;-<span class="st"> </span><span class="kw">ifelse</span>(prob<span class="op">&gt;=</span>.<span class="dv">5</span>,<span class="dv">1</span>,<span class="dv">0</span>)
+  res
+}</code></pre></div>
+</div>
+<div id="classification-accuracy-code" class="section level4 unnumbered">
+<h4>Classification accuracy code</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">log_accuracy &lt;-<span class="st"> </span><span class="cf">function</span>(preds,targets){
+  diff &lt;-<span class="st"> </span>preds <span class="op">-</span><span class="st"> </span>targets
+  res &lt;-<span class="st"> </span><span class="dv">1</span> <span class="op">-</span><span class="st"> </span><span class="kw">sum</span>(diff)<span class="op">/</span><span class="kw">length</span>(diff)
+}</code></pre></div>
+</div>
+<div id="results-1" class="section level4 unnumbered">
+<h4>Results</h4>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">log_features &lt;-<span class="st"> </span>log_data[,<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]
+log_targets &lt;-<span class="st"> </span>log_data[,<span class="dv">3</span>]
+log_design &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="dv">1</span>,<span class="kw">as.matrix</span>(log_features))
+log_theta &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>,<span class="dt">nrow=</span><span class="kw">ncol</span>(log_design))
+<span class="kw">rownames</span>(log_theta) &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Intercept&quot;</span>,<span class="kw">names</span>(log_features))
+learn_rate &lt;-<span class="st"> </span><span class="fl">0.02</span>
+num_iters &lt;-<span class="st"> </span><span class="dv">3000</span>
+log_fit &lt;-<span class="st"> </span><span class="kw">log_train</span>(log_design,log_theta,log_targets,learn_rate,num_iters)</code></pre></div>
+<pre><code>## iter:  1 cost:  0.6582674 
+## iter:  1000 cost:  0.4469503 
+## iter:  2000 cost:  0.3773433 
+## iter:  3000 cost:  0.3408168</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">log_fit<span class="op">$</span>Coefs</code></pre></div>
+<pre><code>##                 [,1]
+## Intercept -3.8281563
+## studied    0.4802045
+## slept      0.3435157</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(log_fit<span class="op">$</span>Costs,<span class="dt">type=</span><span class="st">&quot;l&quot;</span>,<span class="dt">col=</span><span class="st">&quot;blue&quot;</span>)</code></pre></div>
+<p><img src="02-Linear-Algorithms_files/figure-html/log-results-1.png" width="672" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">predictions &lt;-<span class="st"> </span><span class="kw">log_predict</span>(log_design,log_fit<span class="op">$</span>Coefs)
+classifications &lt;-<span class="st"> </span><span class="kw">boundary</span>(predictions)
+fit_accuracy &lt;-<span class="st"> </span><span class="kw">log_accuracy</span>(classifications,log_targets)
+fit_accuracy</code></pre></div>
+<pre><code>## [1] 0.91</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(predictions,<span class="dt">col=</span>color_vec)
+<span class="kw">abline</span>(<span class="dt">h=</span><span class="fl">0.5</span>,<span class="dt">lty=</span><span class="dv">2</span>)
+<span class="kw">title</span>(<span class="st">&quot;Actual Classification vs Predicted Probability&quot;</span>)
+<span class="kw">legend</span>(<span class="st">&quot;topright&quot;</span>,<span class="kw">c</span>(<span class="st">&quot;Pass&quot;</span>,<span class="st">&quot;Fail&quot;</span>),<span class="dt">col=</span><span class="kw">c</span>(<span class="st">&quot;orange&quot;</span>,<span class="st">&quot;blue&quot;</span>),<span class="dt">pch=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>),<span class="dt">horiz =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p><img src="02-Linear-Algorithms_files/figure-html/log-res-plot-1.png" width="672" /></p>
+</div>
+<div id="exercises-2" class="section level4 unnumbered">
+<h4>Exercises</h4>
+<ol style="list-style-type: decimal">
+<li>Tune the iterations and the learning rate and attempt to improve the model accuracy.</li>
+<li>Run the command <code>test_log &lt;- glm(passed~slept+studied,family = 'binomial',data=log_data)</code></li>
+<li>Compare the cost and accuracy of <code>test_log</code> with <code>log_fit</code>.</li>
+</ol>
+</div>
+</div>
 </div>
 <div id="linear-discriminant-analysis" class="section level2">
 <h2><span class="header-section-number">2.3</span> Linear Discriminant Analysis</h2>
@@ -496,6 +672,9 @@ multi_fit<span class="op">$</span>Coefs</code></pre></div>
 </div>
 <h3>References</h3>
 <div id="refs" class="references">
+<div id="ref-ng2000cs229">
+<p>Ng, Andrew. 2000. “CS229 Lecture Notes.”</p>
+</div>
 <div id="ref-fortuner2017mlcheat">
 <p>Fortuner, Brendan. 2017. “Machine Learning Cheatsheet.” <a href="http://ml-cheatsheet.readthedocs.io/en/latest/index.html" class="uri">http://ml-cheatsheet.readthedocs.io/en/latest/index.html</a>.</p>
 </div>

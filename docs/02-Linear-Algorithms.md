@@ -73,6 +73,67 @@ See the video below for an example derivation of the derivative of the cost matr
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/tGkMr57ZvAk" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
+### Logistic Regression {-}
+
+Another application of the gradient descent algorithm is for logistic regression. Recall that we use logistic regression when the target variable is categorical, and there are only two possible classifications. We show the general equation as
+
+$$
+h_\theta(x) = g(\theta^Tx) = \frac{1}{1 + e^{-\theta^Tx}}
+$$
+
+and
+
+$$
+g(z) = \frac{1}{1 + e^{-z}}
+$$
+The above equation is called a sigmoid or logistic function. Essentially, we first perform a linear regression on the weights and bias and then feed that predicted value into the sigmoid function to map a real value between 0 and 1. 
+
+
+```r
+sigmoid <- function(z){
+  res <- 1 / (1 + exp(-z))
+  res
+}
+```
+
+<div class="figure" style="text-align: center">
+<img src="02-Linear-Algorithms_files/figure-html/sigmoid-plot-1.png" alt="Example Sigmoid function plot." width="90%" />
+<p class="caption">(\#fig:sigmoid-plot)Example Sigmoid function plot.</p>
+</div>
+
+The cost function for logistic regression will differ now, that the function  we are analyzing is non-linear. First let's assume the following:
+
+$$
+\begin{align}
+P(y=1|x;\theta) &= h_\theta(x)\\
+P(y=0|x;\theta) &= 1-h_\theta(x)\\
+P(y|x;\theta) &= \left(h_\theta(x)\right)^y\left(1-h_\theta(x)\right)^{1-y}
+\end{align}
+$$
+We now can find the log cross-entropy cost by:
+
+$$
+J(\theta) = -\frac{1}{m}\sum_{i=0}^m\left[y^{(i)}log(h_\theta(x^{(i)}))+(1-y^{(i)})log(1-h_\theta(x^{(i)})\right]
+$$
+where $h_\theta(x)$ is the sigmoid function. 
+
+When taking the derivative with respect to $\theta$, recall that $g'(z) = g(z)(1-g(z))$. Thus,
+
+$$
+\begin{align}
+J'(\theta) &= \frac{\partial}{\partial\theta_j}-\frac{1}{m}\sum_{i=0}^m\left[y^{(i)}log(h_\theta(x^{(i)}))+(1-y^{(i)})log(1-h_\theta(x^{(i)})\right]\\
+&= -\frac{1}{m}\left(y\frac{1}{g(\theta^Tx)}-(1-y)\frac{1}{1-g(\theta^Tx)}\right)\frac{\partial}{\partial\theta_j}g(\theta^Tx)\\
+&=-\frac{1}{m}\left(y\frac{1}{g(\theta^Tx)}-(1-y)\frac{1}{1-g(\theta^Tx)}\right)g(\theta^Tx)(1-g(\theta^Tx))\frac{\partial}{\partial\theta_j}\theta^Tx\\
+&=-\frac{1}{m}\left(y(1-g(\theta^Tx)-(1-y)g(\theta^Tx)\right)x_j\\
+&=-\frac{1}{m}\left(y(1-g(\theta^Tx)-(1-y)g(\theta^Tx)\right)x_j\\
+&= -\frac{1}{m}\left(y-g(\theta^Tx)\right)x_j\\
+&=\frac{1}{m}\left(g(\theta^Tx)-y\right)x_j\\
+&=\frac{1}{m}\left(h_\theta(x)-y\right)x_j\\
+\end{align}
+$$
+
+What is interesting to note is that this gradient function looks precisely like the gradient function for linear regression. The difference, however, is that the function $h_\theta(x)$ is a sigmoid function and not a linear function of the weights and bias parameters. For further details of the above derivations see @ng2000cs229 and @fortuner2017mlcheat.
+
 ### Gradient Descent Algorithm {-}
 
 Finally, to solve for the optimal weight and bias, we will add a learning parameter, $\alpha$, to adjust the steps of the gradient. 
@@ -109,6 +170,16 @@ $$
 \}
 $$
 
+#### Logistic Regression {-}
+The matrix form of the stochastic gradient descent algorithm has the form:
+
+$$
+\text{Repat until convergence } \{\\
+\delta = \frac{1}{m}X^T(sigmoid(X\theta) - y)\\
+\theta:=\theta-\alpha\delta\\
+\}
+$$
+
 ### Gradient Descent Intuition {-}
 
 
@@ -125,6 +196,13 @@ Figure \@ref(fig:surface-plot) is a multi-dimensional view of the cost function,
 <div class="figure" style="text-align: center">
 <img src="img/surface-plot.png" alt="A surface plot of a quadratic cost function." width="90%" />
 <p class="caption">(\#fig:surface-plot)A surface plot of a quadratic cost function.</p>
+</div>
+
+Figure \@ref(fig:log-entropy) is a plot of the log-entropy function for logistic regression.
+
+<div class="figure" style="text-align: center">
+<img src="img/log-entropy-cost.png" alt="A simple example of gradient descent." width="90%" />
+<p class="caption">(\#fig:log-entropy)A simple example of gradient descent.</p>
 </div>
 
 While the ideal cost function to minimize would be a convex function, this is not always practical and there are ways to deal with that as discussed in the following video.
@@ -369,7 +447,7 @@ multi_train <- function(features,target,theta,learn_rate,iters){
 
 #### Results {-}
 
-To make computing the gradient easier, we will normalize the data to fall within the range of -1 to 1. 
+To make computing the gradient easier, we will normalize the feature data such that $x \in \{-1,1\}$. 
 
 
 ```r
@@ -390,9 +468,7 @@ normalize_data <- function(data){
 ```r
 multi_features <- multi_data[,2:4]
 multi_features <- normalize_data(multi_features)
-#names(multi_features) <- NULL
 multi_target <- multi_data[,5]
-#names(multi_target) <- NULL
 features_matrix <- cbind(1,as.matrix(multi_features))
 theta <- matrix(0,nrow=ncol(features_matrix))
 rownames(theta) <- c("Intercept",names(multi_features))
@@ -425,6 +501,165 @@ test_fit <- lm(sales ~ TV + radio + newspaper, data = multi_data)
 1. Tune the iterations and the learning rate and attempt to reduce the model cost.
 2. Run the command ``test_fit <- lm(sales ~ TV + radio + sales, data = multi_data)``
 3. Compute the cost of ``test_fit`` (Hint: use ``names(test_fit)`` to find out how to extract the coefficients of the model ) 
+
+### Logistic Regression
+
+During this exercise, we will classify whether studens will pass (1) or fail (0) a test based on the amount of hours spent studying and hours slept. 
+
+#### Data {-}
+
+
+```r
+log_data <- read.csv("data/data_classification.csv",header=TRUE)
+head(log_data)
+```
+
+```
+##    studied      slept passed
+## 1 4.855064 9.63996157      1
+## 2 8.625440 0.05892653      0
+## 3 3.828192 0.72319923      0
+## 4 7.150955 3.89942042      1
+## 5 6.477900 8.19818055      1
+## 6 1.922270 1.33142727      0
+```
+
+The plot below shows the current data
+
+```r
+color_vec <- ifelse(log_data$passed==1,"orange","blue")
+plot(log_data$slept,log_data$studied,col=color_vec,xlab="Hours Slept",ylab="Hours Studied")
+legend("topright",c("Pass","Fail"),col=c("orange","blue"),pch=c(1,1))
+```
+
+<img src="02-Linear-Algorithms_files/figure-html/log-plot-1.png" width="672" />
+
+#### Generate a vector of predictions {-}
+
+```r
+log_predict <- function(features, theta){
+  z <- features %*% theta
+  res <- sigmoid(z)
+  res
+}
+```
+
+#### Cost function code {-}
+
+```r
+log_cost <- function(features, theta, targets){
+  m <- length(targets)
+  g <- log_predict(features,theta)
+  res <- (1/m) * sum((-targets * log(g)) - ((1-targets) * log(1-g)))
+  res
+}
+```
+
+#### Training model code {-}
+
+```r
+log_train <- function(features,theta,targets,learn_rate, iters){
+    cost_history <- double(iters)
+  for(i in seq_along(cost_history)){
+    preds <- log_predict(features,theta)
+    error <- (preds - targets)
+    delta <- t(features) %*% error / length(targets)
+    theta <- theta  - learn_rate * delta
+    cost <- log_cost(features,theta,targets)
+    cost_history[i] <- cost
+    
+    if(i == 1 | i %% 1000 == 0){
+       cat("iter: ", i, "cost: ", cost, "\n")
+    }
+  }
+  
+  res <- list(Coefs = theta, Costs = cost_history)
+  res
+}
+```
+
+#### Decision boundary code {-}
+
+```r
+boundary <- function(prob){
+  res <- ifelse(prob>=.5,1,0)
+  res
+}
+```
+
+#### Classification accuracy code {-}
+
+```r
+log_accuracy <- function(preds,targets){
+  diff <- preds - targets
+  res <- 1 - sum(diff)/length(diff)
+}
+```
+
+
+#### Results{-}
+
+
+```r
+log_features <- log_data[,1:2]
+log_targets <- log_data[,3]
+log_design <- cbind(1,as.matrix(log_features))
+log_theta <- matrix(0,nrow=ncol(log_design))
+rownames(log_theta) <- c("Intercept",names(log_features))
+learn_rate <- 0.02
+num_iters <- 3000
+log_fit <- log_train(log_design,log_theta,log_targets,learn_rate,num_iters)
+```
+
+```
+## iter:  1 cost:  0.6582674 
+## iter:  1000 cost:  0.4469503 
+## iter:  2000 cost:  0.3773433 
+## iter:  3000 cost:  0.3408168
+```
+
+```r
+log_fit$Coefs
+```
+
+```
+##                 [,1]
+## Intercept -3.8281563
+## studied    0.4802045
+## slept      0.3435157
+```
+
+```r
+plot(log_fit$Costs,type="l",col="blue")
+```
+
+<img src="02-Linear-Algorithms_files/figure-html/log-results-1.png" width="672" />
+
+```r
+predictions <- log_predict(log_design,log_fit$Coefs)
+classifications <- boundary(predictions)
+fit_accuracy <- log_accuracy(classifications,log_targets)
+fit_accuracy
+```
+
+```
+## [1] 0.91
+```
+
+
+```r
+plot(predictions,col=color_vec)
+abline(h=0.5,lty=2)
+title("Actual Classification vs Predicted Probability")
+legend("topright",c("Pass","Fail"),col=c("orange","blue"),pch=c(1,1),horiz = TRUE)
+```
+
+<img src="02-Linear-Algorithms_files/figure-html/log-res-plot-1.png" width="672" />
+
+#### Exercises {-}
+1. Tune the iterations and the learning rate and attempt to improve the model accuracy.
+2. Run the command ``test_log <- glm(passed~slept+studied,family = 'binomial',data=log_data)``
+3. Compare the cost and accuracy of ``test_log`` with ``log_fit``.
 
 ## Linear Discriminant Analysis
 
