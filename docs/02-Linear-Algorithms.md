@@ -663,9 +663,259 @@ legend("topright",c("Pass","Fail"),col=c("orange","blue"),pch=c(1,1),horiz = TRU
 
 ## Linear Discriminant Analysis
 
+Another method to classify target variables is to use linear discriminant analysis (LDA). Similar to logistic regression we want to find $Pr(Y=k|X=x)$. Simply put, we want to determine the probability that the target variable $Y$ maps to $K \geq 2$ classes given a value $X=x$. Using Bayes theorem, we can find this probability by
+
+$$
+Pr(Y=k|X=x) = p_k(x) =  \frac{\pi_kf_k(x)}{\sum_{l=1}^{K}\pi_lf_l(x)}
+$$
+
+Where $\pi_k$ is the probability of $Y=k$ and $f_k(x)$ is the likelihood function of $P(X=x|Y=k)$. In most cases $f_k(x)$ is assumed to be Normal with mean $\mu_k$ and standard deviation $\sigma_k$.  
+
+A reasonable question to ask is why we would use LDA when we could use logistic regression? There are a few reasons:
+
+1. Logistic regression is for binary classification. You will need to use LDA and other non-linear variants for more than two classes.
+2. Logistic regression parameter estimates are brittle with well-separated classes. LDA is more robust to this type of data.
+3. Logistic regression is also brittle with small samples. LDA performs better especially if the predictors are approximately normally distributed. See @brownlee2017mlmastery and @james2013introduction for more details. 
+
+### LDA Intuition {-}
+
+Figure \@ref(fig:normal-lda), adapted from @james2013introduction, shows the fundamental principle of LDA. On the left are two normal densities. The dashed vertical line indicates the Bayes decision boundary for classification of new data. In this example, an observation's classification is green if its value is less than zero and red otherwise. On the right are 20 observations drawn from each class. The solid vertical line is the LDA boundary while the dashed vertical line is the Bayes decision boundary. Thus, we can observe that the LDA boundary will vary from the Bayes decision boundary. Also, we can note that some observations will overlap between classes.    
+
+<div class="figure" style="text-align: center">
+<img src="img/stat-learn-4.4.png" alt="Normal densities with a Bayes decsion boundry adapted from James et al. (2013)." width="90%" />
+<p class="caption">(\#fig:normal-lda)Normal densities with a Bayes decsion boundry adapted from James et al. (2013).</p>
+</div>
 
 
+Investigating this overlap deeper, Figure \@ref(fig:lda-groups), adapted from @kuhn2013applied, shows the goal of LDA. Mostly, the purpose of LDA is to determine a boundary that maximizes the variance between groups of data  
+
+<div class="figure" style="text-align: center">
+<img src="img/applied-pred-Ch12Fig06.png" alt="A comparison of between and within group variance adapted from Kuhn and Johnson (2013)." width="90%" />
+<p class="caption">(\#fig:lda-groups)A comparison of between and within group variance adapted from Kuhn and Johnson (2013).</p>
+</div>
+
+### LDA Estimates for One Predictor {-}
+
+When we have only one predictor, we want to obtain estimates for $f_k(x)$ and $p_k(x)$ and classify an observation for into a class in which $p_k(x)$ has the greatest value. As stated previously, we will assume $f_k(x)$ is Gaussian which means
+
+$$
+f_k(x) = \frac{1}{\sqrt{2\pi\sigma_k}}exp\left(-\frac{1}{2\sigma_k^{2}}\left(x-\mu_k\right)^2\right)
+$$
+
+where $\mu_k$ and $\sigma_k^{2}$ are the mean and variance for class $k$. We will also assume the variance is the same for all $K$ classes which means $\sigma_1^{2} = \dots = \sigma_k^{2}$ [@james2013introduction]. Using these assumptions our Bayes formulation is now
+
+\begin{align}
+p_k(x) &=  \frac{\pi_kf_k(x)}{\sum_{l=1}^{K}\pi_lf_l(x)}\\
+&= \frac{\pi_k\frac{1}{\sqrt{2\pi\sigma}}exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2\right)}{\sum_{l=1}^{K}\pi_l\frac{1}{\sqrt{2\pi\sigma}}exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_l\right)^2\right)}
+\end{align}
+
+To determine which class has the highest likelihood for a particular observation, we will convert $p_k(x)$ into a scoring function $\delta_k(x)$ which is called the discriminant scoring function. The key to understanding the derivation of $\delta_k(x)$ is that we will keep only the parameters that affect the maximum classification probability and ignore those parameters that are constant for all $K$ classes. 
+
+$$
+p_k(x) =  \frac{\pi_k\frac{1}{\sqrt{2\pi\sigma}}exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2\right)}{\sum_{l=1}^{K}\pi_l\frac{1}{\sqrt{2\pi\sigma}}exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_l\right)^2\right)}
+$$
+
+Observing the original form of $p_k(x)$ we notice that the denominator is the same for all classes so we can safely ignore it. 
+
+$$
+p_k^{'}(x) =  \pi_k\frac{1}{\sqrt{2\pi\sigma}}exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2\right)
+$$
+
+Next we will take the log of $p_k^{'}(x)$
+
+$$
+p_k^{''}(x) =  ln(\pi_k) + ln\left(\frac{1}{\sqrt{2\pi\sigma}}\right) + ln\left(exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2\right)\right)
+$$
+
+Using the similar logic we used previously, we notice the $ln\left(\frac{1}{\sqrt{2\pi\sigma}}\right)$ term is constant across all $K$ classes, and we can omit this term.
+
+\begin{align}
+p_k^{'''}(x) &=  ln(\pi_k) + ln\left(exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2\right)\right)\\
+&= ln(\pi_k) + -\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2 \\
+&= ln(\pi_k) + -\frac{1}{2\sigma^2}\left(x^2-2x\mu_k+\mu_k^{2}\right) \\
+&= ln(\pi_k) -\frac{x^2}{2\sigma^2}+\frac{x\mu_k}{\sigma^2}-\frac{\mu_k^{2}}{2\sigma^2} \\
+\end{align}
+
+We can eliminate the $-\frac{x^2}{2\sigma^2}$ term since it is constant across all $K$ classes leaving us with a final value of
+
+$$
+\delta_k(x) = \frac{x\mu_k}{\sigma^2}-\frac{\mu_k^{2}}{2\sigma^2} + ln(\pi_k)
+$$
+
+In practice, the parameters $\mu_k$, $\sigma_k^{2}$ and $\pi_k$ are estimated from the data by the following methods:
+
+\begin{align}
+\hat{\pi_k} &= \frac{n_k}{n}\\
+\hat{\mu_k} &= \frac{1}{n_k}\sum_{i:y_i=k}x_i\\
+\hat{\sigma^{2}} &= \frac{1}{n-K}\sum_{k=1}^{K}\sum_{i:y_i=k}(x-\hat{\mu_k})^2
+\end{align}
+
+To get a little more insight into this discriminant scoring function, suppose $K=2$ and $\pi_1 = \pi_2$, then we will assign an observation to class 1 if $2x(\mu_1 - \mu_2) = \mu_1^{2} - \mu_2^{2}$ and class 2 otherwise. Also the Bayes decision boundary will be set at
+
+\begin{align}
+2x(\mu_1 - \mu_2) &= \mu_1^{2} - \mu_2^{2}\\
+x &= \frac{\mu_1^{2} - \mu_2^{2}}{2(\mu_1 - \mu_2)}\\
+x &= \frac{\mu_1 + \mu_2}{2}
+\end{align}
 
 
+### LDA With Miltiple Predictors {-}
+
+For this case, we assume that $X = (X_1,X_2, \dots, X_p)$ are drawn from a multivariate Gaussian distribution. Thus the density function $f_k(x)$ will take the form
+
+$$
+f_k(x) = \frac{1}{(2\pi)^{p/2}|\Sigma|^{1/2}}exp\left(-\frac{1}{2}(x-\mu_k)^T\Sigma^{-1}(x-\mu_k)\right)
+$$
+
+The main difference here than the one predictor model is the common covariance matrix $\Sigma$. Performing the same algebra as previous, now using matrices, the discriminant function $\delta_k(x)$ becomes
+
+$$
+\delta_k(x) = x^T\Sigma^{-1}\mu_k-\frac{1}{2}\mu_k^{T}\Sigma^{-1}\mu_k+log(\pi_k)
+$$
+
+## Practical Exercise
+
+This contrived example consists of normally distributed values for data separated into two distinct classes as shown by the plot below.
+
+### Data {-}
+
+```r
+lda_data <- read.csv("data/lda-toy.csv",header=TRUE)
+head(lda_data)
+```
+
+```
+##          x y
+## 1 4.667798 0
+## 2 5.509199 0
+## 3 4.702792 0
+## 4 5.956707 0
+## 5 5.738622 0
+## 6 5.027283 0
+```
+
+```r
+col_vec <- ifelse(lda_data$y==0,"orange","blue")
+plot(1:40,lda_data$x,xlab = "predictor",ylab = "value", col = col_vec)
+```
+
+<img src="02-Linear-Algorithms_files/figure-html/unnamed-chunk-1-1.png" width="672" />
 
 
+### LDA Scoring
+We will score each $x$ value and determine is score using the discriminat scoring function $\delta_k(x)$. Afterwards, we will predict a class for the scored value and compare it to the actual class value $y$.
+
+
+```r
+num_class <- 2
+ldazero_index <- which(lda_data$y==0)
+prob_zero <- length(lda_data$y[ldazero_index])/length(lda_data$y)
+prob_zero
+```
+
+```
+## [1] 0.5
+```
+
+```r
+prob_one <- length(lda_data$y[-ldazero_index])/length(lda_data$y)
+prob_one
+```
+
+```
+## [1] 0.5
+```
+
+```r
+mu_zero <- sum(lda_data$x[ldazero_index])/length(lda_data$x[ldazero_index])
+mu_zero
+```
+
+```
+## [1] 4.975416
+```
+
+```r
+mu_one <- sum(lda_data$x[-ldazero_index])/length(lda_data$x[-ldazero_index])
+mu_one
+```
+
+```
+## [1] 20.08706
+```
+
+```r
+squaredev_zero <- sum((lda_data$x[ldazero_index]-mu_zero)^2)
+squaredev_one <- sum((lda_data$x[-ldazero_index]-mu_one)^2)
+squaredev_zero
+```
+
+```
+## [1] 10.15823
+```
+
+```r
+squaredev_one
+```
+
+```
+## [1] 21.49317
+```
+
+```r
+lda_var <- 1/(length(lda_data$x) - num_class) * sum(squaredev_one,squaredev_zero)
+lda_var
+```
+
+```
+## [1] 0.8329315
+```
+
+Now we create the discriminant scoring function
+
+```r
+disc_score <- function(x,mu,sigma,prob){
+ res <- (x*(mu/sigma)) - (mu^2/(2*sigma)) + log(prob)
+ res
+}
+disc_score(lda_data$x[1],mu_zero,lda_var,prob_zero)
+```
+
+```
+## [1] 12.32936
+```
+
+```r
+disc_score(lda_data$x[1],mu_one,lda_var,prob_one)
+```
+
+```
+## [1] -130.3349
+```
+
+Finally we will make predictions and compare them to our training set data
+
+
+```r
+score_zero <- disc_score(lda_data$x,mu_zero,lda_var,prob_zero)
+score_one <- disc_score(lda_data$x,mu_one,lda_var,prob_one)
+preds <- numeric(length(lda_data$x))
+for(i in seq_along(preds)){
+  if(score_zero[i] > score_one[i]){
+    next
+  }
+  else{
+    preds[i] <- 1
+  }
+}
+table(lda_data$y,preds)
+```
+
+```
+##    preds
+##      0  1
+##   0 20  0
+##   1  0 20
+```
+
+An examination of the table shows that we achieved 100% accuracy. 

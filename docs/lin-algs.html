@@ -25,7 +25,7 @@
 <meta name="author" content="Cardy Moten III">
 
 
-<meta name="date" content="2018-02-05">
+<meta name="date" content="2018-02-12">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -134,7 +134,15 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="2.2.2" data-path="lin-algs.html"><a href="lin-algs.html#multiple-linear-regression-2"><i class="fa fa-check"></i><b>2.2.2</b> Multiple Linear Regression</a></li>
 <li class="chapter" data-level="2.2.3" data-path="lin-algs.html"><a href="lin-algs.html#logistic-regression-2"><i class="fa fa-check"></i><b>2.2.3</b> Logistic Regression</a></li>
 </ul></li>
-<li class="chapter" data-level="2.3" data-path="lin-algs.html"><a href="lin-algs.html#linear-discriminant-analysis"><i class="fa fa-check"></i><b>2.3</b> Linear Discriminant Analysis</a></li>
+<li class="chapter" data-level="2.3" data-path="lin-algs.html"><a href="lin-algs.html#linear-discriminant-analysis"><i class="fa fa-check"></i><b>2.3</b> Linear Discriminant Analysis</a><ul>
+<li class="chapter" data-level="" data-path="lin-algs.html"><a href="lin-algs.html#lda-intuition"><i class="fa fa-check"></i>LDA Intuition</a></li>
+<li class="chapter" data-level="" data-path="lin-algs.html"><a href="lin-algs.html#lda-estimates-for-one-predictor"><i class="fa fa-check"></i>LDA Estimates for One Predictor</a></li>
+<li class="chapter" data-level="" data-path="lin-algs.html"><a href="lin-algs.html#lda-with-miltiple-predictors"><i class="fa fa-check"></i>LDA With Miltiple Predictors</a></li>
+</ul></li>
+<li class="chapter" data-level="2.4" data-path="lin-algs.html"><a href="lin-algs.html#practical-exercise"><i class="fa fa-check"></i><b>2.4</b> Practical Exercise</a><ul>
+<li class="chapter" data-level="" data-path="lin-algs.html"><a href="lin-algs.html#data-3"><i class="fa fa-check"></i>Data</a></li>
+<li class="chapter" data-level="2.4.1" data-path="lin-algs.html"><a href="lin-algs.html#lda-scoring"><i class="fa fa-check"></i><b>2.4.1</b> LDA Scoring</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="3" data-path="non-lin-algs.html"><a href="non-lin-algs.html"><i class="fa fa-check"></i><b>3</b> Non-linear Algorithms</a></li>
 <li class="chapter" data-level="4" data-path="ens-algs.html"><a href="ens-algs.html"><i class="fa fa-check"></i><b>4</b> Ensemble Algorithms</a></li>
@@ -667,7 +675,166 @@ fit_accuracy</code></pre></div>
 </div>
 <div id="linear-discriminant-analysis" class="section level2">
 <h2><span class="header-section-number">2.3</span> Linear Discriminant Analysis</h2>
+<p>Another method to classify target variables is to use linear discriminant analysis (LDA). Similar to logistic regression we want to find <span class="math inline">\(Pr(Y=k|X=x)\)</span>. Simply put, we want to determine the probability that the target variable <span class="math inline">\(Y\)</span> maps to <span class="math inline">\(K \geq 2\)</span> classes given a value <span class="math inline">\(X=x\)</span>. Using Bayes theorem, we can find this probability by</p>
+<p><span class="math display">\[
+Pr(Y=k|X=x) = p_k(x) =  \frac{\pi_kf_k(x)}{\sum_{l=1}^{K}\pi_lf_l(x)}
+\]</span></p>
+<p>Where <span class="math inline">\(\pi_k\)</span> is the probability of <span class="math inline">\(Y=k\)</span> and <span class="math inline">\(f_k(x)\)</span> is the likelihood function of <span class="math inline">\(P(X=x|Y=k)\)</span>. In most cases <span class="math inline">\(f_k(x)\)</span> is assumed to be Normal with mean <span class="math inline">\(\mu_k\)</span> and standard deviation <span class="math inline">\(\sigma_k\)</span>.</p>
+<p>A reasonable question to ask is why we would use LDA when we could use logistic regression? There are a few reasons:</p>
+<ol style="list-style-type: decimal">
+<li>Logistic regression is for binary classification. You will need to use LDA and other non-linear variants for more than two classes.</li>
+<li>Logistic regression parameter estimates are brittle with well-separated classes. LDA is more robust to this type of data.</li>
+<li>Logistic regression is also brittle with small samples. LDA performs better especially if the predictors are approximately normally distributed. See <span class="citation">Brownlee (<a href="#ref-brownlee2017mlmastery">2017</a>)</span> and <span class="citation">James et al. (<a href="#ref-james2013introduction">2013</a>)</span> for more details.</li>
+</ol>
+<div id="lda-intuition" class="section level3 unnumbered">
+<h3>LDA Intuition</h3>
+<p>Figure <a href="lin-algs.html#fig:normal-lda">2.5</a>, adapted from <span class="citation">James et al. (<a href="#ref-james2013introduction">2013</a>)</span>, shows the fundamental principle of LDA. On the left are two normal densities. The dashed vertical line indicates the Bayes decision boundary for classification of new data. In this example, an observation’s classification is green if its value is less than zero and red otherwise. On the right are 20 observations drawn from each class. The solid vertical line is the LDA boundary while the dashed vertical line is the Bayes decision boundary. Thus, we can observe that the LDA boundary will vary from the Bayes decision boundary. Also, we can note that some observations will overlap between classes.</p>
+<div class="figure" style="text-align: center"><span id="fig:normal-lda"></span>
+<img src="img/stat-learn-4.4.png" alt="Normal densities with a Bayes decsion boundry adapted from James et al. (2013)." width="90%" />
+<p class="caption">
+Figure 2.5: Normal densities with a Bayes decsion boundry adapted from James et al. (2013).
+</p>
+</div>
+<p>Investigating this overlap deeper, Figure <a href="lin-algs.html#fig:lda-groups">2.6</a>, adapted from <span class="citation">Kuhn and Johnson (<a href="#ref-kuhn2013applied">2013</a>)</span>, shows the goal of LDA. Mostly, the purpose of LDA is to determine a boundary that maximizes the variance between groups of data</p>
+<div class="figure" style="text-align: center"><span id="fig:lda-groups"></span>
+<img src="img/applied-pred-Ch12Fig06.png" alt="A comparison of between and within group variance adapted from Kuhn and Johnson (2013)." width="90%" />
+<p class="caption">
+Figure 2.6: A comparison of between and within group variance adapted from Kuhn and Johnson (2013).
+</p>
+</div>
+</div>
+<div id="lda-estimates-for-one-predictor" class="section level3 unnumbered">
+<h3>LDA Estimates for One Predictor</h3>
+<p>When we have only one predictor, we want to obtain estimates for <span class="math inline">\(f_k(x)\)</span> and <span class="math inline">\(p_k(x)\)</span> and classify an observation for into a class in which <span class="math inline">\(p_k(x)\)</span> has the greatest value. As stated previously, we will assume <span class="math inline">\(f_k(x)\)</span> is Gaussian which means</p>
+<p><span class="math display">\[
+f_k(x) = \frac{1}{\sqrt{2\pi\sigma_k}}exp\left(-\frac{1}{2\sigma_k^{2}}\left(x-\mu_k\right)^2\right)
+\]</span></p>
+<p>where <span class="math inline">\(\mu_k\)</span> and <span class="math inline">\(\sigma_k^{2}\)</span> are the mean and variance for class <span class="math inline">\(k\)</span>. We will also assume the variance is the same for all <span class="math inline">\(K\)</span> classes which means <span class="math inline">\(\sigma_1^{2} = \dots = \sigma_k^{2}\)</span> <span class="citation">(James et al. <a href="#ref-james2013introduction">2013</a>)</span>. Using these assumptions our Bayes formulation is now</p>
+<span class="math display">\[\begin{align}
+p_k(x) &amp;=  \frac{\pi_kf_k(x)}{\sum_{l=1}^{K}\pi_lf_l(x)}\\
+&amp;= \frac{\pi_k\frac{1}{\sqrt{2\pi\sigma}}exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2\right)}{\sum_{l=1}^{K}\pi_l\frac{1}{\sqrt{2\pi\sigma}}exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_l\right)^2\right)}
+\end{align}\]</span>
+<p>To determine which class has the highest likelihood for a particular observation, we will convert <span class="math inline">\(p_k(x)\)</span> into a scoring function <span class="math inline">\(\delta_k(x)\)</span> which is called the discriminant scoring function. The key to understanding the derivation of <span class="math inline">\(\delta_k(x)\)</span> is that we will keep only the parameters that affect the maximum classification probability and ignore those parameters that are constant for all <span class="math inline">\(K\)</span> classes.</p>
+<p><span class="math display">\[
+p_k(x) =  \frac{\pi_k\frac{1}{\sqrt{2\pi\sigma}}exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2\right)}{\sum_{l=1}^{K}\pi_l\frac{1}{\sqrt{2\pi\sigma}}exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_l\right)^2\right)}
+\]</span></p>
+<p>Observing the original form of <span class="math inline">\(p_k(x)\)</span> we notice that the denominator is the same for all classes so we can safely ignore it.</p>
+<p><span class="math display">\[
+p_k^{&#39;}(x) =  \pi_k\frac{1}{\sqrt{2\pi\sigma}}exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2\right)
+\]</span></p>
+<p>Next we will take the log of <span class="math inline">\(p_k^{&#39;}(x)\)</span></p>
+<p><span class="math display">\[
+p_k^{&#39;&#39;}(x) =  ln(\pi_k) + ln\left(\frac{1}{\sqrt{2\pi\sigma}}\right) + ln\left(exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2\right)\right)
+\]</span></p>
+<p>Using the similar logic we used previously, we notice the <span class="math inline">\(ln\left(\frac{1}{\sqrt{2\pi\sigma}}\right)\)</span> term is constant across all <span class="math inline">\(K\)</span> classes, and we can omit this term.</p>
+<span class="math display">\[\begin{align}
+p_k^{&#39;&#39;&#39;}(x) &amp;=  ln(\pi_k) + ln\left(exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2\right)\right)\\
+&amp;= ln(\pi_k) + -\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2 \\
+&amp;= ln(\pi_k) + -\frac{1}{2\sigma^2}\left(x^2-2x\mu_k+\mu_k^{2}\right) \\
+&amp;= ln(\pi_k) -\frac{x^2}{2\sigma^2}+\frac{x\mu_k}{\sigma^2}-\frac{\mu_k^{2}}{2\sigma^2} \\
+\end{align}\]</span>
+<p>We can eliminate the <span class="math inline">\(-\frac{x^2}{2\sigma^2}\)</span> term since it is constant across all <span class="math inline">\(K\)</span> classes leaving us with a final value of</p>
+<p><span class="math display">\[
+\delta_k(x) = \frac{x\mu_k}{\sigma^2}-\frac{\mu_k^{2}}{2\sigma^2} + ln(\pi_k)
+\]</span></p>
+<p>In practice, the parameters <span class="math inline">\(\mu_k\)</span>, <span class="math inline">\(\sigma_k^{2}\)</span> and <span class="math inline">\(\pi_k\)</span> are estimated from the data by the following methods:</p>
+<span class="math display">\[\begin{align}
+\hat{\pi_k} &amp;= \frac{n_k}{n}\\
+\hat{\mu_k} &amp;= \frac{1}{n_k}\sum_{i:y_i=k}x_i\\
+\hat{\sigma^{2}} &amp;= \frac{1}{n-K}\sum_{k=1}^{K}\sum_{i:y_i=k}(x-\hat{\mu_k})^2
+\end{align}\]</span>
+<p>To get a little more insight into this discriminant scoring function, suppose <span class="math inline">\(K=2\)</span> and <span class="math inline">\(\pi_1 = \pi_2\)</span>, then we will assign an observation to class 1 if <span class="math inline">\(2x(\mu_1 - \mu_2) = \mu_1^{2} - \mu_2^{2}\)</span> and class 2 otherwise. Also the Bayes decision boundary will be set at</p>
+<span class="math display">\[\begin{align}
+2x(\mu_1 - \mu_2) &amp;= \mu_1^{2} - \mu_2^{2}\\
+x &amp;= \frac{\mu_1^{2} - \mu_2^{2}}{2(\mu_1 - \mu_2)}\\
+x &amp;= \frac{\mu_1 + \mu_2}{2}
+\end{align}\]</span>
+</div>
+<div id="lda-with-miltiple-predictors" class="section level3 unnumbered">
+<h3>LDA With Miltiple Predictors</h3>
+<p>For this case, we assume that <span class="math inline">\(X = (X_1,X_2, \dots, X_p)\)</span> are drawn from a multivariate Gaussian distribution. Thus the density function <span class="math inline">\(f_k(x)\)</span> will take the form</p>
+<p><span class="math display">\[
+f_k(x) = \frac{1}{(2\pi)^{p/2}|\Sigma|^{1/2}}exp\left(-\frac{1}{2}(x-\mu_k)^T\Sigma^{-1}(x-\mu_k)\right)
+\]</span></p>
+<p>The main difference here than the one predictor model is the common covariance matrix <span class="math inline">\(\Sigma\)</span>. Performing the same algebra as previous, now using matrices, the discriminant function <span class="math inline">\(\delta_k(x)\)</span> becomes</p>
+<p><span class="math display">\[
+\delta_k(x) = x^T\Sigma^{-1}\mu_k-\frac{1}{2}\mu_k^{T}\Sigma^{-1}\mu_k+log(\pi_k)
+\]</span></p>
+</div>
+</div>
+<div id="practical-exercise" class="section level2">
+<h2><span class="header-section-number">2.4</span> Practical Exercise</h2>
+<p>This contrived example consists of normally distributed values for data separated into two distinct classes as shown by the plot below.</p>
+<div id="data-3" class="section level3 unnumbered">
+<h3>Data</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lda_data &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/lda-toy.csv&quot;</span>,<span class="dt">header=</span><span class="ot">TRUE</span>)
+<span class="kw">head</span>(lda_data)</code></pre></div>
+<pre><code>##          x y
+## 1 4.667798 0
+## 2 5.509199 0
+## 3 4.702792 0
+## 4 5.956707 0
+## 5 5.738622 0
+## 6 5.027283 0</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">col_vec &lt;-<span class="st"> </span><span class="kw">ifelse</span>(lda_data<span class="op">$</span>y<span class="op">==</span><span class="dv">0</span>,<span class="st">&quot;orange&quot;</span>,<span class="st">&quot;blue&quot;</span>)
+<span class="kw">plot</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">40</span>,lda_data<span class="op">$</span>x,<span class="dt">xlab =</span> <span class="st">&quot;predictor&quot;</span>,<span class="dt">ylab =</span> <span class="st">&quot;value&quot;</span>, <span class="dt">col =</span> col_vec)</code></pre></div>
+<p><img src="02-Linear-Algorithms_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+</div>
+<div id="lda-scoring" class="section level3">
+<h3><span class="header-section-number">2.4.1</span> LDA Scoring</h3>
+<p>We will score each <span class="math inline">\(x\)</span> value and determine is score using the discriminat scoring function <span class="math inline">\(\delta_k(x)\)</span>. Afterwards, we will predict a class for the scored value and compare it to the actual class value <span class="math inline">\(y\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">num_class &lt;-<span class="st"> </span><span class="dv">2</span>
+ldazero_index &lt;-<span class="st"> </span><span class="kw">which</span>(lda_data<span class="op">$</span>y<span class="op">==</span><span class="dv">0</span>)
+prob_zero &lt;-<span class="st"> </span><span class="kw">length</span>(lda_data<span class="op">$</span>y[ldazero_index])<span class="op">/</span><span class="kw">length</span>(lda_data<span class="op">$</span>y)
+prob_zero</code></pre></div>
+<pre><code>## [1] 0.5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">prob_one &lt;-<span class="st"> </span><span class="kw">length</span>(lda_data<span class="op">$</span>y[<span class="op">-</span>ldazero_index])<span class="op">/</span><span class="kw">length</span>(lda_data<span class="op">$</span>y)
+prob_one</code></pre></div>
+<pre><code>## [1] 0.5</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mu_zero &lt;-<span class="st"> </span><span class="kw">sum</span>(lda_data<span class="op">$</span>x[ldazero_index])<span class="op">/</span><span class="kw">length</span>(lda_data<span class="op">$</span>x[ldazero_index])
+mu_zero</code></pre></div>
+<pre><code>## [1] 4.975416</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mu_one &lt;-<span class="st"> </span><span class="kw">sum</span>(lda_data<span class="op">$</span>x[<span class="op">-</span>ldazero_index])<span class="op">/</span><span class="kw">length</span>(lda_data<span class="op">$</span>x[<span class="op">-</span>ldazero_index])
+mu_one</code></pre></div>
+<pre><code>## [1] 20.08706</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">squaredev_zero &lt;-<span class="st"> </span><span class="kw">sum</span>((lda_data<span class="op">$</span>x[ldazero_index]<span class="op">-</span>mu_zero)<span class="op">^</span><span class="dv">2</span>)
+squaredev_one &lt;-<span class="st"> </span><span class="kw">sum</span>((lda_data<span class="op">$</span>x[<span class="op">-</span>ldazero_index]<span class="op">-</span>mu_one)<span class="op">^</span><span class="dv">2</span>)
+squaredev_zero</code></pre></div>
+<pre><code>## [1] 10.15823</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">squaredev_one</code></pre></div>
+<pre><code>## [1] 21.49317</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lda_var &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">/</span>(<span class="kw">length</span>(lda_data<span class="op">$</span>x) <span class="op">-</span><span class="st"> </span>num_class) <span class="op">*</span><span class="st"> </span><span class="kw">sum</span>(squaredev_one,squaredev_zero)
+lda_var</code></pre></div>
+<pre><code>## [1] 0.8329315</code></pre>
+<p>Now we create the discriminant scoring function</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">disc_score &lt;-<span class="st"> </span><span class="cf">function</span>(x,mu,sigma,prob){
+ res &lt;-<span class="st"> </span>(x<span class="op">*</span>(mu<span class="op">/</span>sigma)) <span class="op">-</span><span class="st"> </span>(mu<span class="op">^</span><span class="dv">2</span><span class="op">/</span>(<span class="dv">2</span><span class="op">*</span>sigma)) <span class="op">+</span><span class="st"> </span><span class="kw">log</span>(prob)
+ res
+}
+<span class="kw">disc_score</span>(lda_data<span class="op">$</span>x[<span class="dv">1</span>],mu_zero,lda_var,prob_zero)</code></pre></div>
+<pre><code>## [1] 12.32936</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">disc_score</span>(lda_data<span class="op">$</span>x[<span class="dv">1</span>],mu_one,lda_var,prob_one)</code></pre></div>
+<pre><code>## [1] -130.3349</code></pre>
+<p>Finally we will make predictions and compare them to our training set data</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">score_zero &lt;-<span class="st"> </span><span class="kw">disc_score</span>(lda_data<span class="op">$</span>x,mu_zero,lda_var,prob_zero)
+score_one &lt;-<span class="st"> </span><span class="kw">disc_score</span>(lda_data<span class="op">$</span>x,mu_one,lda_var,prob_one)
+preds &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="kw">length</span>(lda_data<span class="op">$</span>x))
+<span class="cf">for</span>(i <span class="cf">in</span> <span class="kw">seq_along</span>(preds)){
+  <span class="cf">if</span>(score_zero[i] <span class="op">&gt;</span><span class="st"> </span>score_one[i]){
+    <span class="cf">next</span>
+  }
+  <span class="cf">else</span>{
+    preds[i] &lt;-<span class="st"> </span><span class="dv">1</span>
+  }
+}
+<span class="kw">table</span>(lda_data<span class="op">$</span>y,preds)</code></pre></div>
+<pre><code>##    preds
+##      0  1
+##   0 20  0
+##   1  0 20</code></pre>
+<p>An examination of the table shows that we achieved 100% accuracy.</p>
 
+</div>
 </div>
 </div>
 <h3>References</h3>
@@ -680,6 +847,12 @@ fit_accuracy</code></pre></div>
 </div>
 <div id="ref-brownlee2017mlmastery">
 <p>Brownlee, Jason. 2017. <em>Master Machine Learning Algorithms</em>. <a href="https://machinelearningmastery.com/master-machine-learning-algorithms/" class="uri">https://machinelearningmastery.com/master-machine-learning-algorithms/</a>.</p>
+</div>
+<div id="ref-james2013introduction">
+<p>James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. 2013. <em>An Introduction to Statistical Learning</em>. Springer. <a href="http://www-bcf.usc.edu/~gareth/ISL/ISLR%20Seventh%20Printing.pdf">http://www-bcf.usc.edu/~gareth/ISL/ISLR%20Seventh%20Printing.pdf</a>.</p>
+</div>
+<div id="ref-kuhn2013applied">
+<p>Kuhn, Max, and Kjell Johnson. 2013. <em>Applied Predictive Modeling</em>. Vol. 26. Springer.</p>
 </div>
 </div>
             </section>
