@@ -206,7 +206,8 @@ y\ =\ h\left(x\right)\ =\ \sum_{i=1}^Nw_ix_i\ +\ b\ +\ \epsilon
 <p>In order to optimize the weight and the bias variable, we need to optimize the cost (loss) function. For linear regression this function, <span class="math inline">\(J\left(w,b\right)\)</span> is the Mean Squared Error (MSE) and we can calculate it by:</p>
 <p><span class="math display">\[
 MSE\ =\ J\left(w,b\right)\ =\ \frac{1}{m}\sum_{i=1}^m\left(y_i-\left(wx_i+b\right)\right)^2
-\]</span> Since we are adjusting the cost function by the weight and the bias parameters, we must take the partial derivative with respect to each of these to calculate the gradient.</p>
+\]</span></p>
+<p>Since we are adjusting the cost function by the weight and the bias parameters, we must take the partial derivative with respect to each of these to calculate the gradient.</p>
 <p><span class="math display">\[
 J&#39;\left(w,b\right)\ =
 \begin{bmatrix}
@@ -228,15 +229,15 @@ J&#39;\left(w,b\right)\ =
 h_{\theta}\left(x\right) &amp;=\theta_0\ +\ \theta_1x_1\ +\ \dots\ +\ \theta_nx_n\\
 h\left(x\right)\ &amp;=\ \sum_{i=0}^n\theta_ix_i\ =\ \theta^Tx
 \end{align}
-\]</span></p>
-<p>The cost function is:</p>
+\]</span>The cost function is:</p>
 <p><span class="math display">\[
 J\left(\theta\right)\ =\ \frac{1}{2m}\sum_{i=1}^m\left(h_{\theta}(x^{\left(i\right)})-y^{\left(i\right)}\right)^2
 \]</span></p>
 <p>In matrix form, the cost function becomes</p>
 <p><span class="math display">\[
 J\left(\theta\right)\ =\ \frac{1}{2m}\left(X\theta\ -\ y\right)^T\left(X\theta-y\right)
-\]</span> where <span class="math inline">\(X\)</span> is a <span class="math inline">\(m\ \times\ n\)</span> design matrix, <span class="math inline">\(\theta\)</span> is a <span class="math inline">\(n\ \times\ 1\)</span> parameter matrix and <span class="math inline">\(y\)</span> is a <span class="math inline">\(m\ \times\ 1\)</span> vector of observed targets.</p>
+\]</span></p>
+<p>where <span class="math inline">\(X\)</span> is a <span class="math inline">\(m\ \times\ n\)</span> design matrix, <span class="math inline">\(\theta\)</span> is a <span class="math inline">\(n\ \times\ 1\)</span> parameter matrix and <span class="math inline">\(y\)</span> is a <span class="math inline">\(m\ \times\ 1\)</span> vector of observed targets.</p>
 <p>Taking the derivative with respect to <span class="math inline">\(\theta\)</span> yields:</p>
 <p><span class="math display">\[
 J&#39;\left(\theta\right)\ =\ \frac{1}{m}X^T\left(X\theta-y\right)
@@ -255,7 +256,8 @@ h_{\theta}\left(x\right)\ =\ g\left(\theta^Tx\right)\ =\ \frac{1}{1+e^{-\theta^T
 <p>and</p>
 <p><span class="math display">\[
 g\left(z\right)\ =\ \frac{1}{1+e^{-z}}
-\]</span> The above equation is called a sigmoid or logistic function. Essentially, we first perform a linear regression on the weights and bias and then feed that predicted value into the sigmoid function to map a real value between 0 and 1.</p>
+\]</span></p>
+<p>The above equation is called a sigmoid or logistic function. Essentially, we first perform a linear regression on the weights and bias and then feed that predicted value into the sigmoid function to map a real value between 0 and 1.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sigmoid &lt;-<span class="st"> </span><span class="cf">function</span>(z){
   res &lt;-<span class="st"> </span><span class="dv">1</span> <span class="op">/</span><span class="st"> </span>(<span class="dv">1</span> <span class="op">+</span><span class="st"> </span><span class="kw">exp</span>(<span class="op">-</span>z))
   res
@@ -273,10 +275,12 @@ P\left(y\ =\ 1|x;\theta\right)\ &amp;=\ h_{\theta}\left(x\right)\\
 P\left(y\ =\ 0\ |x;\theta\right)\ &amp;=\ 1-h_{\theta}\left(x\right)\\
 P\left(y|x;\theta\right)\ &amp;=\ \left(h_{\theta}\left(x\right)\right)^y\left(1-h_{\theta}\left(x\right)\right)^{1-y}
 \end{align}
-\]</span> We now can find the log cross-entropy cost by:</p>
+\]</span></p>
+<p>We now can find the log cross-entropy cost by:</p>
 <p><span class="math display">\[
 J\left(\theta\right)\ =\ -\frac{1}{m}\sum_{i=0}^m\left[y^{\left(i\right)}\log\left(h_{\theta}(x^{\left(i\right)})\right)\ +\ \left(1-y^{\left(i\right)}\right)\log\left(1-h_{\theta}(x^{\left(i\right)})\right)\right]
-\]</span> where <span class="math inline">\(h_\theta(x)\)</span> is the sigmoid function.</p>
+\]</span></p>
+<p>where <span class="math inline">\(h_\theta(x)\)</span> is the sigmoid function.</p>
 <p>When taking the derivative with respect to <span class="math inline">\(\theta\)</span>, recall that <span class="math inline">\(g&#39;\left(z\right)\ =\ g\left(z\right)\left(1-g\left(z\right)\right)\)</span>. Thus,</p>
 <p><span class="math display">\[
 \begin{align}
