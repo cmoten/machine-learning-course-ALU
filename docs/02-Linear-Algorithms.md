@@ -12,7 +12,10 @@ One of the most common concepts for all machine learning algorithms is optimizat
 
 Before discussing the gradient descent algorithm, let's review the linear regression. Recall the general linear regression equation is:
 
-$$y = h(x) =  \sum_{i=1}^{N}w_ix_i + b + \epsilon$$
+$$
+y\ =\ h\left(x\right)\ =\ \sum_{i=1}^Nw_ix_i\ +\ b\ +\ \epsilon
+$$
+
 
 where $y$ is the target variable, $x$ is the feature variables, $w_i$ are the weights of the $i$th feature variable, $b$ is the bias, and $\epsilon$ is the irreducible error. We use machine learning algorithms to estimate the bias and the weights of the feature variables. 
 
@@ -20,22 +23,23 @@ where $y$ is the target variable, $x$ is the feature variables, $w_i$ are the we
 
 #### Simple Linear Regression {-}
 
-In order to optimize the weight and the bias variable, we need to optimize the cost (loss) function. For linear regression this function, $J(w,b)$ is the Mean Squared Error (MSE) and we can calculate it by:
+In order to optimize the weight and the bias variable, we need to optimize the cost (loss) function. For linear regression this function, $J\left(w,b\right)$ is the Mean Squared Error (MSE) and we can calculate it by:
 
-$$MSE = J(w,b) = \frac{1}{m}\sum_{i = 1}^{m}\left(y_i - \left(wx_i+b\right)\right)^2$$
-
+$$
+MSE\ =\ J\left(w,b\right)\ =\ \frac{1}{m}\sum_{i=1}^m\left(y_i-\left(wx_i+b\right)\right)^2
+$$
 Since we are adjusting the cost function by the weight and the bias parameters, we must take the partial derivative with respect to each of these to calculate the gradient.
 
 $$
-J'(w,b) = 
+J'\left(w,b\right)\ =
 \begin{bmatrix}
 \frac{\partial J}{\partial w}\\
 \frac{\partial J}{\partial b}
 \end{bmatrix}
 =
 \begin{bmatrix}
-\frac{1}{m}\sum-2*x_i(y_i - (wx_i + b)) = \delta_w\\
-\frac{1}{m}\sum-2*(y_i - (wx_i + b)) = \delta_b
+\frac{1}{m}\sum-2\cdot x_i\left(y_i-\left(wx_i+b\right)\right)\ =\ \delta_w\\
+\frac{1}{m}\sum_{ }^{ }-2\cdot\left(y_i-\left(wx_i+b\right)\right)\ =\ \delta_b
 \end{bmatrix}
 $$
 
@@ -45,28 +49,28 @@ For multiple linear regression, we introduce a parameter matrix $\theta$ that co
 
 $$
 \begin{align}
-h_\theta(x) &= \theta_0 + \theta_1x_1 + \dots + \theta_nx_n\\
-h(x) &= \sum_{i=0}^{n} \theta_ix_i = \theta^Tx
+h_{\theta}\left(x\right) &=\theta_0\ +\ \theta_1x_1\ +\ \dots\ +\ \theta_nx_n\\
+h\left(x\right)\ &=\ \sum_{i=0}^n\theta_ix_i\ =\ \theta^Tx
 \end{align}
 $$
 
 The cost function is:
 
 $$
-J(\theta) = \frac{1}{2m}\sum_{i=1}^{m} \left(h_\theta(x^{(i)})-y^{(i)}\right)^2
+J\left(\theta\right)\ =\ \frac{1}{2m}\sum_{i=1}^m\left(h_{\theta}(x^{\left(i\right)})-y^{\left(i\right)}\right)^2
 $$
 
 In matrix form, the cost function becomes
 
 $$
-J(\theta) = \frac{1}{2m}(X\theta - y)^T(X\theta-y)
+J\left(\theta\right)\ =\ \frac{1}{2m}\left(X\theta\ -\ y\right)^T\left(X\theta-y\right)
 $$
-where $X$ is a $m \times n$ design matrix, $\theta$ is a $n \times 1$ parameter matrix and $y$ is a $m \times 1$ vector of observed targets.
+where $X$ is a $m\ \times\ n$ design matrix, $\theta$ is a $n\ \times\ 1$ parameter matrix and $y$ is a $m\ \times\ 1$ vector of observed targets.
 
 Taking the derivative with respect to $\theta$ yields:
 
 $$
-J'(\theta) = \frac{1}{m}X^T(X\theta - y)
+J'\left(\theta\right)\ =\ \frac{1}{m}X^T\left(X\theta-y\right)
 $$
 
 See the video below for an example derivation of the derivative of the cost matrix:
@@ -78,13 +82,13 @@ See the video below for an example derivation of the derivative of the cost matr
 Another application of the gradient descent algorithm is for logistic regression. Recall that we use logistic regression when the target variable is categorical, and there are only two possible classifications. We show the general equation as
 
 $$
-h_\theta(x) = g(\theta^Tx) = \frac{1}{1 + e^{-\theta^Tx}}
+h_{\theta}\left(x\right)\ =\ g\left(\theta^Tx\right)\ =\ \frac{1}{1+e^{-\theta^Tx}}
 $$
 
 and
 
 $$
-g(z) = \frac{1}{1 + e^{-z}}
+g\left(z\right)\ =\ \frac{1}{1+e^{-z}}
 $$
 The above equation is called a sigmoid or logistic function. Essentially, we first perform a linear regression on the weights and bias and then feed that predicted value into the sigmoid function to map a real value between 0 and 1. 
 
@@ -105,30 +109,28 @@ The cost function for logistic regression will differ now, that the function  we
 
 $$
 \begin{align}
-P(y=1|x;\theta) &= h_\theta(x)\\
-P(y=0|x;\theta) &= 1-h_\theta(x)\\
-P(y|x;\theta) &= \left(h_\theta(x)\right)^y\left(1-h_\theta(x)\right)^{1-y}
+P\left(y\ =\ 1|x;\theta\right)\ &=\ h_{\theta}\left(x\right)\\
+P\left(y\ =\ 0\ |x;\theta\right)\ &=\ 1-h_{\theta}\left(x\right)\\
+P\left(y|x;\theta\right)\ &=\ \left(h_{\theta}\left(x\right)\right)^y\left(1-h_{\theta}\left(x\right)\right)^{1-y}
 \end{align}
 $$
 We now can find the log cross-entropy cost by:
 
 $$
-J(\theta) = -\frac{1}{m}\sum_{i=0}^m\left[y^{(i)}log(h_\theta(x^{(i)}))+(1-y^{(i)})log(1-h_\theta(x^{(i)})\right]
+J\left(\theta\right)\ =\ -\frac{1}{m}\sum_{i=0}^m\left[y^{\left(i\right)}\log\left(h_{\theta}(x^{\left(i\right)})\right)\ +\ \left(1-y^{\left(i\right)}\right)\log\left(1-h_{\theta}(x^{\left(i\right)})\right)\right]
 $$
 where $h_\theta(x)$ is the sigmoid function. 
 
-When taking the derivative with respect to $\theta$, recall that $g'(z) = g(z)(1-g(z))$. Thus,
+When taking the derivative with respect to $\theta$, recall that $g'\left(z\right)\ =\ g\left(z\right)\left(1-g\left(z\right)\right)$. Thus,
 
 $$
 \begin{align}
-J'(\theta) &= \frac{\partial}{\partial\theta_j}-\frac{1}{m}\sum_{i=0}^m\left[y^{(i)}log(h_\theta(x^{(i)}))+(1-y^{(i)})log(1-h_\theta(x^{(i)})\right]\\
-&= -\frac{1}{m}\left(y\frac{1}{g(\theta^Tx)}-(1-y)\frac{1}{1-g(\theta^Tx)}\right)\frac{\partial}{\partial\theta_j}g(\theta^Tx)\\
-&=-\frac{1}{m}\left(y\frac{1}{g(\theta^Tx)}-(1-y)\frac{1}{1-g(\theta^Tx)}\right)g(\theta^Tx)(1-g(\theta^Tx))\frac{\partial}{\partial\theta_j}\theta^Tx\\
-&=-\frac{1}{m}\left(y(1-g(\theta^Tx)-(1-y)g(\theta^Tx)\right)x_j\\
-&=-\frac{1}{m}\left(y(1-g(\theta^Tx)-(1-y)g(\theta^Tx)\right)x_j\\
-&= -\frac{1}{m}\left(y-g(\theta^Tx)\right)x_j\\
-&=\frac{1}{m}\left(g(\theta^Tx)-y\right)x_j\\
-&=\frac{1}{m}\left(h_\theta(x)-y\right)x_j\\
+J'\left(\theta\right)\ &=\ \frac{\partial}{\partial J}-\frac{1}{m}\sum_{i=0}^m\left[y^{\left(i\right)}\log\left(h_{\theta}(x^{\left(i\right)})\right)\ +\ \left(1-y^{\left(i\right)}\right)\log\left(1-h_{\theta}(x^{\left(i\right)})\right)\right]\\
+&=-\frac{1}{m}\left(y\frac{1}{g\left(\theta^Tx\right)}-\left(1-y\right)\frac{1}{1-g\left(\theta^Tx\right)}\right)\frac{\partial}{\partial\theta_j}g\left(\theta^Tx\right)\\
+&=-\frac{1}{m}\left(y\frac{1}{g\left(\theta^Tx\right)}-\left(1-y\right)\frac{1}{1-g\left(\theta^Tx\right)}\right)g\left(\theta^Tx\right)\left(1-g\left(\theta^Tx\right)\right)\frac{\partial}{\partial\theta_j}\theta^Tx\\
+&=-\frac{1}{m}\left(y\left(1-g\left(\theta^Tx\right)\right)-\left(1-y\right)g\left(\theta^Tx\right)\right)x_j\\
+&=-\frac{1}{m}\left(y-g\left(\theta^Tx\right)\right)x_j\\
+&=\frac{1}{m}\left(h_{\theta}\left(x\right)-y\right)x_j\\
 \end{align}
 $$
 
@@ -143,9 +145,9 @@ Finally, to solve for the optimal weight and bias, we will add a learning parame
 The algorithm we will use is:
 
 $$
-\text{Repat until convergence } \{\\
-w := w -  \alpha\delta_w\\
-b := b - \alpha\delta_b\\
+\text{Repeat until convergence } \{\\
+w\ :=\ w-\alpha\delta_w\\
+b\ :=\ b\ -\ \alpha\delta_b\\
 \}
 $$
 
@@ -155,18 +157,18 @@ For multiple linear regression the algorithm changes to:
 
 $$
 \text{Repat until convergence } \{\\
-\theta_j := \theta_j - \alpha \frac{1}{m}\sum_{i=1}^{m}\left(h_\theta(x^{(i)}-y^{(i)}\right)x_{j}^{(i)}\\
+\theta_j\ :=\ \theta_j-\alpha\frac{1}{m}\sum_{i=1}^m\left(h_{\theta}(x^{\left(i\right)})-y^{\left(i\right)}\right)x_j^{\left(i\right)}\\
 \}
 $$
 
-In this algorithm we are simultaneously updating the weights, $\theta_j$, for all $j\in{(0,\dots,n)}$. Recall that $\theta_0$ is the bias term and $x_0^{1}=1$.
+In this algorithm we are simultaneously updating the weights, $\theta_j$, for all $j\ \in\left(0,\dots,n\right)$. Recall that $\theta_0$ is the bias term and $x_0^1\ =\ 1$.
 
 In matrix form, our algorithm will look like this:
 
 $$
 \text{Repat until convergence } \{\\
-\delta = \frac{1}{m}X^T(X\theta - y)\\
-\theta:=\theta-\alpha\delta\\
+\delta=\ \frac{1}{m}X^T\left(X\theta-y\right)\\
+\theta:=\ \theta-\alpha\delta\\
 \}
 $$
 
@@ -175,8 +177,8 @@ The matrix form of the stochastic gradient descent algorithm has the form:
 
 $$
 \text{Repat until convergence } \{\\
-\delta = \frac{1}{m}X^T(sigmoid(X\theta) - y)\\
-\theta:=\theta-\alpha\delta\\
+\delta=\ \frac{1}{m}X^T\left(sigmoid\left(X\theta\right)-y\right)\\
+\theta:=\ \theta-\alpha\delta\\
 \}
 $$
 
@@ -663,13 +665,13 @@ legend("topright",c("Pass","Fail"),col=c("orange","blue"),pch=c(1,1),horiz = TRU
 
 ## Linear Discriminant Analysis
 
-Another method to classify target variables is to use linear discriminant analysis (LDA). Similar to logistic regression we want to find $Pr(Y=k|X=x)$. Simply put, we want to determine the probability that the target variable $Y$ maps to $K \geq 2$ classes given a value $X=x$. Using Bayes theorem, we can find this probability by
+Another method to classify target variables is to use linear discriminant analysis (LDA). Similar to logistic regression we want to find $\Pr\left(Y\ =\ k\ |X\ =\ x\right)$. Simply put, we want to determine the probability that the target variable $Y$ maps to $K\ \ge\ 2$ classes given a value $X\ =\ x$. Using Bayes theorem, we can find this probability by
 
 $$
-Pr(Y=k|X=x) = p_k(x) =  \frac{\pi_kf_k(x)}{\sum_{l=1}^{K}\pi_lf_l(x)}
+\Pr\left(Y\ =\ k\ |X\ =\ x\right)\ =\ p_k\left(x\right)\ =\ \frac{\pi_kf_k\left(x\right)}{\sum_{l=1}^K\pi_lf_l\left(x\right)}
 $$
 
-Where $\pi_k$ is the probability of $Y=k$ and $f_k(x)$ is the likelihood function of $P(X=x|Y=k)$. In most cases $f_k(x)$ is assumed to be Normal with mean $\mu_k$ and standard deviation $\sigma_k$.  
+Where $\pi_k$ is the probability of $Y=k$ and $f_k(x)$ is the likelihood function of $P\left(X\ =\ x\ |Y\ =\ k\right)$. In most cases $f_k(x)$ is assumed to be Normal with mean $\mu_k$ and standard deviation $\sigma_k$.  
 
 A reasonable question to ask is why we would use LDA when we could use logistic regression? There are a few reasons:
 
@@ -699,78 +701,85 @@ Investigating this overlap deeper, Figure \@ref(fig:lda-groups), adapted from @k
 When we have only one predictor, we want to obtain estimates for $f_k(x)$ and $p_k(x)$ and classify an observation for into a class in which $p_k(x)$ has the greatest value. As stated previously, we will assume $f_k(x)$ is Gaussian which means
 
 $$
-f_k(x) = \frac{1}{\sqrt{2\pi\sigma_k}}exp\left(-\frac{1}{2\sigma_k^{2}}\left(x-\mu_k\right)^2\right)
+f\left(x\right)\ =\ \frac{1}{\sqrt{2\pi\sigma_k}}\exp\left(-\frac{1}{2\sigma_k^2}\left(x-\mu_k\right)^2\right)
 $$
 
-where $\mu_k$ and $\sigma_k^{2}$ are the mean and variance for class $k$. We will also assume the variance is the same for all $K$ classes which means $\sigma_1^{2} = \dots = \sigma_k^{2}$ [@james2013introduction]. Using these assumptions our Bayes formulation is now
+where $\mu_k$ and $\sigma_k^{2}$ are the mean and variance for class $k$. We will also assume the variance is the same for all $K$ classes which means $\sigma_1^2\ =\ \dots\ =\ \sigma_k^2$ [@james2013introduction]. Using these assumptions our Bayes formulation is now
 
+$$
 \begin{align}
-p_k(x) &=  \frac{\pi_kf_k(x)}{\sum_{l=1}^{K}\pi_lf_l(x)}\\
-&= \frac{\pi_k\frac{1}{\sqrt{2\pi\sigma}}exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2\right)}{\sum_{l=1}^{K}\pi_l\frac{1}{\sqrt{2\pi\sigma}}exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_l\right)^2\right)}
+p_k\left(x\right)\ &=\ \frac{\pi_kf_k\left(x\right)}{\sum_{l=1}^K\pi_lf_l\left(x\right)}\\
+&= \frac{\pi_k\frac{1}{\sqrt{2\pi\sigma}}\exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2\right)}{\sum_{l=1}^K\pi_l\frac{1}{\sqrt{2\pi\sigma}}\exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_l\right)^2\right)}
 \end{align}
+$$
 
 To determine which class has the highest likelihood for a particular observation, we will convert $p_k(x)$ into a scoring function $\delta_k(x)$ which is called the discriminant scoring function. The key to understanding the derivation of $\delta_k(x)$ is that we will keep only the parameters that affect the maximum classification probability and ignore those parameters that are constant for all $K$ classes. 
 
 $$
-p_k(x) =  \frac{\pi_k\frac{1}{\sqrt{2\pi\sigma}}exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2\right)}{\sum_{l=1}^{K}\pi_l\frac{1}{\sqrt{2\pi\sigma}}exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_l\right)^2\right)}
+p_k\left(x\right)\ =\ \frac{\pi_{k\ }\frac{1}{\sqrt{2\pi\sigma}}\exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2\right)}{\sum_{l=1}^K\pi_l\frac{1}{\sqrt{2\pi\sigma}}\exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_l\right)^2\right)\ }
 $$
 
 Observing the original form of $p_k(x)$ we notice that the denominator is the same for all classes so we can safely ignore it. 
 
 $$
-p_k^{'}(x) =  \pi_k\frac{1}{\sqrt{2\pi\sigma}}exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2\right)
+p_k^{'}\left(x\right)\ =\ \pi_k\frac{1}{\sqrt{2\pi\sigma}}\exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2\right)
 $$
 
 Next we will take the log of $p_k^{'}(x)$
 
 $$
-p_k^{''}(x) =  ln(\pi_k) + ln\left(\frac{1}{\sqrt{2\pi\sigma}}\right) + ln\left(exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2\right)\right)
+p_k^{''}\left(x\right)\ =\ \ln\left(\pi_k\right)\ +\ \ln\left(\frac{1}{\sqrt{2\pi\sigma}}\right)\ +\ \ln\left(\exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2\right)\right)
 $$
 
 Using the similar logic we used previously, we notice the $ln\left(\frac{1}{\sqrt{2\pi\sigma}}\right)$ term is constant across all $K$ classes, and we can omit this term.
 
+$$
 \begin{align}
-p_k^{'''}(x) &=  ln(\pi_k) + ln\left(exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2\right)\right)\\
-&= ln(\pi_k) + -\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2 \\
-&= ln(\pi_k) + -\frac{1}{2\sigma^2}\left(x^2-2x\mu_k+\mu_k^{2}\right) \\
-&= ln(\pi_k) -\frac{x^2}{2\sigma^2}+\frac{x\mu_k}{\sigma^2}-\frac{\mu_k^{2}}{2\sigma^2} \\
+p_k^{'''}\ &=\ \ln\left(\pi_k\right)\ +\ \ln\left(\exp\left(-\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2\right)\right)\\
+&=\ \ln\left(\pi_k\right)\ +\ -\frac{1}{2\sigma^2}\left(x-\mu_k\right)^2\\
+&=\ \ln\left(\pi_k\right)\ +\ -\frac{1}{2\sigma^2}\left(x^2\ -\ 2x\mu_k\ +\ \mu_k^2\right)\\
+&=\ \ln\left(\pi_k\right)\ -\frac{x^2}{2\sigma^2}\ +\ \frac{2x\mu_k}{2\sigma^2}\ -\ \frac{\mu_k^2}{2\sigma^2}
 \end{align}
+$$
 
 We can eliminate the $-\frac{x^2}{2\sigma^2}$ term since it is constant across all $K$ classes leaving us with a final value of
 
 $$
-\delta_k(x) = \frac{x\mu_k}{\sigma^2}-\frac{\mu_k^{2}}{2\sigma^2} + ln(\pi_k)
+\delta_k\left(x\right)\ =\ \frac{x\mu_k}{\sigma^2}\ -\ \frac{\mu_k^2}{2\sigma^2}\ +\ \ln\left(\pi_k\right)
 $$
 
 In practice, the parameters $\mu_k$, $\sigma_k^{2}$ and $\pi_k$ are estimated from the data by the following methods:
 
+$$
 \begin{align}
-\hat{\pi_k} &= \frac{n_k}{n}\\
-\hat{\mu_k} &= \frac{1}{n_k}\sum_{i:y_i=k}x_i\\
-\hat{\sigma^{2}} &= \frac{1}{n-K}\sum_{k=1}^{K}\sum_{i:y_i=k}(x-\hat{\mu_k})^2
+\hat{\pi_k}\ &=\ \frac{n_k}{n}\\
+\hat{\mu_k}\ &=\ \frac{1}{n_k}\sum_{i:y_i=k}^{ }x_i\\
+\hat{\sigma^2}\ &=\ \frac{1}{n-K}\sum_{k=1}^K\sum_{i:y_i=k}^{ }\left(x-\hat{\mu_k}\right)^2
 \end{align}
+$$
 
-To get a little more insight into this discriminant scoring function, suppose $K=2$ and $\pi_1 = \pi_2$, then we will assign an observation to class 1 if $2x(\mu_1 - \mu_2) = \mu_1^{2} - \mu_2^{2}$ and class 2 otherwise. Also the Bayes decision boundary will be set at
+To get a little more insight into this discriminant scoring function, suppose $K\ =\ 2$ and $\pi_1\ =\ \pi_2$, then we will assign an observation to class 1 if $2x(\mu_1 - \mu_2)\ =\ \mu_1^{2}\ - \mu_2^{2}$ and class 2 otherwise. Also the Bayes decision boundary will be set at
 
+$$
 \begin{align}
-2x(\mu_1 - \mu_2) &= \mu_1^{2} - \mu_2^{2}\\
-x &= \frac{\mu_1^{2} - \mu_2^{2}}{2(\mu_1 - \mu_2)}\\
-x &= \frac{\mu_1 + \mu_2}{2}
+2x\left(\mu_1\ -\ \mu_2\right)\ &=\ \mu_1^2\ -\ \mu_2^2\\
+x\ &=\ \frac{\mu_1^2\ -\ \mu_2^2}{2\left(\mu_1\ -\ \mu_2\right)}\\
+x\ &=\ \frac{\mu_1\ +\ \mu_2}{2}
 \end{align}
-
+$$
 
 ### LDA With Miltiple Predictors {-}
 
 For this case, we assume that $X = (X_1,X_2, \dots, X_p)$ are drawn from a multivariate Gaussian distribution. Thus the density function $f_k(x)$ will take the form
 
 $$
-f_k(x) = \frac{1}{(2\pi)^{p/2}|\Sigma|^{1/2}}exp\left(-\frac{1}{2}(x-\mu_k)^T\Sigma^{-1}(x-\mu_k)\right)
+f_k\left(x\right)\ =\ \frac{1}{\left(2\pi\right)^{\frac{p}{2}}\left|\Sigma\right|^{\frac{1}{2}}}\exp\left(-\frac{1}{2}\left(x-\mu_k\right)^T\Sigma^{-1}\left(x-\mu_k\right)\right)
 $$
 
 The main difference here than the one predictor model is the common covariance matrix $\Sigma$. Performing the same algebra as previous, now using matrices, the discriminant function $\delta_k(x)$ becomes
 
 $$
-\delta_k(x) = x^T\Sigma^{-1}\mu_k-\frac{1}{2}\mu_k^{T}\Sigma^{-1}\mu_k+log(\pi_k)
+\delta_k\left(x\right)\ =\ x^T\Sigma^{-1}\mu_k\ -\frac{1}{2}\mu_k^T\Sigma^{-1}\mu_k+\log\left(\pi_k\right)
 $$
 
 ## Practical Exercise
@@ -802,7 +811,7 @@ plot(1:40,lda_data$x,xlab = "predictor",ylab = "value", col = col_vec)
 <img src="02-Linear-Algorithms_files/figure-html/unnamed-chunk-1-1.png" width="672" />
 
 
-### LDA Scoring
+### LDA Scoring {-}
 We will score each $x$ value and determine is score using the discriminat scoring function $\delta_k(x)$. Afterwards, we will predict a class for the scored value and compare it to the actual class value $y$.
 
 
