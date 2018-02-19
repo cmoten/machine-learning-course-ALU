@@ -148,6 +148,7 @@ library(AppliedPredictiveModeling)
 library(rpart)
 library(caret)
 library(partykit)
+library(mlbench)
 ```
 
 #### Regression Tree {-}
@@ -210,15 +211,16 @@ knitr::include_graphics('img/final-cart-plot.png')
 
 #### Classification Tree {-}
 
-For this exercise, we will use the ``spam`` data from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/spambase). Click the link for a description of the dataset. In this exercise, we will build a classification tree that will classify an email as "spam" (1) or "not spam" (0) from a set of input features based on characteristics of the email. 
+For this exercise, we will use the ``PimaIndianDiabetes2`` data from the ``mlbench`` package based on the dataset from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/pima+indians+diabetes). Click the link for a description of the dataset. In this exercise, we will build a classification tree that will classify a person as "pos" or "neg" for diabetes from a set of input features based on personal characteristics. 
 
 ##### Data {-}
 
-I already created a training and test dataset from the original data.
+I already created a training and test dataset from the original data. There are some missing values, so we will only use the complete cases for this example since the algorithms won't work with missing data. 
 
-```{r,cart-spam}
-spam_train <- read.table("data/spam-train.txt",header=TRUE)
-str(spam_train[,c(1:10,49:58)])
+```{r,cart-pima}
+pima_train <- read.csv("data/pima-train.csv",header=TRUE)
+pima_train <- pima_train[complete.cases(pima_train),]
+str(pima_train)
 ```
 
 ##### Create and Analyze Classification Tree {-}
@@ -228,27 +230,27 @@ str(spam_train[,c(1:10,49:58)])
 #Gini Index
 set.seed(33)
 train_ctrl <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
-gini_tune <- train(as.factor(spam) ~., data = spam_train, method = "rpart",
+gini_tune <- train(as.factor(diabetes) ~., data = pima_train, method = "rpart",
                    trControl=train_ctrl,
                    tuneLength = 10, 
                    parms=list(split='gini'))
 gini_tune
 
-spam_gini_model <- rpart(as.factor(spam) ~., data = spam_train,
+pima_gini_model <- rpart(as.factor(diabetes) ~., data = pima_train,
                     cp = .004)
-spam_gini_tree <- as.party(spam_gini_model)
+pima_gini_tree <- as.party(pima_gini_model)
 
 #Information Index
 set.seed(33)
-info_tune <- train(as.factor(spam) ~., data = spam_train, method = "rpart",
+info_tune <- train(as.factor(diabetes) ~., data = pima_train, method = "rpart",
                    trControl=train_ctrl,
                    tuneLength = 10, 
                    parms=list(split='information'))
 info_tune
 
-spam_info_model <- rpart(as.factor(spam)~., data = spam_train,
+pima_info_model <- rpart(as.factor(diabetes)~., data = pima_train,
                          cp = .004)
-spam_info_tree <- as.party(spam_info_model)
+pima_info_tree <- as.party(pima_info_model)
 ```
 
  
@@ -291,7 +293,7 @@ Another aspect of the Naive Bayes method is the distribution of the features. A 
 
 ### Practical Exerecise
 
-We will use the spam data for this exercise.
+We will use the Pima data for this exercise.
 
 #### Naive Bayes Model {-}
 We will use the ``naiveBayes`` function from the ``klaR`` package along with the ``caret`` package. 
@@ -299,18 +301,90 @@ We will use the ``naiveBayes`` function from the ``klaR`` package along with the
 ```{r,naive-bayes,message=FALSE,warning=FALSE}
 set.seed(33)
 library(klaR)
-nb_tune <- train(as.factor(spam) ~ ., 
-         data=spam_train,
+nb_tune <- train(as.factor(diabetes) ~ ., 
+         data=pima_train,
          method = "nb",
          trControl = trainControl(method="none"),
          tuneGrid = data.frame(fL=0, usekernel=FALSE, adjust=1))
-nb_preds <- predict(nb_tune,spam_train,type = "raw")
-confusionMatrix(nb_preds,as.factor(spam_train$spam))
+nb_preds <- predict(nb_tune,pima_train,type = "raw")
+confusionMatrix(nb_preds,as.factor(pima_train$diabetes))
 ```
 
 ## k-Nearest Neigbors
 
+The basic idea of the $k$-nearest neighbors (KNN) algorithm is to create a distance matrix of the all the feature variables and choose the $k$ most adjacent data points closest to an evaluated point. Since KNN uses the entire dataset, no learning is necessary from the algorithm. The primary choice of the modeler is what decision metric to use. The primary parameter used is a variation of the Minkowski distance metric. You can compute this metric by
+
+\[
+\left(\sum_{i=1}^{P}\vert x_{ai} - x_{bi} \vert^q\right)^\frac{1}{q}
+\]
+
+where $\mathbf{x_a}$ and $\mathbf{x_b}$ are two sample points in the dataset. When $q\ =\ 1$ this distance metric is the Manhattan (city-block) distance, and when $q\ =\ 2$ this distance is the Euclidean distance. You will use Euclidean distance for continuous predictors and Manhattan distance for categorical or binary predictors. 
+
+### Curse of Dimensionality {-}
+
+Just like other machine learning methods the KNN method has its disadvantages. One disadvantage deals with high dimensional data. In essence, distances in higher dimensions are larger which ultimately mean that similar points are not necessarily local to each other. Figure \@ref(fig:knn-curse) demonstrates this problem. The figure on the left shows a unit hypercube with a sub-cube that captures a fraction of the data of the original hypercube. The sub-figure on the right shows how much of the range of each coordinate you need to capture within the sub-cube. For instance, if you want to capture 10% of the data, you will need to capture 80% of the range of coordinates for a 10-dimension dataset. This percentage increases exponentially with additional dimensions. 
+
+```{r knn-curse, echo=FALSE,fig.asp=.7, fig.width=6, fig.cap='Illustration of dimensionality curse adapted from Hastie, Tibshirani, and Friedman (2009.', fig.align='center', out.width='90%'}
+knitr::include_graphics('img/knn-curse.png')
+```
+
 ### Practical Exerecise
+
+#### Regression {-}
+
+##### Data {-}
+We will use the solubility data for this exercise.
+
+```{r,knn-data}
+knn_data <- solTrainXtrans[,-nearZeroVar(solTrainXtrans)]
+```
+
+##### Create the model {-}
+```{r,knn-reg}
+set.seed(100)
+knn_reg_model <- train(knn_data,
+                       solTrainY,
+                       method = "knn",
+                       #Center and scaling will occur for new predictors
+                       preProc = c("center", "scale"),
+                       tuneGrid = data.frame(.k = 1:20),
+                       trControl = trainControl(method = "cv")
+                       )
+knn_reg_model$finalModel
+```
+
+The final model selected was a model based on a value of $k\ =\ 4$. Figure \@ref(fig:knn-reg-plot) shows graphically why this model was the best of the 20 analyzed. 
+
+```{r knn-reg-plot, echo=FALSE,fig.asp=.7, fig.width=6, fig.cap='Plots of RMSE and RSquared for values of k.', fig.align='center', out.width='90%'}
+knitr::include_graphics('img/knn-reg-plot.png')
+```
+
+#### Classification {-}
+We will again use the Pima data.
+
+```{r, knn-class}
+set.seed(202)
+pima_knn <- train(as.factor(diabetes)~.,
+                  data = pima_train,
+                  method = "knn",
+                  metric = "ROC",
+                  preProc = c("center", "scale"),
+                  tuneGrid = data.frame(.k=1:50),
+                  trControl = trainControl(method = "cv",
+                                           classProbs = TRUE,
+                                           summaryFunction = twoClassSummary))
+pima_knn$finalModel
+```
+
+
+The final model was computed from a total of $k\ =\ 27$ neighbors and a comparison of the ROC metric for each neighbor is shown in Figure \@ref(fig:knn-class-plot).
+
+```{r knn-class-plot, echo=FALSE,fig.asp=.7, fig.width=6, fig.cap='Receiver-Operator Characteristic (ROC) curve results.', fig.align='center', out.width='90%'}
+knitr::include_graphics('img/knn-class-plot.png')
+```
+
+#### Exercise {-}
+Create a new KNN model using only three predictor variables for the Pima data and compare those results to the current KNN model. Use the plot from the regression tree as a guide to determine which variables to choose. 
 
 ## Support Vector Machines
 

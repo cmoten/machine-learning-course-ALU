@@ -153,6 +153,7 @@ library(AppliedPredictiveModeling)
 library(rpart)
 library(caret)
 library(partykit)
+library(mlbench)
 ```
 
 #### Regression Tree {-}
@@ -303,40 +304,30 @@ Figure \@ref(fig:cart-plot) displays the final results that we can use for inter
 
 #### Classification Tree {-}
 
-For this exercise, we will use the ``spam`` data from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/spambase). Click the link for a description of the dataset. In this exercise, we will build a classification tree that will classify an email as "spam" (1) or "not spam" (0) from a set of input features based on characteristics of the email. 
+For this exercise, we will use the ``PimaIndianDiabetes2`` data from the ``mlbench`` package based on the dataset from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/pima+indians+diabetes). Click the link for a description of the dataset. In this exercise, we will build a classification tree that will classify a person as "pos" or "neg" for diabetes from a set of input features based on personal characteristics. 
 
 ##### Data {-}
 
-I already created a training and test dataset from the original data.
+I already created a training and test dataset from the original data. There are some missing values, so we will only use the complete cases for this example since the algorithms won't work with missing data. 
 
 
 ```r
-spam_train <- read.table("data/spam-train.txt",header=TRUE)
-str(spam_train[,c(1:10,49:58)])
+pima_train <- read.csv("data/pima-train.csv",header=TRUE)
+pima_train <- pima_train[complete.cases(pima_train),]
+str(pima_train)
 ```
 
 ```
-## 'data.frame':	3682 obs. of  20 variables:
-##  $ word_freq_make            : num  0 0.21 0.06 0 0 0.06 0 0 0 0 ...
-##  $ word_freq_address         : num  0.64 0.28 0 0 0 0.12 0 0.69 0 0.42 ...
-##  $ word_freq_all             : num  0.64 0.5 0.71 0 0 0.77 0 0.34 0 0.42 ...
-##  $ word_freq_3d              : num  0 0 0 0 0 0 0 0 0 0 ...
-##  $ word_freq_our             : num  0.32 0.14 1.23 0.63 1.88 0.19 0 0.34 0.9 1.27 ...
-##  $ word_freq_over            : num  0 0.28 0.19 0 0 0.32 0 0 0 0 ...
-##  $ word_freq_remove          : num  0 0.21 0.19 0.31 0 0.38 0.96 0 0.9 0.42 ...
-##  $ word_freq_internet        : num  0 0.07 0.12 0.63 1.88 0 0 0 0 0 ...
-##  $ word_freq_order           : num  0 0 0.64 0.31 0 0.06 0 0 0 0 ...
-##  $ word_freq_mail            : num  0 0.94 0.25 0.63 0 0 1.92 0 0.9 1.27 ...
-##  $ char_freq_.               : num  0 0 0.01 0 0 0.04 0 0 0 0 ...
-##  $ char_freq_..1             : num  0 0.132 0.143 0.135 0.206 0.03 0 0.056 0 0.063 ...
-##  $ char_freq_..2             : num  0 0 0 0 0 0 0 0 0 0 ...
-##  $ char_freq_..3             : num  0.778 0.372 0.276 0.135 0 0.244 0.462 0.786 0 0.572 ...
-##  $ char_freq_..4             : num  0 0.18 0.184 0 0 0.081 0 0 0 0.063 ...
-##  $ char_freq_..5             : num  0 0.048 0.01 0 0 0 0 0 0 0 ...
-##  $ capital_run_length_average: num  3.76 5.11 9.82 3.54 2.45 ...
-##  $ capital_run_length_longest: int  61 101 485 40 11 43 6 61 7 55 ...
-##  $ capital_run_length_total  : int  278 1028 2259 191 49 749 21 261 25 249 ...
-##  $ spam                      : int  1 1 1 1 1 1 1 1 1 1 ...
+## 'data.frame':	311 obs. of  9 variables:
+##  $ pregnant: int  1 0 2 5 0 1 1 3 11 10 ...
+##  $ glucose : int  89 137 197 166 118 103 115 126 143 125 ...
+##  $ pressure: int  66 40 70 72 84 30 70 88 94 70 ...
+##  $ triceps : int  23 35 45 19 47 38 30 41 33 26 ...
+##  $ insulin : int  94 168 543 175 230 83 96 235 146 115 ...
+##  $ mass    : num  28.1 43.1 30.5 25.8 45.8 43.3 34.6 39.3 36.6 31.1 ...
+##  $ pedigree: num  0.167 2.288 0.158 0.587 0.551 ...
+##  $ age     : int  21 33 53 51 31 33 32 27 51 41 ...
+##  $ diabetes: Factor w/ 2 levels "neg","pos": 1 2 2 2 2 1 2 1 2 2 ...
 ```
 
 ##### Create and Analyze Classification Tree {-}
@@ -346,7 +337,7 @@ str(spam_train[,c(1:10,49:58)])
 #Gini Index
 set.seed(33)
 train_ctrl <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
-gini_tune <- train(as.factor(spam) ~., data = spam_train, method = "rpart",
+gini_tune <- train(as.factor(diabetes) ~., data = pima_train, method = "rpart",
                    trControl=train_ctrl,
                    tuneLength = 10, 
                    parms=list(split='gini'))
@@ -356,39 +347,39 @@ gini_tune
 ```
 ## CART 
 ## 
-## 3682 samples
-##   57 predictor
-##    2 classes: '0', '1' 
+## 311 samples
+##   8 predictor
+##   2 classes: 'neg', 'pos' 
 ## 
 ## No pre-processing
 ## Resampling: Cross-Validated (10 fold, repeated 3 times) 
-## Summary of sample sizes: 3314, 3314, 3314, 3314, 3314, 3314, ... 
+## Summary of sample sizes: 280, 280, 280, 280, 280, 280, ... 
 ## Resampling results across tuning parameters:
 ## 
-##   cp           Accuracy   Kappa    
-##   0.003445899  0.9081141  0.8058190
-##   0.004824259  0.9076590  0.8046889
-##   0.004996554  0.9075684  0.8043431
-##   0.007580979  0.9004158  0.7877333
-##   0.008959338  0.8977900  0.7824209
-##   0.011026878  0.8948019  0.7760678
-##   0.028945555  0.8835744  0.7519631
-##   0.048587181  0.8580420  0.6960586
-##   0.139214335  0.8024604  0.5694978
-##   0.480358374  0.6672850  0.1807224
+##   cp          Accuracy   Kappa    
+##   0.00000000  0.7790703  0.4994923
+##   0.03219107  0.7740995  0.4937550
+##   0.06438214  0.7699731  0.4670725
+##   0.09657321  0.7580735  0.4369132
+##   0.12876428  0.7591151  0.4401497
+##   0.16095535  0.7410013  0.4188441
+##   0.19314642  0.7420430  0.4219648
+##   0.22533749  0.7420430  0.4219648
+##   0.25752856  0.7420430  0.4219648
+##   0.28971963  0.7150448  0.3111903
 ## 
 ## Accuracy was used to select the optimal model using the largest value.
-## The final value used for the model was cp = 0.003445899.
+## The final value used for the model was cp = 0.
 ```
 
 ```r
-spam_gini_model <- rpart(as.factor(spam) ~., data = spam_train,
+pima_gini_model <- rpart(as.factor(diabetes) ~., data = pima_train,
                     cp = .004)
-spam_gini_tree <- as.party(spam_gini_model)
+pima_gini_tree <- as.party(pima_gini_model)
 
 #Information Index
 set.seed(33)
-info_tune <- train(as.factor(spam) ~., data = spam_train, method = "rpart",
+info_tune <- train(as.factor(diabetes) ~., data = pima_train, method = "rpart",
                    trControl=train_ctrl,
                    tuneLength = 10, 
                    parms=list(split='information'))
@@ -398,35 +389,35 @@ info_tune
 ```
 ## CART 
 ## 
-## 3682 samples
-##   57 predictor
-##    2 classes: '0', '1' 
+## 311 samples
+##   8 predictor
+##   2 classes: 'neg', 'pos' 
 ## 
 ## No pre-processing
 ## Resampling: Cross-Validated (10 fold, repeated 3 times) 
-## Summary of sample sizes: 3314, 3314, 3314, 3314, 3314, 3314, ... 
+## Summary of sample sizes: 280, 280, 280, 280, 280, 280, ... 
 ## Resampling results across tuning parameters:
 ## 
-##   cp           Accuracy   Kappa    
-##   0.003445899  0.9094686  0.8089887
-##   0.004824259  0.9047612  0.7987113
-##   0.004996554  0.9044890  0.7981798
-##   0.007580979  0.8992381  0.7872833
-##   0.008959338  0.8960683  0.7809151
-##   0.011026878  0.8947100  0.7783906
-##   0.028945555  0.8750641  0.7335340
-##   0.048587181  0.8527014  0.6836963
-##   0.139214335  0.7885197  0.5351061
-##   0.480358374  0.6613973  0.1634549
+##   cp          Accuracy   Kappa    
+##   0.00000000  0.7768907  0.5019724
+##   0.03219107  0.7720542  0.4896788
+##   0.06438214  0.7731340  0.4906999
+##   0.09657321  0.7430847  0.4352926
+##   0.12876428  0.7441263  0.4385291
+##   0.16095535  0.7366644  0.4268724
+##   0.19314642  0.7377061  0.4299930
+##   0.22533749  0.7377061  0.4299930
+##   0.25752856  0.7377061  0.4299930
+##   0.28971963  0.6912097  0.2398796
 ## 
 ## Accuracy was used to select the optimal model using the largest value.
-## The final value used for the model was cp = 0.003445899.
+## The final value used for the model was cp = 0.
 ```
 
 ```r
-spam_info_model <- rpart(as.factor(spam)~., data = spam_train,
+pima_info_model <- rpart(as.factor(diabetes)~., data = pima_train,
                          cp = .004)
-spam_info_tree <- as.party(spam_info_model)
+pima_info_tree <- as.party(pima_info_model)
 ```
 
  
@@ -471,7 +462,7 @@ Another aspect of the Naive Bayes method is the distribution of the features. A 
 
 ### Practical Exerecise
 
-We will use the spam data for this exercise.
+We will use the Pima data for this exercise.
 
 #### Naive Bayes Model {-}
 We will use the ``naiveBayes`` function from the ``klaR`` package along with the ``caret`` package. 
@@ -480,47 +471,137 @@ We will use the ``naiveBayes`` function from the ``klaR`` package along with the
 ```r
 set.seed(33)
 library(klaR)
-nb_tune <- train(as.factor(spam) ~ ., 
-         data=spam_train,
+nb_tune <- train(as.factor(diabetes) ~ ., 
+         data=pima_train,
          method = "nb",
          trControl = trainControl(method="none"),
          tuneGrid = data.frame(fL=0, usekernel=FALSE, adjust=1))
-nb_preds <- predict(nb_tune,spam_train,type = "raw")
-confusionMatrix(nb_preds,as.factor(spam_train$spam))
+nb_preds <- predict(nb_tune,pima_train,type = "raw")
+confusionMatrix(nb_preds,as.factor(pima_train$diabetes))
 ```
 
 ```
 ## Confusion Matrix and Statistics
 ## 
 ##           Reference
-## Prediction    0    1
-##          0 1233   87
-##          1  998 1364
-##                                         
-##                Accuracy : 0.7053        
-##                  95% CI : (0.6903, 0.72)
-##     No Information Rate : 0.6059        
-##     P-Value [Acc > NIR] : < 2.2e-16     
-##                                         
-##                   Kappa : 0.444         
-##  Mcnemar's Test P-Value : < 2.2e-16     
-##                                         
-##             Sensitivity : 0.5527        
-##             Specificity : 0.9400        
-##          Pos Pred Value : 0.9341        
-##          Neg Pred Value : 0.5775        
-##              Prevalence : 0.6059        
-##          Detection Rate : 0.3349        
-##    Detection Prevalence : 0.3585        
-##       Balanced Accuracy : 0.7464        
-##                                         
-##        'Positive' Class : 0             
+## Prediction neg pos
+##        neg 169  35
+##        pos  35  72
+##                                           
+##                Accuracy : 0.7749          
+##                  95% CI : (0.7244, 0.8201)
+##     No Information Rate : 0.6559          
+##     P-Value [Acc > NIR] : 3.352e-06       
+##                                           
+##                   Kappa : 0.5013          
+##  Mcnemar's Test P-Value : 1               
+##                                           
+##             Sensitivity : 0.8284          
+##             Specificity : 0.6729          
+##          Pos Pred Value : 0.8284          
+##          Neg Pred Value : 0.6729          
+##              Prevalence : 0.6559          
+##          Detection Rate : 0.5434          
+##    Detection Prevalence : 0.6559          
+##       Balanced Accuracy : 0.7507          
+##                                           
+##        'Positive' Class : neg             
 ## 
 ```
 
 ## k-Nearest Neigbors
 
+The basic idea of the $k$-nearest neighbors (KNN) algorithm is to create a distance matrix of the all the feature variables and choose the $k$ nearest data points closest to an evaluated point. Since KNN uses the entire dataset, no learning is necessary from the algorithm. The primary choice of the modeler is what decision metric to use. The primary metric used is a variation of the Minkowski distance metric. You can compute this metric by
+
+\[
+\left(\sum_{i=1}^{P}\vert x_{ai} - x_{bi} \vert^q\right)^\frac{1}{q}
+\]
+
+where $\mathbf{x_a}$ and $\mathbf{x_b}$ are two sample points in the dataset. When $q\ =\ 1$ this distance metric is the Manhattan (city-block) distance. When $q\ =\ 2$ this distance is the Eculidean distance. Generally, you will use Euclidean distance for continuous predictors and Manhattan distance for categorical or binary predictors. 
+
+### Curse of Dimensionality {-}
+
+Just like other machine learning methods the KNN method has its own disadvantages. One disadvantage deals with high dimensional data. In essence, distances in higher dimensions are larger which ultimately mean that similar points are not necessarily local to each other. Figure \@ref(fig:knn-curse) demonstrates this problem. The figure on the left shows a unit hypercube with a sub-cube that captures a fraction of the data of the original hypercube. The sub-figure on the right, shows how much of the range of each coordinate you need to capture within the sub-cube. For instance, if you want to capture 10% of the data, you will need to capture 80% of the range of coordinates for a 10-dimension dataset. This percentage increases exponentially with additional dimensions. 
+
+<div class="figure" style="text-align: center">
+<img src="img/knn-curse.png" alt="Illustration of dimensionality curse adapted from Hastie, Tibshirani, and Friedman (2009." width="90%" />
+<p class="caption">(\#fig:knn-curse)Illustration of dimensionality curse adapted from Hastie, Tibshirani, and Friedman (2009.</p>
+</div>
+
 ### Practical Exerecise
+
+#### Regression {-}
+
+##### Data {-}
+We will use the solubility data for this exercise
+
+
+```r
+knn_data <- solTrainXtrans[,-nearZeroVar(solTrainXtrans)]
+```
+
+##### Create the model {-}
+
+```r
+set.seed(100)
+knn_reg_model <- train(knn_data,
+                       solTrainY,
+                       method = "knn",
+                       #Center and scaling will occur for new predictors
+                       preProc = c("center", "scale"),
+                       tuneGrid = data.frame(.k = 1:20),
+                       trControl = trainControl(method = "cv")
+                       )
+knn_reg_model$finalModel
+```
+
+```
+## 4-nearest neighbor regression model
+```
+
+The final model selected was a model based on a value of $k\ =\ 4$. Figure \@ref(fig:knn-reg-plot) shows graphically why this model was the best of the 20 analyzed. 
+
+<div class="figure" style="text-align: center">
+<img src="img/knn-reg-plot.png" alt="Plots of RMSE and RSquared for values of k." width="90%" />
+<p class="caption">(\#fig:knn-reg-plot)Plots of RMSE and RSquared for values of k.</p>
+</div>
+
+#### Classification {-}
+We will again use the Pima data.
+
+
+```r
+set.seed(202)
+pima_knn <- train(as.factor(diabetes)~.,
+                  data = pima_train,
+                  method = "knn",
+                  metric = "ROC",
+                  preProc = c("center", "scale"),
+                  tuneGrid = data.frame(.k=1:50),
+                  trControl = trainControl(method = "cv",
+                                           classProbs = TRUE,
+                                           summaryFunction = twoClassSummary))
+pima_knn$finalModel
+```
+
+```
+## 27-nearest neighbor model
+## Training set outcome distribution:
+## 
+## neg pos 
+## 204 107
+```
+
+
+The final model was computed from a total of $k\ =\ 27$ neighbors and a comparison of the ROC metric for each neighbor is shown in Figure \@ref(fig:knn-class-plot).
+
+<div class="figure" style="text-align: center">
+<img src="img/knn-class-plot.png" alt="Receiver-Operator Characteristic (ROC) curve results." width="90%" />
+<p class="caption">(\#fig:knn-class-plot)Receiver-Operator Characteristic (ROC) curve results.</p>
+</div>
+
+#### Exercise {-}
+Create a new KNN model using only three predictor variables for the Pima data and compare those results to the current KNN model. Use the plot from the regression tree as a guide to determine which variables to choose. 
 
 ## Support Vector Machines
 
