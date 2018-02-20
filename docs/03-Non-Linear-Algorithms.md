@@ -678,11 +678,11 @@ Create a new KNN model using only three predictor variables for the Pima data an
 
 ## Support Vector Machines
 
-Support vector machines (SVM) started as a method for classification, but has extensions for regression as well. The goal of using SVM is to compute a regression line or decision boundary. 
+Support vector machines (SVM) started as a method for classification but has extensions for regression as well. The goal of using SVM is to compute a regression line or decision boundary. 
 
 ### Regression {-}
 
-For regression, the SVM seeks to minimize the cost function
+For regression, the SVM seeks to minimize the cost function.
 
 \[
 Cost\sum_{i=1}^nL_\epsilon \left(y_i - \hat{y_i}\right)\ +\ \sum_{j=1}^{P}\beta_{j}^2 
@@ -701,7 +701,7 @@ Furthermore, we transform the prediction equation for $\hat{y}$ to
 \end{align}
 \]
 
-where $\alpha_i$ is an unkown parameter estimated by the SVM algorithm. We can generalize the above equation for $\hat{y}$ even further to matrix form with
+where $\alpha_i$ is an unknown parameter estimated by the SVM algorithm. We can generalize the above equation for $\hat{y}$ even further to matrix form with
 
 \[
 f(u) = \beta_0\ +\ \sum_{i=1}^{n}\alpha_iK\left(x_i,\mathbf{u}\right)
@@ -719,7 +719,7 @@ where $K\left(\cdot\right)$ is a kernel function. For SVM, there are a few model
 \]
 
 
-To demonstrate why you would use SVM for some regression situations, examine Figure \@ref(fig:svm-regress) below. The top of the figure shows a comparison of a simple linear regression model using least squares and SVM. The item to notice in this plot is the outlier at the top left of the plot. You will notice that the least squares model is more sensitive to this value, while SVM is not. The middle plot shows the relationship of the residuals to the predictive values. What is important to note with this plot is that the grey points are values that contributed to the regression line estimation, which the values shown by the red crosses did not contribute. This is because these non-contributing values are within the $\pm\ \epsilon\ =\ 0.01$ threshold set by the modeler. We explain why this happens in a little bit. The bottom plot shows a nonlinear application of SVM to a sine wave model. Again, there are outlier values in the bottom left of the plot and the least squqres method is more sensitive to these values than SVM. The reason for this is because least squares and other regression models like logistic regression are more global in their behavior, while SVM uses more local contributions from the data for its estimations. 
+To demonstrate why you would use SVM for some regression situations, examine Figure \@ref(fig:svm-regress) below. The top of the figure shows a comparison of a simple linear regression model using least squares and SVM. The item to notice in this plot is the outlier at the top left of the plot. You will see that the least squares model is more sensitive to this value, while SVM is not. The middle plot shows the relationship of the residuals to the predictive values. What is important to note with this plot is that the grey points are values that contributed to the regression line estimation, which the values shown by the red crosses did not contribute. This lack of contribution is because these non-contributing values are within the $\pm\ \epsilon\ =\ 0.01$ threshold set by the modeler. We explain why this happens in a little bit. The bottom plot shows a nonlinear application of SVM to a sine wave model. Again, there are outlier values in the bottom left of the plot, and the least squares method is more sensitive to these values than SVM. The reason for this is because least squares and other regression models like logistic regression are more global in their behavior, while SVM uses more local contributions from the data for its estimations. 
 
 <div class="figure" style="text-align: center">
 <img src="img/applied-pred-Ch7Fig07.png" alt="Example SVM regressions compared to least squares adapted from Kuhn and Johnson (2013)" width="90%" />
@@ -727,7 +727,7 @@ To demonstrate why you would use SVM for some regression situations, examine Fig
 </div>
 
 
-As we stated previously, the samples that contribute to the calcluation of the regression curve, also called suppprt vectors, are the samples  outside of the $\epsilon$ threshold. At first, this finding may seem counterintutive, so examining Figure \@ref(fig:svm-res-models) could help with building an intuition for this. Specifically looking at the bottom right model, we can see that the residuals that are within the $\epsilon$ threshold are in fact zero and all other residuals contribute linearly to the regression equation.  
+As we stated previously, the samples that contribute to the calculation of the regression curve, also called support vectors, are the samples outside of the $\epsilon$ threshold. At first, this finding may seem counterintuitive, so examining Figure \@ref(fig:svm-res-models) could help with building an intuition for this. Specifically looking at the bottom right model, we can see that the residuals that are within the $\epsilon$ threshold are in fact zero and all other residuals contribute linearly to the regression equation.  
 
 <div class="figure" style="text-align: center">
 <img src="img/applied-pred-Ch7Fig06.png" alt="Plots of various contributions to the regression line of model residuals adapted from Kuhn and Johnson (2013)" width="90%" />
@@ -736,7 +736,7 @@ As we stated previously, the samples that contribute to the calcluation of the r
 
 ### Classification {-}
 
-For the classification version of SVM, we want to compute an optimal decision boundary between seperable and non-seperable classes or categories. Figure \@ref(fig:svm-example) shows how SVM attempts to solve this problem. On the left, you will notice two seperable classes with infinite classification boundaries. On the right, is how SVM solves this problem. Specifically a boundary called the maximum margin classifier is computed. What's special about this boundary is that the boundary itself(solid black line) has margins that are set to the closets points for each class. The result of this is that now, unlike the regression model, samples that are closest to the boundary contribute to the classification model and those that are furtheest away from the boundary do not contribute at all. The equations for the classification version of SVM are similar to the regression equations. 
+For the classification version of SVM, we want to compute an optimal decision boundary between classes that are separable and even classes that are not separable. Figure \@ref(fig:svm-example) shows how SVM attempts to solve this problem. On the left, you will notice two separable classes with infinite classification boundaries. On the right, is how SVM solves this problem. Explicitly, a boundary called the maximum margin classifier is computed. What's unique about this boundary is that the boundary itself(solid black line) has margins that are set to the closets points for each class. The result of this is that now, unlike the regression model, samples that are closest to the boundary contribute to the classification model and those that are furthest away from the boundary do not contribute at all. The equations for the classification version of SVM are similar to the regression equations. 
 
 The general decision boundary equation is 
 
@@ -744,7 +744,7 @@ The general decision boundary equation is
 D(u) = \beta_0\ +\ \sum_{i=1}^{n}y_i\alpha_iK(x_i,\mathbf{u})
 \]
 
-The key thing to notice is how the classification equation now includes the actual class of $y_i$ which is usally a value of -1 or 1. 
+The critical thing to notice is how the classification equation now includes the actual class of $y_i$ which is usually a value of -1 or 1. 
 
 The kernel functions are
 
@@ -756,7 +756,7 @@ The kernel functions are
 \text{hyperbolic tangent} &=\ tanh\left(scale(x^T\mathbf{u})\ +\ 1\right)
 \end{align}
 \]
-\]
+
 
 <div class="figure" style="text-align: center">
 <img src="img/applied-pred-Ch13Fig09.png" alt="Datasets with separable classes adapted from Kuhn and Johnson (2013)" width="90%" />
@@ -765,7 +765,7 @@ The kernel functions are
 
 ### Optimizaton Forumulation {-}
 
-Ultimately, both the regression and classification equations are reformulated into a quadratic programming problem. While it is beyond the scope of this lesson to detail this formulation, the reader should review @friedman2001elements, specifically the section discussing SVMs. What's key to understanding this formulation is that the tuning of the SVM depends primarily on the cost parameter when estimating other parameters.  
+Ultimately, both the regression and classification equations are reformulated into a quadratic programming problem. While it is beyond the scope of this lesson to detail this formulation, the reader should review @friedman2001elements, specifically the section discussing SVMs. What's key to understanding this formulation is that the tuning of the SVM depends primarily on the cost parameter when estimating the other parameters.  
 
 ### Practical Exerecise
 
