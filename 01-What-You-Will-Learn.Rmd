@@ -43,11 +43,11 @@ Parametric machine learning models are based on modeling assumptions about the m
 
 #### Nonparametric Models {-}
 
-Nonparametric machine learning models are not based on any modeling assumptions about the mapping of the feature variables to the target variable. Some examples of nonparametric models are $k$-Nearest Neighbors, Na{\i}ve Bayes, Support Vector Machines, Neural Networks, and Decision Trees. In general nonparametric models more complex, slower to compute, and require more data than parametric models. A principal drawback of nonparametric models, however, is their inconsistent results [@brownlee2017mlmastery]. 
+Nonparametric machine learning models are not based on any modeling assumptions about the mapping of the feature variables to the target variable. Some examples of nonparametric models are $k$-Nearest Neighbors, Naive Bayes, Support Vector Machines, Neural Networks, and Decision Trees. In general nonparametric models more complex, slower to compute, and require more data than parametric models. A principal drawback of nonparametric models is their inconsistent results [@brownlee2017mlmastery]. 
 
 ### The difference between supervised, unsupervised and semi-supervised learning {-}
 
-The key takeaway here is that supervised learning models predict a value; unsupervised learning models describe associations and patterns in a dataset, and semi-supervised learning models are combinations of the two [@friedman2001elements].Furthermore, supervised learning involves data that has labeled features and target variables. In contrast, unsupervised learning uses data that does not have any feature or target variable labels. 
+The key takeaway here is that supervised learning models predict a value; unsupervised learning models describe associations and patterns in a dataset, and semi-supervised learning models are combinations of the two [@friedman2001elements]. Furthermore, supervised learning involves data that has labeled features and target variables. In contrast, unsupervised learning uses data that does not have any feature or target variable labels. 
 
 ### The bias-variance tradeoff {-}
 

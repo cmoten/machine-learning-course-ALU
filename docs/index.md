@@ -1,7 +1,7 @@
 --- 
 title: "A Practical Guide for Machine Learning and R Shiny"
 author: "Cardy Moten III"
-date: "2018-02-17"
+date: "2018-02-19"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [book.bib]
@@ -10,6 +10,7 @@ link-citations: yes
 github-repo: cmoten/machine-learning-course-ALU
 url: 'https://cmoten.github.io/machine-learning-course-ALU'
 description: "Everything you need (and nothing more) to start a bookdown book."
+toc-depth: 1
 ---
 
 # Preface {-}

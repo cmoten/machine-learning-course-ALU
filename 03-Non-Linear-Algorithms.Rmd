@@ -149,6 +149,7 @@ library(rpart)
 library(caret)
 library(partykit)
 library(mlbench)
+library(kernlab)
 ```
 
 #### Regression Tree {-}
@@ -340,7 +341,7 @@ knn_data <- solTrainXtrans[,-nearZeroVar(solTrainXtrans)]
 ```
 
 ##### Create the model {-}
-```{r,knn-reg}
+```{r,knn-reg, cache=TRUE}
 set.seed(100)
 knn_reg_model <- train(knn_data,
                        solTrainY,
@@ -373,6 +374,7 @@ pima_knn <- train(as.factor(diabetes)~.,
                   trControl = trainControl(method = "cv",
                                            classProbs = TRUE,
                                            summaryFunction = twoClassSummary))
+pima_knn
 pima_knn$finalModel
 ```
 
@@ -388,6 +390,138 @@ Create a new KNN model using only three predictor variables for the Pima data an
 
 ## Support Vector Machines
 
+Support vector machines (SVM) started as a method for classification, but has extensions for regression as well. The goal of using SVM is to compute a regression line or decision boundary. 
+
+### Regression {-}
+
+For regression, the SVM seeks to minimize the cost function
+
+\[
+Cost\sum_{i=1}^nL_\epsilon \left(y_i - \hat{y_i}\right)\ +\ \sum_{j=1}^{P}\beta_{j}^2 
+\]
+
+where $Cost$ is the residual cost penalty and $L_\epsilon (\cdot)$ is the margin threshold.
+
+Furthermore, we transform the prediction equation for $\hat{y}$ to
+
+\[
+\begin{align}
+\hat{y} &=\ \beta_0\ +\ \beta_1u_1\ +\ \dots\ +\ \beta_pu_p\\
+&=\ \beta_0\ +\ \sum_{j=1}^{P}\beta_ju_j\\
+&=\ \beta_0\ +\ \sum_{j=1}^{P}\sum_{i=1}^{n}\alpha_ix_{ij}u_j\\
+&=\ \beta_0\ +\ \sum_{i=1}^{n}\alpha_i\left(\sum_{j=1}^{P}x_{ij}u_j\right)
+\end{align}
+\]
+
+where $\alpha_i$ is an unkown parameter estimated by the SVM algorithm. We can generalize the above equation for $\hat{y}$ even further to matrix form with
+
+\[
+f(u) = \beta_0\ +\ \sum_{i=1}^{n}\alpha_iK\left(x_i,\mathbf{u}\right)
+\]
+
+where $K\left(\cdot\right)$ is a kernel function. For SVM, there are a few models to choose for the kernel function to encompass linear and nonlinear functions of the predictors. The most common kernel functions are
+
+\[
+\begin{align}
+\text{linear} &=\ x_i^{T}\mathbf{u}\\
+\text{polynomial} &=\ \left(\phi(x^T\mathbf{u})\ +\ 1\right)^{degree}\\
+\text{radial basis function} &=\ e^{\left(-\sigma\vert\vert x\ -\ \mathbf{u} \vert\vert^2\right)}\\
+\text{hyperbolic tangent} &=\ tanh\left(\phi(x^T\mathbf{u})\ +\ 1\right)
+\end{align}
+\]
+
+
+To demonstrate why you would use SVM for some regression situations, examine Figure \@ref(fig:svm-regress) below. The top of the figure shows a comparison of a simple linear regression model using least squares and SVM. The item to notice in this plot is the outlier at the top left of the plot. You will notice that the least squares model is more sensitive to this value, while SVM is not. The middle plot shows the relationship of the residuals to the predictive values. What is important to note with this plot is that the grey points are values that contributed to the regression line estimation, which the values shown by the red crosses did not contribute. This is because these non-contributing values are within the $\pm\ \epsilon\ =\ 0.01$ threshold set by the modeler. We explain why this happens in a little bit. The bottom plot shows a nonlinear application of SVM to a sine wave model. Again, there are outlier values in the bottom left of the plot and the least squqres method is more sensitive to these values than SVM. The reason for this is because least squares and other regression models like logistic regression are more global in their behavior, while SVM uses more local contributions from the data for its estimations. 
+
+```{r svm-regress, echo=FALSE,fig.asp=.7, fig.width=6, fig.cap='Example SVM regressions compared to least squares adapted from Kuhn and Johnson (2013)', fig.align='center', out.width='90%'}
+knitr::include_graphics('img/applied-pred-Ch7Fig07.png')
+```
+
+
+As we stated previously, the samples that contribute to the calcluation of the regression curve, also called suppprt vectors, are the samples  outside of the $\epsilon$ threshold. At first, this finding may seem counterintutive, so examining Figure \@ref(fig:svm-res-models) could help with building an intuition for this. Specifically looking at the bottom right model, we can see that the residuals that are within the $\epsilon$ threshold are in fact zero and all other residuals contribute linearly to the regression equation.  
+
+```{r svm-res-models, echo=FALSE,fig.asp=.7, fig.width=6, fig.cap='Plots of various contributions to the regression line of model residuals adapted from Kuhn and Johnson (2013)', fig.align='center', out.width='90%'}
+knitr::include_graphics('img/applied-pred-Ch7Fig06.png')
+```
+
+### Classification {-}
+
+For the classification version of SVM, we want to compute an optimal decision boundary between seperable and non-seperable classes or categories. Figure \@ref(fig:svm-example) shows how SVM attempts to solve this problem. On the left, you will notice two seperable classes with infinite classification boundaries. On the right, is how SVM solves this problem. Specifically a boundary called the maximum margin classifier is computed. What's special about this boundary is that the boundary itself(solid black line) has margins that are set to the closets points for each class. The result of this is that now, unlike the regression model, samples that are closest to the boundary contribute to the classification model and those that are furtheest away from the boundary do not contribute at all. The equations for the classification version of SVM are similar to the regression equations. 
+
+The general decision boundary equation is 
+
+\[
+D(u) = \beta_0\ +\ \sum_{i=1}^{n}y_i\alpha_iK(x_i,\mathbf{u})
+\]
+
+The key thing to notice is how the classification equation now includes the actual class of $y_i$ which is usally a value of -1 or 1. 
+
+The kernel functions are
+
+\[
+\begin{align}
+\text{linear} &=\ x_i^{T}\mathbf{u}\\
+\text{polynomial} &=\ \left(scale(x^T\mathbf{u})\ +\ 1\right)^{degree}\\
+\text{radial basis function} &=\ e^{\left(-\sigma\vert\vert x\ -\ \mathbf{u} \vert\vert^2\right)}\\
+\text{hyperbolic tangent} &=\ tanh\left(scale(x^T\mathbf{u})\ +\ 1\right)
+\end{align}
+\]
+\]
+
+```{r svm-example, echo=FALSE,fig.asp=.7, fig.width=6, fig.cap='Datasets with separable classes adapted from Kuhn and Johnson (2013)', fig.align='center', out.width='90%'}
+knitr::include_graphics('img/applied-pred-Ch13Fig09.png')
+```
+
+### Optimizaton Forumulation {-}
+
+Ultimately, both the regression and classification equations are reformulated into a quadratic programming problem. While it is beyond the scope of this lesson to detail this formulation, the reader should review @friedman2001elements, specifically the section discussing SVMs. What's key to understanding this formulation is that the tuning of the SVM depends primarily on the cost parameter when estimating other parameters.  
+
 ### Practical Exerecise
+
+#### Regression {-}
+
+##### Data {-}
+We will use the solubility data for this portion.
+
+##### Model {-}
+
+```{r, svrm-regress, cache=TRUE}
+set.seed(33)
+solubility_svm <- train(solTrainXtrans, solTrainY,
+                        method = "svmRadial",
+                        preProc = c("center", "scale"),
+                        tuneLength = 14,
+                        trControl = trainControl(method = "cv"))
+solubility_svm
+solubility_svm$finalModel
+```
+
+#### Classification {-}
+
+##### Data {-}
+
+We will us the Pima dataset
+
+##### Model {-}
+
+```{r, svm-class}
+set.seed(202)
+sigmaRange <- sigest(as.factor(diabetes) ~.,data=pima_train)
+svmGrid <- expand.grid(.sigma = sigmaRange[1],
+                       .C = 2^(seq(-4,4))) 
+set.seed(386)
+pima_svm <- train(as.factor(diabetes)~.,
+                  data = pima_train,
+                  method = "svmRadial",
+                  metric = "ROC",
+                  preProc = c("center","scale"),
+                  tuneGrid = svmGrid,
+                  fit = FALSE,
+                  trControl = trainControl(method = "cv",
+                                           classProbs = TRUE,
+                                           summaryFunction = twoClassSummary))
+pima_svm
+pima_svm$finalModel
+```
 
 

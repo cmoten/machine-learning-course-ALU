@@ -142,7 +142,7 @@ What is interesting to note is that this gradient function looks precisely like 
 
 Finally, to solve for the optimal weight and bias, we will add a learning parameter, $\alpha$, to adjust the steps of the gradient. 
 
-#### Simple Linear Regression {-}
+**Simple Linear Regression**
 
 The algorithm we will use is:
 
@@ -153,7 +153,7 @@ b\ :=\ b\ -\ \alpha\delta_b\\
 \}
 \]
 
-#### Multiple Linear Regression {-}
+**Multiple Linear Regression**
 
 For multiple linear regression the algorithm changes to:
 
@@ -174,7 +174,8 @@ In matrix form, our algorithm will look like this:
 \}
 \]
 
-#### Logistic Regression {-}
+**Logistic Regression**
+
 The matrix form of the stochastic gradient descent algorithm has the form:
 
 \[
@@ -217,14 +218,19 @@ While the ideal cost function to minimize would be a convex function, this is no
 
 This practical exercieses are based on code provided by @fortuner2017mlcheat and @brownlee2017mlmastery.
 
-### Simple Linear Regression
+### Simple Linear Regression 
 
-#### Data {-}
+**Data**
+
 Suppose we have the following dataset in which we have a unique Company ID, radio advertising expenses in dollars, and annual sales as a result of those expenses in dollars. 
 
 
 ```r
 data <- read.csv("data/Advertising-Radio.csv",header=TRUE)
+```
+
+
+```r
 head(data)
 ```
 
@@ -247,14 +253,16 @@ plot(data$radio,data$sales,xlab= "Radio", ylab = "Sales", col="dodgerblue",pch=2
 
 <img src="02-Linear-Algorithms_files/figure-html/sales-plot-1.png" width="672" />
 
-#### Making Predictions {-}
+**Making Predictions**
+
 For this model, we want to predict sales based on the amount spent for radio advertising. Thus our formula will be
 
 \[\text{Sales} = \text{Weight} \times \text{Radio} + \text{Bias}\]
 
 The gradient descent algorithm will attempt to learn the optimal values for the Weight and Bias.
 
-#### Simple Regression Function {-}
+**Simple Regression Function**
+
 
 ```r
 simple_regress <- function(features,weight,bias){
@@ -262,7 +270,7 @@ simple_regress <- function(features,weight,bias){
 }
 ```
 
-#### Cost function Code {-}
+**Cost function Code**
 
 
 ```r
@@ -278,9 +286,7 @@ cost_function <- function(features,targets,weight,bias){
 
 
 
-#### Gradient Descent Code {-}
-
-
+**Gradient Descent Code**
 
 
 ```r
@@ -307,7 +313,7 @@ update_weight <- function(features,targets,weight,bias,learning_rate){
 }
 ```
 
-#### Training the model {-}
+**Training the model**
 
 We are now ready to train the final model. To do this we will iterate over a set number of trials and update the weight and bias parameters at each iteration. We will also track the cost history.
 
@@ -366,7 +372,8 @@ plot(fit$Cost,type="l",col="blue", xlab = "Iteration",ylab="Cost",main = "Error 
 
 <img src="02-Linear-Algorithms_files/figure-html/cost-plot-1.png" width="672" />
 
-#### Exercises {-}
+**Exercises**
+
 1. Run the command `` res <- lm(data$sales ~ data$radio)`` and note the values for the weight and bias.
 2. Plot the fitted line from ``res`` with the data and comapre that line to the trained model.
 3. Adjust the fit object to obtain an estimate close to the noted parameters.
@@ -451,7 +458,7 @@ multi_train <- function(features,target,theta,learn_rate,iters){
 
 #### Results {-}
 
-To make computing the gradient easier, we will normalize the feature data such that $x \in \{-1,1\}$. 
+To make computing the gradient easier, we will normalize the feature data such that $x \in [-1,1]$. 
 
 
 ```r
@@ -810,7 +817,7 @@ col_vec <- ifelse(lda_data$y==0,"orange","blue")
 plot(1:40,lda_data$x,xlab = "predictor",ylab = "value", col = col_vec)
 ```
 
-<img src="02-Linear-Algorithms_files/figure-html/unnamed-chunk-1-1.png" width="672" />
+<img src="02-Linear-Algorithms_files/figure-html/unnamed-chunk-2-1.png" width="672" />
 
 
 ### LDA Scoring {-}

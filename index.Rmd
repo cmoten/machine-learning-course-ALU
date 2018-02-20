@@ -10,6 +10,7 @@ link-citations: yes
 github-repo: cmoten/machine-learning-course-ALU
 url: 'https://cmoten.github.io/machine-learning-course-ALU'
 description: "Everything you need (and nothing more) to start a bookdown book."
+toc-depth: 1
 ---
 
 # Preface {-}

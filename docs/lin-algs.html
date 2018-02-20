@@ -25,7 +25,7 @@
 <meta name="author" content="Cardy Moten III">
 
 
-<meta name="date" content="2018-02-17">
+<meta name="date" content="2018-02-19">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -130,9 +130,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="lin-algs.html"><a href="lin-algs.html#gradient-descent-intuition"><i class="fa fa-check"></i>Gradient Descent Intuition</a></li>
 </ul></li>
 <li class="chapter" data-level="2.2" data-path="lin-algs.html"><a href="lin-algs.html#practical-exercises"><i class="fa fa-check"></i><b>2.2</b> Practical Exercises</a><ul>
-<li class="chapter" data-level="2.2.1" data-path="lin-algs.html"><a href="lin-algs.html#simple-linear-regression-2"><i class="fa fa-check"></i><b>2.2.1</b> Simple Linear Regression</a></li>
-<li class="chapter" data-level="2.2.2" data-path="lin-algs.html"><a href="lin-algs.html#multiple-linear-regression-2"><i class="fa fa-check"></i><b>2.2.2</b> Multiple Linear Regression</a></li>
-<li class="chapter" data-level="2.2.3" data-path="lin-algs.html"><a href="lin-algs.html#logistic-regression-2"><i class="fa fa-check"></i><b>2.2.3</b> Logistic Regression</a></li>
+<li class="chapter" data-level="2.2.1" data-path="lin-algs.html"><a href="lin-algs.html#simple-linear-regression-1"><i class="fa fa-check"></i><b>2.2.1</b> Simple Linear Regression</a></li>
+<li class="chapter" data-level="2.2.2" data-path="lin-algs.html"><a href="lin-algs.html#multiple-linear-regression-1"><i class="fa fa-check"></i><b>2.2.2</b> Multiple Linear Regression</a></li>
+<li class="chapter" data-level="2.2.3" data-path="lin-algs.html"><a href="lin-algs.html#logistic-regression-1"><i class="fa fa-check"></i><b>2.2.3</b> Logistic Regression</a></li>
 </ul></li>
 <li class="chapter" data-level="2.3" data-path="lin-algs.html"><a href="lin-algs.html#linear-discriminant-analysis"><i class="fa fa-check"></i><b>2.3</b> Linear Discriminant Analysis</a><ul>
 <li class="chapter" data-level="" data-path="lin-algs.html"><a href="lin-algs.html#lda-intuition"><i class="fa fa-check"></i>LDA Intuition</a></li>
@@ -140,7 +140,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="lin-algs.html"><a href="lin-algs.html#lda-with-miltiple-predictors"><i class="fa fa-check"></i>LDA With Miltiple Predictors</a></li>
 </ul></li>
 <li class="chapter" data-level="2.4" data-path="lin-algs.html"><a href="lin-algs.html#practical-exercise"><i class="fa fa-check"></i><b>2.4</b> Practical Exercise</a><ul>
-<li class="chapter" data-level="" data-path="lin-algs.html"><a href="lin-algs.html#data-3"><i class="fa fa-check"></i>Data</a></li>
+<li class="chapter" data-level="" data-path="lin-algs.html"><a href="lin-algs.html#data-2"><i class="fa fa-check"></i>Data</a></li>
 <li class="chapter" data-level="" data-path="lin-algs.html"><a href="lin-algs.html#lda-scoring"><i class="fa fa-check"></i>LDA Scoring</a></li>
 </ul></li>
 </ul></li>
@@ -155,9 +155,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="3.2.1" data-path="non-lin-algs.html"><a href="non-lin-algs.html#practical-exerecise-1"><i class="fa fa-check"></i><b>3.2.1</b> Practical Exerecise</a></li>
 </ul></li>
 <li class="chapter" data-level="3.3" data-path="non-lin-algs.html"><a href="non-lin-algs.html#k-nearest-neigbors"><i class="fa fa-check"></i><b>3.3</b> k-Nearest Neigbors</a><ul>
+<li class="chapter" data-level="" data-path="non-lin-algs.html"><a href="non-lin-algs.html#curse-of-dimensionality"><i class="fa fa-check"></i>Curse of Dimensionality</a></li>
 <li class="chapter" data-level="3.3.1" data-path="non-lin-algs.html"><a href="non-lin-algs.html#practical-exerecise-2"><i class="fa fa-check"></i><b>3.3.1</b> Practical Exerecise</a></li>
 </ul></li>
 <li class="chapter" data-level="3.4" data-path="non-lin-algs.html"><a href="non-lin-algs.html#support-vector-machines"><i class="fa fa-check"></i><b>3.4</b> Support Vector Machines</a><ul>
+<li class="chapter" data-level="" data-path="non-lin-algs.html"><a href="non-lin-algs.html#regression-1"><i class="fa fa-check"></i>Regression</a></li>
+<li class="chapter" data-level="" data-path="non-lin-algs.html"><a href="non-lin-algs.html#classification-1"><i class="fa fa-check"></i>Classification</a></li>
+<li class="chapter" data-level="" data-path="non-lin-algs.html"><a href="non-lin-algs.html#optimizaton-forumulation"><i class="fa fa-check"></i>Optimizaton Forumulation</a></li>
 <li class="chapter" data-level="3.4.1" data-path="non-lin-algs.html"><a href="non-lin-algs.html#practical-exerecise-3"><i class="fa fa-check"></i><b>3.4.1</b> Practical Exerecise</a></li>
 </ul></li>
 </ul></li>
@@ -297,8 +301,7 @@ J&#39;\left(\theta\right)\ &amp;=\ \frac{\partial}{\partial J}-\frac{1}{m}\sum_{
 <div id="gradient-descent-algorithm" class="section level3 unnumbered">
 <h3>Gradient Descent Algorithm</h3>
 <p>Finally, to solve for the optimal weight and bias, we will add a learning parameter, <span class="math inline">\(\alpha\)</span>, to adjust the steps of the gradient.</p>
-<div id="simple-linear-regression-1" class="section level4 unnumbered">
-<h4>Simple Linear Regression</h4>
+<p><strong>Simple Linear Regression</strong></p>
 <p>The algorithm we will use is:</p>
 <p><span class="math display">\[
 \text{Repeat until convergence } \{\\
@@ -306,9 +309,7 @@ w\ :=\ w-\alpha\delta_w\\
 b\ :=\ b\ -\ \alpha\delta_b\\
 \}
 \]</span></p>
-</div>
-<div id="multiple-linear-regression-1" class="section level4 unnumbered">
-<h4>Multiple Linear Regression</h4>
+<p><strong>Multiple Linear Regression</strong></p>
 <p>For multiple linear regression the algorithm changes to:</p>
 <p><span class="math display">\[
 \text{Repat until convergence } \{\\
@@ -323,9 +324,7 @@ b\ :=\ b\ -\ \alpha\delta_b\\
 \theta:=\ \theta-\alpha\delta\\
 \}
 \]</span></p>
-</div>
-<div id="logistic-regression-1" class="section level4 unnumbered">
-<h4>Logistic Regression</h4>
+<p><strong>Logistic Regression</strong></p>
 <p>The matrix form of the stochastic gradient descent algorithm has the form:</p>
 <p><span class="math display">\[
 \text{Repat until convergence } \{\\
@@ -333,7 +332,6 @@ b\ :=\ b\ -\ \alpha\delta_b\\
 \theta:=\ \theta-\alpha\delta\\
 \}
 \]</span></p>
-</div>
 </div>
 <div id="gradient-descent-intuition" class="section level3 unnumbered">
 <h3>Gradient Descent Intuition</h3>
@@ -366,13 +364,12 @@ Figure 2.4: A simple example of gradient descent.
 <div id="practical-exercises" class="section level2">
 <h2><span class="header-section-number">2.2</span> Practical Exercises</h2>
 <p>This practical exercieses are based on code provided by <span class="citation">Fortuner (<a href="#ref-fortuner2017mlcheat">2017</a>)</span> and <span class="citation">Brownlee (<a href="#ref-brownlee2017mlmastery">2017</a>)</span>.</p>
-<div id="simple-linear-regression-2" class="section level3">
+<div id="simple-linear-regression-1" class="section level3">
 <h3><span class="header-section-number">2.2.1</span> Simple Linear Regression</h3>
-<div id="data" class="section level4 unnumbered">
-<h4>Data</h4>
+<p><strong>Data</strong></p>
 <p>Suppose we have the following dataset in which we have a unique Company ID, radio advertising expenses in dollars, and annual sales as a result of those expenses in dollars.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/Advertising-Radio.csv&quot;</span>,<span class="dt">header=</span><span class="ot">TRUE</span>)
-<span class="kw">head</span>(data)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/Advertising-Radio.csv&quot;</span>,<span class="dt">header=</span><span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(data)</code></pre></div>
 <pre><code>##   company radio sales
 ## 1       1  37.8  22.1
 ## 2       2  39.3  10.4
@@ -383,21 +380,15 @@ Figure 2.4: A simple example of gradient descent.
 <p>A view of the data shows that there appears to be a positive correlation between radio advertising spending and sales.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(data<span class="op">$</span>radio,data<span class="op">$</span>sales,<span class="dt">xlab=</span> <span class="st">&quot;Radio&quot;</span>, <span class="dt">ylab =</span> <span class="st">&quot;Sales&quot;</span>, <span class="dt">col=</span><span class="st">&quot;dodgerblue&quot;</span>,<span class="dt">pch=</span><span class="dv">20</span>)</code></pre></div>
 <p><img src="02-Linear-Algorithms_files/figure-html/sales-plot-1.png" width="672" /></p>
-</div>
-<div id="making-predictions" class="section level4 unnumbered">
-<h4>Making Predictions</h4>
+<p><strong>Making Predictions</strong></p>
 <p>For this model, we want to predict sales based on the amount spent for radio advertising. Thus our formula will be</p>
 <p><span class="math display">\[\text{Sales} = \text{Weight} \times \text{Radio} + \text{Bias}\]</span></p>
 <p>The gradient descent algorithm will attempt to learn the optimal values for the Weight and Bias.</p>
-</div>
-<div id="simple-regression-function" class="section level4 unnumbered">
-<h4>Simple Regression Function</h4>
+<p><strong>Simple Regression Function</strong></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">simple_regress &lt;-<span class="st"> </span><span class="cf">function</span>(features,weight,bias){
   <span class="kw">return</span>(weight<span class="op">*</span>features <span class="op">+</span><span class="st"> </span>bias)
 }</code></pre></div>
-</div>
-<div id="cost-function-code" class="section level4 unnumbered">
-<h4>Cost function Code</h4>
+<p><strong>Cost function Code</strong></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cost_function &lt;-<span class="st"> </span><span class="cf">function</span>(features,targets,weight,bias){
   num_items &lt;-<span class="st"> </span><span class="kw">length</span>(targets)
   total_error &lt;-<span class="st"> </span><span class="dv">0</span>
@@ -406,9 +397,7 @@ Figure 2.4: A simple example of gradient descent.
   }
   <span class="kw">return</span>(total_error<span class="op">/</span>num_items)
 }</code></pre></div>
-</div>
-<div id="gradient-descent-code" class="section level4 unnumbered">
-<h4>Gradient Descent Code</h4>
+<p><strong>Gradient Descent Code</strong></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">update_weight &lt;-<span class="st"> </span><span class="cf">function</span>(features,targets,weight,bias,learning_rate){
   delta_weight &lt;-<span class="st"> </span><span class="dv">0</span>
   delta_bias &lt;-<span class="st"> </span><span class="dv">0</span>
@@ -430,9 +419,7 @@ Figure 2.4: A simple example of gradient descent.
   res &lt;-<span class="st"> </span><span class="kw">c</span>(weight,bias)
   res
 }</code></pre></div>
-</div>
-<div id="training-the-model" class="section level4 unnumbered">
-<h4>Training the model</h4>
+<p><strong>Training the model</strong></p>
 <p>We are now ready to train the final model. To do this we will iterate over a set number of trials and update the weight and bias parameters at each iteration. We will also track the cost history.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">train &lt;-<span class="st"> </span><span class="cf">function</span>(features,targets,weight,bias,learning_rate,iters){
   cost_history &lt;-<span class="st"> </span><span class="kw">numeric</span>(iters)
@@ -470,20 +457,17 @@ fit &lt;-<span class="st"> </span><span class="kw">train</span>(<span class="dt"
 <p>This is a plot of the cost history.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(fit<span class="op">$</span>Cost,<span class="dt">type=</span><span class="st">&quot;l&quot;</span>,<span class="dt">col=</span><span class="st">&quot;blue&quot;</span>, <span class="dt">xlab =</span> <span class="st">&quot;Iteration&quot;</span>,<span class="dt">ylab=</span><span class="st">&quot;Cost&quot;</span>,<span class="dt">main =</span> <span class="st">&quot;Error Rate Per Iteration&quot;</span>)</code></pre></div>
 <p><img src="02-Linear-Algorithms_files/figure-html/cost-plot-1.png" width="672" /></p>
-</div>
-<div id="exercises" class="section level4 unnumbered">
-<h4>Exercises</h4>
+<p><strong>Exercises</strong></p>
 <ol style="list-style-type: decimal">
 <li>Run the command <code>res &lt;- lm(data$sales ~ data$radio)</code> and note the values for the weight and bias.</li>
 <li>Plot the fitted line from <code>res</code> with the data and comapre that line to the trained model.</li>
 <li>Adjust the fit object to obtain an estimate close to the noted parameters.</li>
 </ol>
 </div>
-</div>
-<div id="multiple-linear-regression-2" class="section level3">
+<div id="multiple-linear-regression-1" class="section level3">
 <h3><span class="header-section-number">2.2.2</span> Multiple Linear Regression</h3>
 <p>For this exercise, we will predict total sales based on TV, Radio, and Newspaper advertising costs.</p>
-<div id="data-1" class="section level4 unnumbered">
+<div id="data" class="section level4 unnumbered">
 <h4>Data</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">multi_data &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/Advertising.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>)
 <span class="kw">head</span>(multi_data)</code></pre></div>
@@ -518,7 +502,7 @@ panel.cor &lt;-<span class="st"> </span><span class="cf">function</span>(x, y, <
 <span class="kw">pairs</span>(multi_data[,<span class="dv">2</span><span class="op">:</span><span class="dv">5</span>],<span class="dt">lower.panel =</span> panel.smooth, <span class="dt">upper.panel =</span> panel.cor)</code></pre></div>
 <p><img src="02-Linear-Algorithms_files/figure-html/pairs-1.png" width="672" /></p>
 </div>
-<div id="cost-function-code-1" class="section level4">
+<div id="cost-function-code" class="section level4">
 <h4><span class="header-section-number">2.2.2.1</span> Cost Function Code</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">multi_cost &lt;-<span class="st"> </span><span class="cf">function</span>(features,target,theta){
   <span class="kw">sum</span>((features <span class="op">%*%</span><span class="st"> </span>theta <span class="op">-</span><span class="st"> </span>target)<span class="op">^</span><span class="dv">2</span>) <span class="op">/</span><span class="st"> </span>(<span class="dv">2</span><span class="op">*</span><span class="kw">length</span>(target))
@@ -541,7 +525,7 @@ panel.cor &lt;-<span class="st"> </span><span class="cf">function</span>(x, y, <
 </div>
 <div id="results" class="section level4 unnumbered">
 <h4>Results</h4>
-<p>To make computing the gradient easier, we will normalize the feature data such that <span class="math inline">\(x \in \{-1,1\}\)</span>.</p>
+<p>To make computing the gradient easier, we will normalize the feature data such that <span class="math inline">\(x \in [-1,1]\)</span>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">normalize_data &lt;-<span class="st"> </span><span class="cf">function</span>(data){
   cols &lt;-<span class="st"> </span><span class="kw">ncol</span>(data)
   <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>cols){
@@ -571,7 +555,7 @@ multi_fit<span class="op">$</span>Coefs</code></pre></div>
 <p><img src="02-Linear-Algorithms_files/figure-html/multi-reults-1.png" width="672" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">test_fit &lt;-<span class="st"> </span><span class="kw">lm</span>(sales <span class="op">~</span><span class="st"> </span>TV <span class="op">+</span><span class="st"> </span>radio <span class="op">+</span><span class="st"> </span>newspaper, <span class="dt">data =</span> multi_data)</code></pre></div>
 </div>
-<div id="exercises-1" class="section level4 unnumbered">
+<div id="exercises" class="section level4 unnumbered">
 <h4>Exercises</h4>
 <ol style="list-style-type: decimal">
 <li>Tune the iterations and the learning rate and attempt to reduce the model cost.</li>
@@ -580,10 +564,10 @@ multi_fit<span class="op">$</span>Coefs</code></pre></div>
 </ol>
 </div>
 </div>
-<div id="logistic-regression-2" class="section level3">
+<div id="logistic-regression-1" class="section level3">
 <h3><span class="header-section-number">2.2.3</span> Logistic Regression</h3>
 <p>During this exercise, we will classify whether studens will pass (1) or fail (0) a test based on the amount of hours spent studying and hours slept.</p>
-<div id="data-2" class="section level4 unnumbered">
+<div id="data-1" class="section level4 unnumbered">
 <h4>Data</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">log_data &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/data_classification.csv&quot;</span>,<span class="dt">header=</span><span class="ot">TRUE</span>)
 <span class="kw">head</span>(log_data)</code></pre></div>
@@ -608,7 +592,7 @@ multi_fit<span class="op">$</span>Coefs</code></pre></div>
   res
 }</code></pre></div>
 </div>
-<div id="cost-function-code-2" class="section level4 unnumbered">
+<div id="cost-function-code-1" class="section level4 unnumbered">
 <h4>Cost function code</h4>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">log_cost &lt;-<span class="st"> </span><span class="cf">function</span>(features, theta, targets){
   m &lt;-<span class="st"> </span><span class="kw">length</span>(targets)
@@ -684,7 +668,7 @@ fit_accuracy</code></pre></div>
 <span class="kw">legend</span>(<span class="st">&quot;topright&quot;</span>,<span class="kw">c</span>(<span class="st">&quot;Pass&quot;</span>,<span class="st">&quot;Fail&quot;</span>),<span class="dt">col=</span><span class="kw">c</span>(<span class="st">&quot;orange&quot;</span>,<span class="st">&quot;blue&quot;</span>),<span class="dt">pch=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>),<span class="dt">horiz =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <p><img src="02-Linear-Algorithms_files/figure-html/log-res-plot-1.png" width="672" /></p>
 </div>
-<div id="exercises-2" class="section level4 unnumbered">
+<div id="exercises-1" class="section level4 unnumbered">
 <h4>Exercises</h4>
 <ol style="list-style-type: decimal">
 <li>Tune the iterations and the learning rate and attempt to improve the model accuracy.</li>
@@ -794,7 +778,7 @@ f_k\left(x\right)\ =\ \frac{1}{\left(2\pi\right)^{\frac{p}{2}}\left|\Sigma\right
 <div id="practical-exercise" class="section level2">
 <h2><span class="header-section-number">2.4</span> Practical Exercise</h2>
 <p>This contrived example consists of normally distributed values for data separated into two distinct classes as shown by the plot below.</p>
-<div id="data-3" class="section level3 unnumbered">
+<div id="data-2" class="section level3 unnumbered">
 <h3>Data</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lda_data &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;data/lda-toy.csv&quot;</span>,<span class="dt">header=</span><span class="ot">TRUE</span>)
 <span class="kw">head</span>(lda_data)</code></pre></div>
@@ -807,7 +791,7 @@ f_k\left(x\right)\ =\ \frac{1}{\left(2\pi\right)^{\frac{p}{2}}\left|\Sigma\right
 ## 6 5.027283 0</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">col_vec &lt;-<span class="st"> </span><span class="kw">ifelse</span>(lda_data<span class="op">$</span>y<span class="op">==</span><span class="dv">0</span>,<span class="st">&quot;orange&quot;</span>,<span class="st">&quot;blue&quot;</span>)
 <span class="kw">plot</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">40</span>,lda_data<span class="op">$</span>x,<span class="dt">xlab =</span> <span class="st">&quot;predictor&quot;</span>,<span class="dt">ylab =</span> <span class="st">&quot;value&quot;</span>, <span class="dt">col =</span> col_vec)</code></pre></div>
-<p><img src="02-Linear-Algorithms_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p><img src="02-Linear-Algorithms_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 </div>
 <div id="lda-scoring" class="section level3 unnumbered">
 <h3>LDA Scoring</h3>

@@ -154,6 +154,7 @@ library(rpart)
 library(caret)
 library(partykit)
 library(mlbench)
+library(kernlab)
 ```
 
 #### Regression Tree {-}
@@ -511,17 +512,17 @@ confusionMatrix(nb_preds,as.factor(pima_train$diabetes))
 
 ## k-Nearest Neigbors
 
-The basic idea of the $k$-nearest neighbors (KNN) algorithm is to create a distance matrix of the all the feature variables and choose the $k$ nearest data points closest to an evaluated point. Since KNN uses the entire dataset, no learning is necessary from the algorithm. The primary choice of the modeler is what decision metric to use. The primary metric used is a variation of the Minkowski distance metric. You can compute this metric by
+The basic idea of the $k$-nearest neighbors (KNN) algorithm is to create a distance matrix of the all the feature variables and choose the $k$ most adjacent data points closest to an evaluated point. Since KNN uses the entire dataset, no learning is necessary from the algorithm. The primary choice of the modeler is what decision metric to use. The primary parameter used is a variation of the Minkowski distance metric. You can compute this metric by
 
 \[
 \left(\sum_{i=1}^{P}\vert x_{ai} - x_{bi} \vert^q\right)^\frac{1}{q}
 \]
 
-where $\mathbf{x_a}$ and $\mathbf{x_b}$ are two sample points in the dataset. When $q\ =\ 1$ this distance metric is the Manhattan (city-block) distance. When $q\ =\ 2$ this distance is the Eculidean distance. Generally, you will use Euclidean distance for continuous predictors and Manhattan distance for categorical or binary predictors. 
+where $\mathbf{x_a}$ and $\mathbf{x_b}$ are two sample points in the dataset. When $q\ =\ 1$ this distance metric is the Manhattan (city-block) distance, and when $q\ =\ 2$ this distance is the Euclidean distance. You will use Euclidean distance for continuous predictors and Manhattan distance for categorical or binary predictors. 
 
 ### Curse of Dimensionality {-}
 
-Just like other machine learning methods the KNN method has its own disadvantages. One disadvantage deals with high dimensional data. In essence, distances in higher dimensions are larger which ultimately mean that similar points are not necessarily local to each other. Figure \@ref(fig:knn-curse) demonstrates this problem. The figure on the left shows a unit hypercube with a sub-cube that captures a fraction of the data of the original hypercube. The sub-figure on the right, shows how much of the range of each coordinate you need to capture within the sub-cube. For instance, if you want to capture 10% of the data, you will need to capture 80% of the range of coordinates for a 10-dimension dataset. This percentage increases exponentially with additional dimensions. 
+Just like other machine learning methods the KNN method has its disadvantages. One disadvantage deals with high dimensional data. In essence, distances in higher dimensions are larger which ultimately mean that similar points are not necessarily local to each other. Figure \@ref(fig:knn-curse) demonstrates this problem. The figure on the left shows a unit hypercube with a sub-cube that captures a fraction of the data of the original hypercube. The sub-figure on the right shows how much of the range of each coordinate you need to capture within the sub-cube. For instance, if you want to capture 10% of the data, you will need to capture 80% of the range of coordinates for a 10-dimension dataset. This percentage increases exponentially with additional dimensions. 
 
 <div class="figure" style="text-align: center">
 <img src="img/knn-curse.png" alt="Illustration of dimensionality curse adapted from Hastie, Tibshirani, and Friedman (2009." width="90%" />
@@ -533,7 +534,7 @@ Just like other machine learning methods the KNN method has its own disadvantage
 #### Regression {-}
 
 ##### Data {-}
-We will use the solubility data for this exercise
+We will use the solubility data for this exercise.
 
 
 ```r
@@ -581,6 +582,78 @@ pima_knn <- train(as.factor(diabetes)~.,
                   trControl = trainControl(method = "cv",
                                            classProbs = TRUE,
                                            summaryFunction = twoClassSummary))
+pima_knn
+```
+
+```
+## k-Nearest Neighbors 
+## 
+## 311 samples
+##   8 predictor
+##   2 classes: 'neg', 'pos' 
+## 
+## Pre-processing: centered (8), scaled (8) 
+## Resampling: Cross-Validated (10 fold) 
+## Summary of sample sizes: 280, 281, 280, 279, 280, 281, ... 
+## Resampling results across tuning parameters:
+## 
+##   k   ROC        Sens       Spec     
+##    1  0.6758874  0.7990476  0.5527273
+##    2  0.7472781  0.7840476  0.5318182
+##    3  0.7854405  0.8530952  0.5327273
+##    4  0.7962013  0.8435714  0.5709091
+##    5  0.7963950  0.8585714  0.5700000
+##    6  0.7987013  0.8733333  0.5800000
+##    7  0.8115682  0.8785714  0.5681818
+##    8  0.8184437  0.8978571  0.5218182
+##    9  0.8219935  0.8926190  0.5045455
+##   10  0.8193268  0.8926190  0.5127273
+##   11  0.8269091  0.8780952  0.5318182
+##   12  0.8344470  0.8876190  0.4945455
+##   13  0.8369232  0.8973810  0.4936364
+##   14  0.8384621  0.8971429  0.4745455
+##   15  0.8404080  0.8976190  0.4936364
+##   16  0.8378268  0.8973810  0.5036364
+##   17  0.8421396  0.9121429  0.4663636
+##   18  0.8384405  0.9119048  0.4745455
+##   19  0.8382392  0.9019048  0.4745455
+##   20  0.8325335  0.9019048  0.4936364
+##   21  0.8388268  0.9119048  0.5018182
+##   22  0.8414740  0.9119048  0.4845455
+##   23  0.8419794  0.9166667  0.4836364
+##   24  0.8454058  0.9169048  0.4836364
+##   25  0.8452814  0.9169048  0.4636364
+##   26  0.8434935  0.9169048  0.4563636
+##   27  0.8491331  0.9216667  0.4554545
+##   28  0.8474957  0.9314286  0.4645455
+##   29  0.8446385  0.9216667  0.4363636
+##   30  0.8437154  0.9266667  0.4363636
+##   31  0.8392987  0.9266667  0.4263636
+##   32  0.8399816  0.9216667  0.4272727
+##   33  0.8390368  0.9266667  0.4272727
+##   34  0.8381483  0.9266667  0.4190909
+##   35  0.8404892  0.9316667  0.4281818
+##   36  0.8392532  0.9316667  0.4381818
+##   37  0.8412446  0.9269048  0.4281818
+##   38  0.8404448  0.9319048  0.4281818
+##   39  0.8436937  0.9466667  0.4281818
+##   40  0.8449589  0.9416667  0.4281818
+##   41  0.8423431  0.9366667  0.4381818
+##   42  0.8405693  0.9366667  0.4372727
+##   43  0.8415855  0.9464286  0.4372727
+##   44  0.8449123  0.9561905  0.4463636
+##   45  0.8451190  0.9511905  0.4281818
+##   46  0.8455054  0.9416667  0.4372727
+##   47  0.8452846  0.9464286  0.4281818
+##   48  0.8459361  0.9464286  0.4372727
+##   49  0.8466537  0.9414286  0.4181818
+##   50  0.8445725  0.9514286  0.4090909
+## 
+## ROC was used to select the optimal model using the largest value.
+## The final value used for the model was k = 27.
+```
+
+```r
 pima_knn$finalModel
 ```
 
@@ -605,6 +678,239 @@ Create a new KNN model using only three predictor variables for the Pima data an
 
 ## Support Vector Machines
 
+Support vector machines (SVM) started as a method for classification, but has extensions for regression as well. The goal of using SVM is to compute a regression line or decision boundary. 
+
+### Regression {-}
+
+For regression, the SVM seeks to minimize the cost function
+
+\[
+Cost\sum_{i=1}^nL_\epsilon \left(y_i - \hat{y_i}\right)\ +\ \sum_{j=1}^{P}\beta_{j}^2 
+\]
+
+where $Cost$ is the residual cost penalty and $L_\epsilon (\cdot)$ is the margin threshold.
+
+Furthermore, we transform the prediction equation for $\hat{y}$ to
+
+\[
+\begin{align}
+\hat{y} &=\ \beta_0\ +\ \beta_1u_1\ +\ \dots\ +\ \beta_pu_p\\
+&=\ \beta_0\ +\ \sum_{j=1}^{P}\beta_ju_j\\
+&=\ \beta_0\ +\ \sum_{j=1}^{P}\sum_{i=1}^{n}\alpha_ix_{ij}u_j\\
+&=\ \beta_0\ +\ \sum_{i=1}^{n}\alpha_i\left(\sum_{j=1}^{P}x_{ij}u_j\right)
+\end{align}
+\]
+
+where $\alpha_i$ is an unkown parameter estimated by the SVM algorithm. We can generalize the above equation for $\hat{y}$ even further to matrix form with
+
+\[
+f(u) = \beta_0\ +\ \sum_{i=1}^{n}\alpha_iK\left(x_i,\mathbf{u}\right)
+\]
+
+where $K\left(\cdot\right)$ is a kernel function. For SVM, there are a few models to choose for the kernel function to encompass linear and nonlinear functions of the predictors. The most common kernel functions are
+
+\[
+\begin{align}
+\text{linear} &=\ x_i^{T}\mathbf{u}\\
+\text{polynomial} &=\ \left(\phi(x^T\mathbf{u})\ +\ 1\right)^{degree}\\
+\text{radial basis function} &=\ e^{\left(-\sigma\vert\vert x\ -\ \mathbf{u} \vert\vert^2\right)}\\
+\text{hyperbolic tangent} &=\ tanh\left(\phi(x^T\mathbf{u})\ +\ 1\right)
+\end{align}
+\]
+
+
+To demonstrate why you would use SVM for some regression situations, examine Figure \@ref(fig:svm-regress) below. The top of the figure shows a comparison of a simple linear regression model using least squares and SVM. The item to notice in this plot is the outlier at the top left of the plot. You will notice that the least squares model is more sensitive to this value, while SVM is not. The middle plot shows the relationship of the residuals to the predictive values. What is important to note with this plot is that the grey points are values that contributed to the regression line estimation, which the values shown by the red crosses did not contribute. This is because these non-contributing values are within the $\pm\ \epsilon\ =\ 0.01$ threshold set by the modeler. We explain why this happens in a little bit. The bottom plot shows a nonlinear application of SVM to a sine wave model. Again, there are outlier values in the bottom left of the plot and the least squqres method is more sensitive to these values than SVM. The reason for this is because least squares and other regression models like logistic regression are more global in their behavior, while SVM uses more local contributions from the data for its estimations. 
+
+<div class="figure" style="text-align: center">
+<img src="img/applied-pred-Ch7Fig07.png" alt="Example SVM regressions compared to least squares adapted from Kuhn and Johnson (2013)" width="90%" />
+<p class="caption">(\#fig:svm-regress)Example SVM regressions compared to least squares adapted from Kuhn and Johnson (2013)</p>
+</div>
+
+
+As we stated previously, the samples that contribute to the calcluation of the regression curve, also called suppprt vectors, are the samples  outside of the $\epsilon$ threshold. At first, this finding may seem counterintutive, so examining Figure \@ref(fig:svm-res-models) could help with building an intuition for this. Specifically looking at the bottom right model, we can see that the residuals that are within the $\epsilon$ threshold are in fact zero and all other residuals contribute linearly to the regression equation.  
+
+<div class="figure" style="text-align: center">
+<img src="img/applied-pred-Ch7Fig06.png" alt="Plots of various contributions to the regression line of model residuals adapted from Kuhn and Johnson (2013)" width="90%" />
+<p class="caption">(\#fig:svm-res-models)Plots of various contributions to the regression line of model residuals adapted from Kuhn and Johnson (2013)</p>
+</div>
+
+### Classification {-}
+
+For the classification version of SVM, we want to compute an optimal decision boundary between seperable and non-seperable classes or categories. Figure \@ref(fig:svm-example) shows how SVM attempts to solve this problem. On the left, you will notice two seperable classes with infinite classification boundaries. On the right, is how SVM solves this problem. Specifically a boundary called the maximum margin classifier is computed. What's special about this boundary is that the boundary itself(solid black line) has margins that are set to the closets points for each class. The result of this is that now, unlike the regression model, samples that are closest to the boundary contribute to the classification model and those that are furtheest away from the boundary do not contribute at all. The equations for the classification version of SVM are similar to the regression equations. 
+
+The general decision boundary equation is 
+
+\[
+D(u) = \beta_0\ +\ \sum_{i=1}^{n}y_i\alpha_iK(x_i,\mathbf{u})
+\]
+
+The key thing to notice is how the classification equation now includes the actual class of $y_i$ which is usally a value of -1 or 1. 
+
+The kernel functions are
+
+\[
+\begin{align}
+\text{linear} &=\ x_i^{T}\mathbf{u}\\
+\text{polynomial} &=\ \left(scale(x^T\mathbf{u})\ +\ 1\right)^{degree}\\
+\text{radial basis function} &=\ e^{\left(-\sigma\vert\vert x\ -\ \mathbf{u} \vert\vert^2\right)}\\
+\text{hyperbolic tangent} &=\ tanh\left(scale(x^T\mathbf{u})\ +\ 1\right)
+\end{align}
+\]
+\]
+
+<div class="figure" style="text-align: center">
+<img src="img/applied-pred-Ch13Fig09.png" alt="Datasets with separable classes adapted from Kuhn and Johnson (2013)" width="90%" />
+<p class="caption">(\#fig:svm-example)Datasets with separable classes adapted from Kuhn and Johnson (2013)</p>
+</div>
+
+### Optimizaton Forumulation {-}
+
+Ultimately, both the regression and classification equations are reformulated into a quadratic programming problem. While it is beyond the scope of this lesson to detail this formulation, the reader should review @friedman2001elements, specifically the section discussing SVMs. What's key to understanding this formulation is that the tuning of the SVM depends primarily on the cost parameter when estimating other parameters.  
+
 ### Practical Exerecise
+
+#### Regression {-}
+
+##### Data {-}
+We will use the solubility data for this portion.
+
+##### Model {-}
+
+
+```r
+set.seed(33)
+solubility_svm <- train(solTrainXtrans, solTrainY,
+                        method = "svmRadial",
+                        preProc = c("center", "scale"),
+                        tuneLength = 14,
+                        trControl = trainControl(method = "cv"))
+solubility_svm
+```
+
+```
+## Support Vector Machines with Radial Basis Function Kernel 
+## 
+## 951 samples
+## 228 predictors
+## 
+## Pre-processing: centered (228), scaled (228) 
+## Resampling: Cross-Validated (10 fold) 
+## Summary of sample sizes: 855, 856, 855, 855, 858, 857, ... 
+## Resampling results across tuning parameters:
+## 
+##   C        RMSE       Rsquared   MAE      
+##      0.25  0.8014848  0.8681906  0.6039660
+##      0.50  0.7102286  0.8890663  0.5327464
+##      1.00  0.6613592  0.9000814  0.4934836
+##      2.00  0.6314286  0.9066489  0.4684522
+##      4.00  0.6186151  0.9091987  0.4541152
+##      8.00  0.6064508  0.9127569  0.4457087
+##     16.00  0.6018292  0.9140239  0.4427055
+##     32.00  0.6018878  0.9138726  0.4429424
+##     64.00  0.6007705  0.9141895  0.4423807
+##    128.00  0.5998743  0.9145279  0.4443426
+##    256.00  0.6025174  0.9136982  0.4463239
+##    512.00  0.6039626  0.9132093  0.4469188
+##   1024.00  0.6042640  0.9131080  0.4474508
+##   2048.00  0.6062670  0.9125208  0.4497784
+## 
+## Tuning parameter 'sigma' was held constant at a value of 0.002740343
+## RMSE was used to select the optimal model using the smallest value.
+## The final values used for the model were sigma = 0.002740343 and C = 128.
+```
+
+```r
+solubility_svm$finalModel
+```
+
+```
+## Support Vector Machine object of class "ksvm" 
+## 
+## SV type: eps-svr  (regression) 
+##  parameter : epsilon = 0.1  cost C = 128 
+## 
+## Gaussian Radial Basis kernel function. 
+##  Hyperparameter : sigma =  0.0027403433192481 
+## 
+## Number of Support Vectors : 638 
+## 
+## Objective Function Value : -726.094 
+## Training error : 0.009299
+```
+
+#### Classification {-}
+
+##### Data {-}
+
+We will us the Pima dataset
+
+##### Model {-}
+
+
+```r
+set.seed(202)
+sigmaRange <- sigest(as.factor(diabetes) ~.,data=pima_train)
+svmGrid <- expand.grid(.sigma = sigmaRange[1],
+                       .C = 2^(seq(-4,4))) 
+set.seed(386)
+pima_svm <- train(as.factor(diabetes)~.,
+                  data = pima_train,
+                  method = "svmRadial",
+                  metric = "ROC",
+                  preProc = c("center","scale"),
+                  tuneGrid = svmGrid,
+                  fit = FALSE,
+                  trControl = trainControl(method = "cv",
+                                           classProbs = TRUE,
+                                           summaryFunction = twoClassSummary))
+pima_svm
+```
+
+```
+## Support Vector Machines with Radial Basis Function Kernel 
+## 
+## 311 samples
+##   8 predictor
+##   2 classes: 'neg', 'pos' 
+## 
+## Pre-processing: centered (8), scaled (8) 
+## Resampling: Cross-Validated (10 fold) 
+## Summary of sample sizes: 280, 279, 279, 279, 280, 280, ... 
+## Resampling results across tuning parameters:
+## 
+##   C        ROC        Sens       Spec     
+##    0.0625  0.8434134  0.7795238  0.6945455
+##    0.1250  0.8434134  0.7842857  0.6945455
+##    0.2500  0.8503506  0.8426190  0.6090909
+##    0.5000  0.8476623  0.8573810  0.5909091
+##    1.0000  0.8478203  0.8678571  0.5727273
+##    2.0000  0.8427922  0.8528571  0.5736364
+##    4.0000  0.8400390  0.8626190  0.5154545
+##    8.0000  0.8388355  0.8828571  0.4872727
+##   16.0000  0.8367100  0.9066667  0.4972727
+## 
+## Tuning parameter 'sigma' was held constant at a value of 0.03176525
+## ROC was used to select the optimal model using the largest value.
+## The final values used for the model were sigma = 0.03176525 and C = 0.25.
+```
+
+```r
+pima_svm$finalModel
+```
+
+```
+## Support Vector Machine object of class "ksvm" 
+## 
+## SV type: C-svc  (classification) 
+##  parameter : cost C = 0.25 
+## 
+## Gaussian Radial Basis kernel function. 
+##  Hyperparameter : sigma =  0.0317652466552473 
+## 
+## Number of Support Vectors : 197 
+## 
+## Objective Function Value : -43.388 
+## Probability model included.
+```
 
 
