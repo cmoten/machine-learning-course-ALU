@@ -1,5 +1,5 @@
 Package: placeholder
 Title: Does not matter.
 Version: 0.0.5
-Imports: bookdown, rpart, caret, AppliedPredictiveModeling, partykit, klaR, mlbench, kernlab
+Imports: bookdown, rpart, caret, AppliedPredictiveModeling, partykit, klaR, mlbench, kernlab, e1071
 Remotes: rstudio/bookdown
