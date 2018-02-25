@@ -1,2 +1,141 @@
 # Ensemble Algorithms {#ens-algs}
 
+## Bagging
+
+Bagging is short for Bootstrapped Aggregation. As you can guess from the name, the Bagging algorithm's basis is the [bootstrap](https://en.wikipedia.org/wiki/Bootstrapping_(statistics)). With bootstrapping, you can use resampling techniques to estimate an unknown parameter of the data. The bootstrap method computes this estimate by taking random samples, with replacement, of the data and calculating the estimated value a total of $B$ times. The final step is to calculate the average of the estimates over the $B$ bootstrap trials.  
+
+With Bagging, the algorithm aggregates predictions from multiple machine learning models. Bagging provides an advantage for models that are high variance by reducing the variance of these models. In essence, Bagging mimics the phenomenon known as the ["wisdom of the crowd"](http://galton.org/search/essays/pages/galton-1907-vox-populi_1.png). In practice the algorithm is relatively simple
+
+```{r bagging-algorithm, echo=FALSE,fig.asp=.7, fig.width=6, fig.cap='Bagging algorithm from Kuhn and Johnson (2013).', fig.align='center', out.width='90%'}
+knitr::include_graphics('img/bagging-algorithm.png')
+```
+
+Since Bagging works well on models with high variance, it is most widely used on CART models. Fundamentally, the Bagging algorithm cast votes on multiple trees that are individually weak learners. However, the aggregated response or classification has an overall reduced error rate without a loss in bias. 
+
+### Practical Exercise {-}
+
+For this and the remaining PEs in this chapter, we will use the same solubility and Pima datasets from Chapter \@ref(non-lin-algs).
+
+```{r,pe-libs, message=FALSE, warning=FALSE}
+library(AppliedPredictiveModeling)
+library(rpart)
+library(caret)
+library(partykit)
+library(mlbench)
+library(kernlab)
+library(ipred)
+library(randomForest)
+```
+
+```{r,ensemble-data}
+data(solubility)
+pima_train <- read.csv("data/pima-train.csv",header=TRUE)
+pima_train <- pima_train[complete.cases(pima_train),]
+```
+
+#### Regression {-}
+
+```{r,bag-regress, cache=TRUE}
+set.seed(100)
+train_control <- trainControl(method='cv', number=5, returnResamp='none')
+bag_regress <- train(solTrainXtrans, solTrainY,
+                   method = "treebag",
+                   trControl= train_control
+                   )
+bag_regress$results
+```
+
+#### Classification {-}
+
+```{r,bag-class, cache=TRUE}
+set.seed(100)
+bag_class <- train(as.factor(diabetes) ~., 
+                   data = pima_train,
+                   method = "treebag",
+                   trControl= train_control
+                   )
+bag_class$results
+```
+
+## Random Forest
+
+While Bagging significantly reduced the variance compared to some other machine learning models, it has some drawbacks. In particular, Bagging creates trees on the entire feature space for each sample. Thus, most trees, especially at the top layers will look very similar and as a result most of the trees are not independent from each other. The Random Forest algorithm fixes this problem. Reviewing the algorithm in Figure \@ref(fig:random-forest-algorithm), you will notice that instead of building a tree on the entire feature space, Random Forest trees are built using a random sample of $k < P$ of the original predictors. For classification, a general default for the number of predictors at each split point is $k\ =\ \sqrt{P}$. For regression, the default number of predictors at each split point is $k\ =\ \frac{P}{3}$. A side benefit of this algorithm is that Random Forest is more computatinally efficient since trees are not built on the entire set of features. 
+
+```{r random-forest-algorithm, echo=FALSE,fig.asp=.7, fig.width=6, fig.cap='Random Forest algorithm from Kuhn and Johnson (2013).', fig.align='center', out.width='90%'}
+knitr::include_graphics('img/random-forest-algorithm.png')
+```
+
+### Practical Exercise {-}
+
+#### Regresssion {-}
+
+```{r, rf_regress, cache=TRUE}
+set.seed(41)
+rf_regress_model <- randomForest(solTrainXtrans,solTrainY,
+                                 importance=TRUE,
+                                 ntrees=500)
+rf_regress_model
+head(rf_regress_model$importance)
+
+
+#We won't run this, but this is how you would train this model using CARET
+# mtry_min <- floor(ncol(solTrainXtrans)/3)
+# mtry_max <- ncol(solTrainXtrans)
+# mtry <- seq(mtry_min,mtry_max)
+# train_control <- trainControl(method='cv', number=5, search='random')
+# model_metric <- "RMSE"
+# tune_grid <- expand.grid(.mtry=mtry)
+# 
+# rf_random_regress <- train(solTrainXtrans, solTrainY,
+#                    method = "rf",
+#                    trControl= train_control,
+#                    metric = model_metric,
+#                    tuneGrid = tune_grid
+#                    )
+```
+
+#### Classification {-}
+
+```{r, rf-class, cache=TRUE}
+#Random search
+set.seed(41)
+mtry_min <- floor(sqrt(ncol(pima_train)-1))
+mtry_max <- ncol(pima_train)-1
+mtry <- seq(mtry_min,mtry_max)
+train_control <- trainControl(method='cv', number=5, search='random')
+model_metric <- "Accuracy"
+tune_grid <- expand.grid(.mtry=mtry)
+
+
+rf_random_class <- train(as.factor(diabetes) ~., 
+                   data = pima_train,
+                   method = "rf",
+                   trControl= train_control,
+                   metric = model_metric,
+                   tuneGrid = tune_grid
+                   )
+rf_random_class$results
+```
+
+
+
+## AdaBoost
+
+```{r adaboost-algorithm, echo=FALSE,fig.asp=.7, fig.width=6, fig.cap='Adaboost classification algorithm from Kuhn and Johnson (2013).', fig.align='center', out.width='90%'}
+knitr::include_graphics('img/adaboost-algorithm.png')
+```
+
+### Practical Exercise {-}
+
+## Gradient Boosting
+
+```{r gradient-boosting-regression, echo=FALSE,fig.asp=.7, fig.width=6, fig.cap='Gradient Boosting regression algorithm from Kuhn and Johnson (2013).', fig.align='center', out.width='90%'}
+knitr::include_graphics('img/gradient-boosting-regression.png')
+```
+
+```{r gradient-boosting-classification, echo=FALSE,fig.asp=.7, fig.width=6, fig.cap='Gradient Boosting classification algorithm from Kuhn and Johnson (2013).', fig.align='center', out.width='90%'}
+knitr::include_graphics('img/gradient-boosting-classification.png')
+```
+
+### Practical Exercise {-}
+
