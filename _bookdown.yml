@@ -4,6 +4,6 @@ repo: https://github.com/cmoten/machine-learning-course-ALU
 output_dir: docs
 rmd_files: ["index.Rmd", "01-What-You-Will-Learn.Rmd", "02-Linear-Algorithms.Rmd","03-Non-Linear-Algorithms.Rmd",
            "04-Ensemble-Algorithms.Rmd", "05-Machine-Learning-PE.Rmd", "06-Shiny-Tutorial.Rmd",
-           "07-Shiny-PE.Rmd","08-references.Rmd"]
+           "08-references.Rmd"]
 clean: [packages.bib, bookdown.bbl]
 new_session: yes

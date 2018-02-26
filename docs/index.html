@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>A Practical Guide for Machine Learning and R Shiny</title>
   <meta name="description" content="Everything you need (and nothing more) to start a bookdown book.">
-  <meta name="generator" content="bookdown 0.6.2 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
 
   <meta property="og:title" content="A Practical Guide for Machine Learning and R Shiny" />
   <meta property="og:type" content="book" />
@@ -25,7 +25,7 @@
 <meta name="author" content="Cardy Moten III">
 
 
-<meta name="date" content="2018-02-20">
+<meta name="date" content="2018-02-25">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -165,10 +165,22 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="3.4.1" data-path="non-lin-algs.html"><a href="non-lin-algs.html#practical-exerecise-3"><i class="fa fa-check"></i><b>3.4.1</b> Practical Exerecise</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="ens-algs.html"><a href="ens-algs.html"><i class="fa fa-check"></i><b>4</b> Ensemble Algorithms</a></li>
+<li class="chapter" data-level="4" data-path="ens-algs.html"><a href="ens-algs.html"><i class="fa fa-check"></i><b>4</b> Ensemble Algorithms</a><ul>
+<li class="chapter" data-level="4.1" data-path="ens-algs.html"><a href="ens-algs.html#bagging"><i class="fa fa-check"></i><b>4.1</b> Bagging</a><ul>
+<li class="chapter" data-level="" data-path="ens-algs.html"><a href="ens-algs.html#practical-exercise-1"><i class="fa fa-check"></i>Practical Exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="ens-algs.html"><a href="ens-algs.html#random-forest"><i class="fa fa-check"></i><b>4.2</b> Random Forest</a><ul>
+<li class="chapter" data-level="" data-path="ens-algs.html"><a href="ens-algs.html#practical-exercise-2"><i class="fa fa-check"></i>Practical Exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="ens-algs.html"><a href="ens-algs.html#adaboost"><i class="fa fa-check"></i><b>4.3</b> AdaBoost</a><ul>
+<li class="chapter" data-level="" data-path="ens-algs.html"><a href="ens-algs.html#practical-exercise-3"><i class="fa fa-check"></i>Practical Exercise</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="ens-algs.html"><a href="ens-algs.html#gradient-boosting"><i class="fa fa-check"></i><b>4.4</b> Gradient Boosting</a><ul>
+<li class="chapter" data-level="" data-path="ens-algs.html"><a href="ens-algs.html#practical-exercise-4"><i class="fa fa-check"></i>Practical Exercise</a></li>
+</ul></li>
+</ul></li>
 <li class="chapter" data-level="5" data-path="ml-pe.html"><a href="ml-pe.html"><i class="fa fa-check"></i><b>5</b> Machine Learning Practical Exercise</a></li>
 <li class="chapter" data-level="6" data-path="shiny-tut.html"><a href="shiny-tut.html"><i class="fa fa-check"></i><b>6</b> R Shiny Tutorial</a></li>
-<li class="chapter" data-level="7" data-path="shiny-pe.html"><a href="shiny-pe.html"><i class="fa fa-check"></i><b>7</b> R Shiny Practical Exercise</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
@@ -193,7 +205,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="header">
 <h1 class="title">A Practical Guide for Machine Learning and R Shiny</h1>
 <h4 class="author"><em>Cardy Moten III</em></h4>
-<h4 class="date"><em>2018-02-20</em></h4>
+<h4 class="date"><em>2018-02-25</em></h4>
 </div>
 <div id="preface" class="section level1 unnumbered">
 <h1>Preface</h1>
@@ -201,7 +213,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>For the next two days, we will focus on the “how” of machine learning. This does not mean we are simply glossing over the “why” of machine learning, but quite frankly, we will not have the time in this short course. After we cover machine learning we will spend two days learning about R Shiny and will build a couple of web applications with it. Having said all that, a good textbook reference to start learning the about the “why” of machine learning mathematics is the book <a href="https://web.stanford.edu/~hastie/ElemStatLearn/">The Elements of Statistical Learning</a> by <span class="citation">Hastie, Tibshirani, and Friedman (<a href="#ref-friedman2001elements">2009</a>)</span>. For a more hands-on approach, read <a href="http://neuralnetworksanddeeplearning.com/">Neural Networks and Deep Learning</a> by <span class="citation">Nielsen (<a href="#ref-nielsen2015nndl">2015</a>)</span>.</p>
 <div id="structure-of-the-book" class="section level2 unnumbered">
 <h2>Structure of the book</h2>
-<p>Chapter <a href="ml-overview.html#ml-overview">1</a> provides a general overveiw of machine learning. Chapters <a href="lin-algs.html#lin-algs">2</a> - <a href="ml-pe.html#ml-pe">5</a> covers machine learning algorithms and a practical exercise. Chapters <a href="shiny-tut.html#shiny-tut">6</a> and <a href="shiny-pe.html#shiny-pe">7</a> focus on R shiny and a practical exercise.</p>
+<p>Chapter <a href="ml-overview.html#ml-overview">1</a> provides a general overveiw of machine learning. Chapters <a href="lin-algs.html#lin-algs">2</a> - <a href="ml-pe.html#ml-pe">5</a> covers machine learning algorithms and a practical exercise. Chapters <a href="shiny-tut.html#shiny-tut">6</a> focuses on R shiny.</p>
 
 </div>
 </div>
@@ -267,7 +279,7 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "";
-    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:" && /^https?:/.test(src))
       src = src.replace(/^https?:/, '');
     script.src = src;
