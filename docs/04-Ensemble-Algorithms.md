@@ -27,6 +27,7 @@ library(mlbench)
 library(kernlab)
 library(ipred)
 library(randomForest)
+library(gbm)
 ```
 
 
@@ -74,7 +75,7 @@ bag_class$results
 
 ## Random Forest
 
-While Bagging significantly reduced the variance compared to some other machine learning models, it has some drawbacks. In particular, Bagging creates trees on the entire feature space for each sample. Thus, most trees, especially at the top layers will look very similar and as a result most of the trees are not independent from each other. The Random Forest algorithm fixes this problem. Reviewing the algorithm in Figure \@ref(fig:random-forest-algorithm), you will notice that instead of building a tree on the entire feature space, Random Forest trees are built using a random sample of $k < P$ of the original predictors. For classification, a general default for the number of predictors at each split point is $k\ =\ \sqrt{P}$. For regression, the default number of predictors at each split point is $k\ =\ \frac{P}{3}$. A side benefit of this algorithm is that Random Forest is more computatinally efficient since trees are not built on the entire set of features. 
+While we can significantly reduce model variance with Bagging, it has some drawbacks. In particular, Bagging creates trees on the entire feature space for each sample. Thus, most trees, especially at the top layers will look very similar, and as a result, most of the trees are not independent of each other. The Random Forest algorithm fixes this problem. Reviewing the algorithm in Figure \@ref(fig:random-forest-algorithm), you will notice that instead of building a tree on the entire feature space, Random Forest trees are constructed using a random sample of $k < P$ of the original predictors. For classification, a general default for the number of predictors at each split point is $k\ =\ \sqrt{P}$. For regression, the default number of predictors at each split point is $k\ =\ \frac{P}{3}$. A side benefit of this algorithm is that Random Forest is more computationally efficient since trees are not built on the entire set of features. 
 
 <div class="figure" style="text-align: center">
 <img src="img/random-forest-algorithm.png" alt="Random Forest algorithm from Kuhn and Johnson (2013)." width="90%" />
@@ -125,7 +126,7 @@ head(rf_regress_model$importance)
 # mtry_min <- floor(ncol(solTrainXtrans)/3)
 # mtry_max <- ncol(solTrainXtrans)
 # mtry <- seq(mtry_min,mtry_max)
-# train_control <- trainControl(method='cv', number=5, search='random')
+# train_control <- trainControl(method='cv', number=5, search='grid')
 # model_metric <- "RMSE"
 # tune_grid <- expand.grid(.mtry=mtry)
 # 
@@ -145,7 +146,7 @@ head(rf_regress_model$importance)
 set.seed(41)
 mtry_min <- floor(sqrt(ncol(pima_train)-1))
 mtry_max <- ncol(pima_train)-1
-mtry <- seq(mtry_min,mtry_max)
+mtry <- mtry_min
 train_control <- trainControl(method='cv', number=5, search='random')
 model_metric <- "Accuracy"
 tune_grid <- expand.grid(.mtry=mtry)
@@ -155,45 +156,140 @@ rf_random_class <- train(as.factor(diabetes) ~.,
                    data = pima_train,
                    method = "rf",
                    trControl= train_control,
-                   metric = model_metric,
-                   tuneGrid = tune_grid
+                   metric = model_metric
                    )
 rf_random_class$results
 ```
 
 ```
 ##   mtry  Accuracy     Kappa AccuracySD    KappaSD
-## 1    2 0.7940864 0.5291364 0.02769544 0.06039786
-## 2    3 0.7780581 0.4914831 0.03170987 0.06987462
-## 3    4 0.8005909 0.5439405 0.02218887 0.04789905
-## 4    5 0.7846155 0.5031842 0.02364283 0.06340367
-## 5    6 0.7813880 0.4970204 0.03093920 0.07522984
-## 6    7 0.7846667 0.5053203 0.03236422 0.08151918
-## 7    8 0.7814921 0.4994510 0.03575589 0.08559938
+## 1    2 0.7908606 0.5230442 0.02152436 0.04163186
+## 2    5 0.7909118 0.5159105 0.03077111 0.07472786
+## 3    8 0.7814921 0.4994510 0.03575589 0.08559938
 ```
 
-
+#### Exercise {-}
+Retrin the Pima random forest model using a grid search for the ``mtry`` parameter. 
 
 ## AdaBoost
 
+Similar to Bagging models, Boosting models create multiple learners; in particular, decision trees. Unlike Bagging models, however, Boosting models build an initial model, and then makes incremental improvements to the models at subsequent iterations. One of the most popular Boosting algorithms is the Adaboost algorithm. Figure \@ref(fig:adaboost-algorithm) shows the steps for the Adaboost algorithm. The first model starts by weighing each observation uniformly. Next, a classifier model is generated followed by a weighted error. From this error, a scaling parameter $\alpha_m$ is computed. After the computation of $\alpha_m$, the weights are updated. 
+
 <div class="figure" style="text-align: center">
-<img src="img/adaboost-algorithm.png" alt="Adaboost classification algorithm from Kuhn and Johnson (2013)." width="90%" />
-<p class="caption">(\#fig:adaboost-algorithm)Adaboost classification algorithm from Kuhn and Johnson (2013).</p>
+<img src="img/adaboost-algorithm.png" alt="Adaboost classification algorithm from Hastie, Tibshirani, and Friedman (2009)." width="90%" />
+<p class="caption">(\#fig:adaboost-algorithm)Adaboost classification algorithm from Hastie, Tibshirani, and Friedman (2009).</p>
 </div>
 
+Before computing the weights, let's take a deeper dive into the $\alpha_m$ parameter. Figure \@ref(fig:adaboost-error) shows how $\alpha$ changes based on possible weighted error rates. In essence, observations that have a classification that agrees with the actual value receive a higher positive $\alpha_m$ value; observations that have a $50/50$ chance of being correct, receive a $\alpha_m$ value of zero; finally, observations that are misclassified have high negative values. 
+
+<div class="figure" style="text-align: center">
+<img src="img/adaboost-error.png" alt="Adaboost error rate." width="90%" />
+<p class="caption">(\#fig:adaboost-error)Adaboost error rate.</p>
+</div>
+
+To compute the updated weights, the previous weight is multiplied by $e^{-\alpha_m y_i G_m(x_i)}$. Essentially, this exponential parameter will be larger for misclassified observations, and smaller for correctly classified observations. In effect, this will increase the weights for misclassified observations and reduce the weights for correctly classified observations at the next iteration. Lastly, the algorithm returns the sign of the final weighted sums. 
+
 ### Practical Exercise {-}
+
+
+```r
+set.seed(100)
+gbm_grid <- expand.grid(n.trees=c(100, 500),
+                         shrinkage=c(0.01, 0.001),
+                         interaction.depth=c(1,5),
+                         n.minobsinnode=10)
+gbm_control <- trainControl(method='cv', 
+                              number=5,
+                              classProbs = TRUE,
+                              summaryFunction = twoClassSummary
+                              )
+gbm_metric <- "ROC"
+ada_class <- train(as.factor(diabetes) ~., 
+                   data = pima_train,
+                   method = "gbm",
+                   distribution="adaboost",
+                   verbose=FALSE,
+                   trControl= gbm_control,
+                   metric = gbm_metric,
+                   tuneGrid = gbm_grid
+                   )
+ada_class$results
+```
+
+```
+##   shrinkage interaction.depth n.minobsinnode n.trees       ROC      Sens
+## 1     0.001                 1             10     100 0.8149485 1.0000000
+## 5     0.010                 1             10     100 0.8367787 0.9706098
+## 3     0.001                 5             10     100 0.8511670 1.0000000
+## 7     0.010                 5             10     100 0.8529044 0.9313415
+## 2     0.001                 1             10     500 0.8273662 1.0000000
+## 6     0.010                 1             10     500 0.8465590 0.8819512
+## 4     0.001                 5             10     500 0.8510762 0.9802439
+## 8     0.010                 5             10     500 0.8445998 0.8576829
+##        Spec      ROCSD     SensSD    SpecSD
+## 1 0.0000000 0.08295399 0.00000000 0.0000000
+## 5 0.3545455 0.06764300 0.01084269 0.1338181
+## 3 0.0000000 0.07544806 0.00000000 0.0000000
+## 7 0.5419913 0.08249568 0.02053167 0.1284063
+## 2 0.0000000 0.07122291 0.00000000 0.0000000
+## 6 0.5792208 0.07931748 0.05469074 0.1377872
+## 4 0.2415584 0.07989993 0.02084617 0.1164474
+## 8 0.6173160 0.07781126 0.05620946 0.1037314
+```
 
 ## Gradient Boosting
 
+Using a similar stagewise approach, Gradient Boosting (GBM) builds an ensemble of weak models, but improves the models by optimizing an arbitrary loss function. The loss functions are usally squared loss $\left(\frac{1}{2}\left[y_i\ -\ f(x_i)\right]^2\right)$, absolute loss $\left(\vert y_i\ -\ f(x_i) \vert\right)$, and the [Huber Loss](https://en.wikipedia.org/wiki/Huber_loss) function for regression. Classification models use the deviance loss. Figure \@ref(fig:gradient-boosting-regression) shows the GBM algorithm for regression and Figure \@ref(fig:gradient-boosting-classification) shows the GBM algorithm for classifiction. Both algorithms work in a similar manner. 
+
+First, the model initiates an optimal single terminal node tree (also known as a stump). Next, the model computes a negative gradient, fits a new regression tree, and updates the predicted values of each sample with a learning parameter $\gamma$.  
+
 <div class="figure" style="text-align: center">
-<img src="img/gradient-boosting-regression.png" alt="Gradient Boosting regression algorithm from Kuhn and Johnson (2013)." width="90%" />
-<p class="caption">(\#fig:gradient-boosting-regression)Gradient Boosting regression algorithm from Kuhn and Johnson (2013).</p>
+<img src="img/gradient-boosting-regression.png" alt="Gradient Boosting regression algorithm from Hastie, Tibshirani, and Friedman (2009)." width="90%" />
+<p class="caption">(\#fig:gradient-boosting-regression)Gradient Boosting regression algorithm from Hastie, Tibshirani, and Friedman (2009).</p>
 </div>
 
 <div class="figure" style="text-align: center">
-<img src="img/gradient-boosting-classification.png" alt="Gradient Boosting classification algorithm from Kuhn and Johnson (2013)." width="90%" />
-<p class="caption">(\#fig:gradient-boosting-classification)Gradient Boosting classification algorithm from Kuhn and Johnson (2013).</p>
+<img src="img/gradient-boosting-classification.png" alt="Gradient Boosting classification algorithm from Hastie, Tibshirani, and Friedman (2009)." width="90%" />
+<p class="caption">(\#fig:gradient-boosting-classification)Gradient Boosting classification algorithm from Hastie, Tibshirani, and Friedman (2009).</p>
 </div>
 
 ### Practical Exercise {-}
 
+
+```r
+set.seed(100)
+gbm_class <- train(as.factor(diabetes) ~., 
+                   data = pima_train,
+                   method = "gbm",
+                   distribution="bernoulli",
+                   verbose=FALSE,
+                   trControl= gbm_control,
+                   metric = gbm_metric,
+                   tuneGrid = gbm_grid
+                   )
+gbm_class$results
+```
+
+```
+##   shrinkage interaction.depth n.minobsinnode n.trees       ROC      Sens
+## 1     0.001                 1             10     100 0.8122234 1.0000000
+## 5     0.010                 1             10     100 0.8359652 0.9559756
+## 3     0.001                 5             10     100 0.8504862 1.0000000
+## 7     0.010                 5             10     100 0.8506037 0.9262195
+## 2     0.001                 1             10     500 0.8278197 0.9901220
+## 6     0.010                 1             10     500 0.8481866 0.8818293
+## 4     0.001                 5             10     500 0.8508756 0.9753659
+## 8     0.010                 5             10     500 0.8439658 0.8626829
+##        Spec      ROCSD     SensSD     SpecSD
+## 1 0.0000000 0.08469365 0.00000000 0.00000000
+## 5 0.3831169 0.06891182 0.02026189 0.08287528
+## 3 0.0000000 0.07402308 0.00000000 0.00000000
+## 7 0.5515152 0.08046038 0.03112146 0.14110330
+## 2 0.1861472 0.07441610 0.01352779 0.09213765
+## 6 0.5796537 0.07909138 0.08513077 0.16192154
+## 4 0.3536797 0.08044493 0.01768082 0.09446756
+## 8 0.6545455 0.07375167 0.05362804 0.11110455
+```
+
+#### Exercise {-}
+Adjust the tuning grid and determine if we can improve the boosting models.

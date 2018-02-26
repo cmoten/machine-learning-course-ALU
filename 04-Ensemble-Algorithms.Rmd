@@ -25,6 +25,7 @@ library(mlbench)
 library(kernlab)
 library(ipred)
 library(randomForest)
+library(gbm)
 ```
 
 ```{r,ensemble-data}
@@ -59,7 +60,7 @@ bag_class$results
 
 ## Random Forest
 
-While Bagging significantly reduced the variance compared to some other machine learning models, it has some drawbacks. In particular, Bagging creates trees on the entire feature space for each sample. Thus, most trees, especially at the top layers will look very similar and as a result most of the trees are not independent from each other. The Random Forest algorithm fixes this problem. Reviewing the algorithm in Figure \@ref(fig:random-forest-algorithm), you will notice that instead of building a tree on the entire feature space, Random Forest trees are built using a random sample of $k < P$ of the original predictors. For classification, a general default for the number of predictors at each split point is $k\ =\ \sqrt{P}$. For regression, the default number of predictors at each split point is $k\ =\ \frac{P}{3}$. A side benefit of this algorithm is that Random Forest is more computatinally efficient since trees are not built on the entire set of features. 
+While we can significantly reduce model variance with Bagging, it has some drawbacks. In particular, Bagging creates trees on the entire feature space for each sample. Thus, most trees, especially at the top layers will look very similar, and as a result, most of the trees are not independent of each other. The Random Forest algorithm fixes this problem. Reviewing the algorithm in Figure \@ref(fig:random-forest-algorithm), you will notice that instead of building a tree on the entire feature space, Random Forest trees are constructed using a random sample of $k < P$ of the original predictors. For classification, a general default for the number of predictors at each split point is $k\ =\ \sqrt{P}$. For regression, the default number of predictors at each split point is $k\ =\ \frac{P}{3}$. A side benefit of this algorithm is that Random Forest is more computationally efficient since trees are not built on the entire set of features. 
 
 ```{r random-forest-algorithm, echo=FALSE,fig.asp=.7, fig.width=6, fig.cap='Random Forest algorithm from Kuhn and Johnson (2013).', fig.align='center', out.width='90%'}
 knitr::include_graphics('img/random-forest-algorithm.png')
@@ -82,7 +83,7 @@ head(rf_regress_model$importance)
 # mtry_min <- floor(ncol(solTrainXtrans)/3)
 # mtry_max <- ncol(solTrainXtrans)
 # mtry <- seq(mtry_min,mtry_max)
-# train_control <- trainControl(method='cv', number=5, search='random')
+# train_control <- trainControl(method='cv', number=5, search='grid')
 # model_metric <- "RMSE"
 # tune_grid <- expand.grid(.mtry=mtry)
 # 
@@ -101,7 +102,7 @@ head(rf_regress_model$importance)
 set.seed(41)
 mtry_min <- floor(sqrt(ncol(pima_train)-1))
 mtry_max <- ncol(pima_train)-1
-mtry <- seq(mtry_min,mtry_max)
+mtry <- mtry_min
 train_control <- trainControl(method='cv', number=5, search='random')
 model_metric <- "Accuracy"
 tune_grid <- expand.grid(.mtry=mtry)
@@ -111,31 +112,85 @@ rf_random_class <- train(as.factor(diabetes) ~.,
                    data = pima_train,
                    method = "rf",
                    trControl= train_control,
-                   metric = model_metric,
-                   tuneGrid = tune_grid
+                   metric = model_metric
                    )
 rf_random_class$results
 ```
 
-
+#### Exercise {-}
+Retrin the Pima random forest model using a grid search for the ``mtry`` parameter. 
 
 ## AdaBoost
 
-```{r adaboost-algorithm, echo=FALSE,fig.asp=.7, fig.width=6, fig.cap='Adaboost classification algorithm from Kuhn and Johnson (2013).', fig.align='center', out.width='90%'}
+Similar to Bagging models, Boosting models create multiple learners; in particular, decision trees. Unlike Bagging models, however, Boosting models build an initial model, and then makes incremental improvements to the models at subsequent iterations. One of the most popular Boosting algorithms is the Adaboost algorithm. Figure \@ref(fig:adaboost-algorithm) shows the steps for the Adaboost algorithm. The first model starts by weighing each observation uniformly. Next, a classifier model is generated followed by a weighted error. From this error, a scaling parameter $\alpha_m$ is computed. After the computation of $\alpha_m$, the weights are updated. 
+
+```{r adaboost-algorithm, echo=FALSE,fig.asp=.7, fig.width=6, fig.cap='Adaboost classification algorithm from Hastie, Tibshirani, and Friedman (2009).', fig.align='center', out.width='90%'}
 knitr::include_graphics('img/adaboost-algorithm.png')
 ```
 
+Before computing the weights, let's take a deeper dive into the $\alpha_m$ parameter. Figure \@ref(fig:adaboost-error) shows how $\alpha$ changes based on possible weighted error rates. In essence, observations that have a classification that agrees with the actual value receive a higher positive $\alpha_m$ value; observations that have a $50/50$ chance of being correct, receive a $\alpha_m$ value of zero; finally, observations that are misclassified have high negative values. 
+
+```{r adaboost-error, echo=FALSE,fig.asp=.7, fig.width=6, fig.cap='Adaboost error rate.', fig.align='center', out.width='90%'}
+knitr::include_graphics('img/adaboost-error.png')
+```
+
+To compute the updated weights, the previous weight is multiplied by $e^{-\alpha_m y_i G_m(x_i)}$. Essentially, this exponential parameter will be larger for misclassified observations, and smaller for correctly classified observations. In effect, this will increase the weights for misclassified observations and reduce the weights for correctly classified observations at the next iteration. Lastly, the algorithm returns the sign of the final weighted sums. 
+
 ### Practical Exercise {-}
+
+```{r, adaboost, cache=TRUE}
+set.seed(100)
+gbm_grid <- expand.grid(n.trees=c(100, 500),
+                         shrinkage=c(0.01, 0.001),
+                         interaction.depth=c(1,5),
+                         n.minobsinnode=10)
+gbm_control <- trainControl(method='cv', 
+                              number=5,
+                              classProbs = TRUE,
+                              summaryFunction = twoClassSummary
+                              )
+gbm_metric <- "ROC"
+ada_class <- train(as.factor(diabetes) ~., 
+                   data = pima_train,
+                   method = "gbm",
+                   distribution="adaboost",
+                   verbose=FALSE,
+                   trControl= gbm_control,
+                   metric = gbm_metric,
+                   tuneGrid = gbm_grid
+                   )
+ada_class$results
+```
 
 ## Gradient Boosting
 
-```{r gradient-boosting-regression, echo=FALSE,fig.asp=.7, fig.width=6, fig.cap='Gradient Boosting regression algorithm from Kuhn and Johnson (2013).', fig.align='center', out.width='90%'}
+Using a similar stagewise approach, Gradient Boosting (GBM) builds an ensemble of weak models, but improves the models by optimizing an arbitrary loss function. The loss functions are usally squared loss $\left(\frac{1}{2}\left[y_i\ -\ f(x_i)\right]^2\right)$, absolute loss $\left(\vert y_i\ -\ f(x_i) \vert\right)$, and the [Huber Loss](https://en.wikipedia.org/wiki/Huber_loss) function for regression. Classification models use the deviance loss. Figure \@ref(fig:gradient-boosting-regression) shows the GBM algorithm for regression and Figure \@ref(fig:gradient-boosting-classification) shows the GBM algorithm for classifiction. Both algorithms work in a similar manner. 
+
+First, the model initiates an optimal single terminal node tree (also known as a stump). Next, the model computes a negative gradient, fits a new regression tree, and updates the predicted values of each sample with a learning parameter $\gamma$.  
+
+```{r gradient-boosting-regression, echo=FALSE,fig.asp=.7, fig.width=6, fig.cap='Gradient Boosting regression algorithm from Hastie, Tibshirani, and Friedman (2009).', fig.align='center', out.width='90%'}
 knitr::include_graphics('img/gradient-boosting-regression.png')
 ```
 
-```{r gradient-boosting-classification, echo=FALSE,fig.asp=.7, fig.width=6, fig.cap='Gradient Boosting classification algorithm from Kuhn and Johnson (2013).', fig.align='center', out.width='90%'}
+```{r gradient-boosting-classification, echo=FALSE,fig.asp=.7, fig.width=6, fig.cap='Gradient Boosting classification algorithm from Hastie, Tibshirani, and Friedman (2009).', fig.align='center', out.width='90%'}
 knitr::include_graphics('img/gradient-boosting-classification.png')
 ```
 
 ### Practical Exercise {-}
 
+```{r, gbm}
+set.seed(100)
+gbm_class <- train(as.factor(diabetes) ~., 
+                   data = pima_train,
+                   method = "gbm",
+                   distribution="bernoulli",
+                   verbose=FALSE,
+                   trControl= gbm_control,
+                   metric = gbm_metric,
+                   tuneGrid = gbm_grid
+                   )
+gbm_class$results
+```
+
+#### Exercise {-}
+Adjust the tuning grid and determine if we can improve the boosting models.
