@@ -25,7 +25,7 @@
 <meta name="author" content="Cardy Moten III">
 
 
-<meta name="date" content="2018-02-25">
+<meta name="date" content="2018-02-26">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -179,7 +179,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="ens-algs.html"><a href="ens-algs.html#practical-exercise-4"><i class="fa fa-check"></i>Practical Exercise</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="ml-pe.html"><a href="ml-pe.html"><i class="fa fa-check"></i><b>5</b> Machine Learning Practical Exercise</a></li>
+<li class="chapter" data-level="5" data-path="ml-pe.html"><a href="ml-pe.html"><i class="fa fa-check"></i><b>5</b> Machine Learning Practical Exercise</a><ul>
+<li class="chapter" data-level="5.1" data-path="ml-pe.html"><a href="ml-pe.html#modeling-workflow"><i class="fa fa-check"></i><b>5.1</b> Modeling Workflow</a></li>
+<li class="chapter" data-level="5.2" data-path="ml-pe.html"><a href="ml-pe.html#performance-metrics"><i class="fa fa-check"></i><b>5.2</b> Performance Metrics</a></li>
+<li class="chapter" data-level="5.3" data-path="ml-pe.html"><a href="ml-pe.html#practice-projects"><i class="fa fa-check"></i><b>5.3</b> Practice Projects</a></li>
+</ul></li>
 <li class="chapter" data-level="6" data-path="shiny-tut.html"><a href="shiny-tut.html"><i class="fa fa-check"></i><b>6</b> R Shiny Tutorial</a><ul>
 <li class="chapter" data-level="" data-path="shiny-tut.html"><a href="shiny-tut.html#practical-exerecise-4"><i class="fa fa-check"></i>Practical Exerecise</a></li>
 </ul></li>
@@ -377,7 +381,7 @@ Figure 2.4: A simple example of gradient descent.
 </div>
 <div id="practical-exercises" class="section level2">
 <h2><span class="header-section-number">2.2</span> Practical Exercises</h2>
-<p>This practical exercieses are based on code provided by <span class="citation">Fortuner (<a href="#ref-fortuner2017mlcheat">2017</a>)</span> and <span class="citation">Brownlee (<a href="#ref-brownlee2017mlmastery">2017</a>)</span>.</p>
+<p>This practical exercieses are based on code provided by <span class="citation">Fortuner (<a href="#ref-fortuner2017mlcheat">2017</a>)</span> and <span class="citation">Brownlee (<a href="#ref-brownlee2017mlmastery">2017</a><a href="#ref-brownlee2017mlmastery">b</a>)</span>.</p>
 <div id="simple-linear-regression-1" class="section level3">
 <h3><span class="header-section-number">2.2.1</span> Simple Linear Regression</h3>
 <p><strong>Data</strong></p>
@@ -703,7 +707,7 @@ fit_accuracy</code></pre></div>
 <ol style="list-style-type: decimal">
 <li>Logistic regression is for binary classification. You will need to use LDA and other non-linear variants for more than two classes.</li>
 <li>Logistic regression parameter estimates are brittle with well-separated classes. LDA is more robust to this type of data.</li>
-<li>Logistic regression is also brittle with small samples. LDA performs better especially if the predictors are approximately normally distributed. See <span class="citation">Brownlee (<a href="#ref-brownlee2017mlmastery">2017</a>)</span> and <span class="citation">James et al. (<a href="#ref-james2013introduction">2013</a>)</span> for more details.</li>
+<li>Logistic regression is also brittle with small samples. LDA performs better especially if the predictors are approximately normally distributed. See <span class="citation">Brownlee (<a href="#ref-brownlee2017mlmastery">2017</a><a href="#ref-brownlee2017mlmastery">b</a>)</span> and <span class="citation">James et al. (<a href="#ref-james2013introduction">2013</a>)</span> for more details.</li>
 </ol>
 <div id="lda-intuition" class="section level3 unnumbered">
 <h3>LDA Intuition</h3>
@@ -873,7 +877,7 @@ preds &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class=
 <p>Fortuner, Brendan. 2017. “Machine Learning Cheatsheet.” <a href="http://ml-cheatsheet.readthedocs.io/en/latest/index.html" class="uri">http://ml-cheatsheet.readthedocs.io/en/latest/index.html</a>.</p>
 </div>
 <div id="ref-brownlee2017mlmastery">
-<p>Brownlee, Jason. 2017. <em>Master Machine Learning Algorithms</em>. <a href="https://machinelearningmastery.com/master-machine-learning-algorithms/" class="uri">https://machinelearningmastery.com/master-machine-learning-algorithms/</a>.</p>
+<p>Brownlee, Jason. 2017b. <em>Master Machine Learning Algorithms</em>. <a href="https://machinelearningmastery.com/master-machine-learning-algorithms/" class="uri">https://machinelearningmastery.com/master-machine-learning-algorithms/</a>.</p>
 </div>
 <div id="ref-james2013introduction">
 <p>James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. 2013. <em>An Introduction to Statistical Learning</em>. Springer. <a href="http://www-bcf.usc.edu/~gareth/ISL/ISLR%20Seventh%20Printing.pdf">http://www-bcf.usc.edu/~gareth/ISL/ISLR%20Seventh%20Printing.pdf</a>.</p>

@@ -1,7 +1,7 @@
 --- 
 title: "A Practical Guide for Machine Learning and R Shiny"
 author: "Cardy Moten III"
-date: "2018-02-25"
+date: "2018-02-26"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [book.bib]

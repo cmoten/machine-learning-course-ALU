@@ -25,7 +25,7 @@
 <meta name="author" content="Cardy Moten III">
 
 
-<meta name="date" content="2018-02-25">
+<meta name="date" content="2018-02-26">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -179,7 +179,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="ens-algs.html"><a href="ens-algs.html#practical-exercise-4"><i class="fa fa-check"></i>Practical Exercise</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="ml-pe.html"><a href="ml-pe.html"><i class="fa fa-check"></i><b>5</b> Machine Learning Practical Exercise</a></li>
+<li class="chapter" data-level="5" data-path="ml-pe.html"><a href="ml-pe.html"><i class="fa fa-check"></i><b>5</b> Machine Learning Practical Exercise</a><ul>
+<li class="chapter" data-level="5.1" data-path="ml-pe.html"><a href="ml-pe.html#modeling-workflow"><i class="fa fa-check"></i><b>5.1</b> Modeling Workflow</a></li>
+<li class="chapter" data-level="5.2" data-path="ml-pe.html"><a href="ml-pe.html#performance-metrics"><i class="fa fa-check"></i><b>5.2</b> Performance Metrics</a></li>
+<li class="chapter" data-level="5.3" data-path="ml-pe.html"><a href="ml-pe.html#practice-projects"><i class="fa fa-check"></i><b>5.3</b> Practice Projects</a></li>
+</ul></li>
 <li class="chapter" data-level="6" data-path="shiny-tut.html"><a href="shiny-tut.html"><i class="fa fa-check"></i><b>6</b> R Shiny Tutorial</a><ul>
 <li class="chapter" data-level="" data-path="shiny-tut.html"><a href="shiny-tut.html#practical-exerecise-4"><i class="fa fa-check"></i>Practical Exerecise</a></li>
 </ul></li>
@@ -206,7 +210,76 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
             <section class="normal" id="section-">
 <div id="ml-pe" class="section level1">
 <h1><span class="header-section-number">Chapter 5</span> Machine Learning Practical Exercise</h1>
+<p>We will now work on more examples to learn how to fit and evaluate multiple regression and classification models.</p>
+<div id="modeling-workflow" class="section level2">
+<h2><span class="header-section-number">5.1</span> Modeling Workflow</h2>
+<p>Below is a general workflow provided by <span class="citation">Brownlee (<a href="#ref-brownlee2017mlwithR">2017</a><a href="#ref-brownlee2017mlwithR">a</a>)</span>. It is important to remember that before you begin to work on a problem, that you determine if it’s even appropriate to use machine learning. Many analyses get derailed by not working on the particular question(s) that need answering.</p>
+<ol style="list-style-type: decimal">
+<li><p>Defined the problem and determined your study’s objectives</p></li>
+<li>Prepare Problem</li>
+</ol>
+<ul>
+<li>Load libraries</li>
+<li>Load dataset</li>
+<li>Split-out validation dataset</li>
+</ul>
+<ol start="3" style="list-style-type: decimal">
+<li>Summarize Data</li>
+</ol>
+<ul>
+<li>Descriptive statistics</li>
+<li>Data visualizations</li>
+</ul>
+<ol start="4" style="list-style-type: decimal">
+<li>Prepare Data</li>
+</ol>
+<ul>
+<li>Data Cleaning</li>
+<li>Feature Selection</li>
+<li>Data Transforms</li>
+</ul>
+<ol start="5" style="list-style-type: decimal">
+<li>Evaluate Algorithms</li>
+</ol>
+<ul>
+<li>Test options and evaluation metric</li>
+<li>Spot Check Algorithms</li>
+<li>Compare Algorithms</li>
+</ul>
+<ol start="6" style="list-style-type: decimal">
+<li>Improve Accuracy</li>
+</ol>
+<ul>
+<li>Algorithm Tuning</li>
+<li>Ensembles</li>
+</ul>
+<ol start="7" style="list-style-type: decimal">
+<li>Finalize Model</li>
+</ol>
+<ul>
+<li>Predictions on validation dataset</li>
+<li>Create standalone model on entire training dataset</li>
+<li>Save model for later use</li>
+</ul>
+</div>
+<div id="performance-metrics" class="section level2">
+<h2><span class="header-section-number">5.2</span> Performance Metrics</h2>
+<p>Regression models use root mean squared error (RMSE) and the <span class="math inline">\(R^2\)</span> evaluation metrics. In general, we want a model that has the lowest RMSE and highest <span class="math inline">\(R^2\)</span>. However, we need to bear in mind that we are also evaluating a tradeoff between bias and variance as well. The general statistics used for classification problems are accuracy and <a href="https://en.wikipedia.org/wiki/Cohen%27s_kappa">Cohen’s Kappa</a> (<span class="math inline">\(K\)</span>). We can also use the <a href="https://en.wikipedia.org/wiki/Receiver_operating_characteristic">receiver-operator characteristic</a> (ROC) curve to evaluate binary classification problems. There are other performance characteristics, but these are the most common; see <span class="citation">Kuhn (<a href="#ref-kuhn2017caret">2017</a>)</span> for more information.</p>
+</div>
+<div id="practice-projects" class="section level2">
+<h2><span class="header-section-number">5.3</span> Practice Projects</h2>
+<p>We will now work on a regression, binary classification, and multi-class classification problem set.</p>
 
+</div>
+</div>
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-brownlee2017mlwithR">
+<p>Brownlee, Jason. 2017a. <em>Machine Learning Mastery with R</em>. <a href="https://machinelearningmastery.com/machine-learning-with-r/" class="uri">https://machinelearningmastery.com/machine-learning-with-r/</a>.</p>
+</div>
+<div id="ref-kuhn2017caret">
+<p>Kuhn, Max. 2017. <em>The Caret Package</em>. <a href="https://topepo.github.io/caret/index.html#" class="uri">https://topepo.github.io/caret/index.html#</a>.</p>
+</div>
 </div>
             </section>
 
