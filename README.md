@@ -1,5 +1,1 @@
-This is the absolute minimum you need to start a [bookdown](https://bookdown.org/home/about.html) book. You can find the
-preview of this book at http://seankross.com/bookdown-start/
-
-All of the content of this repository is licensed 
-[CC0](https://creativecommons.org/publicdomain/zero/1.0/).
+This book is to serve as supporting material for an in-person machine learning course. Please clone or fork and share with others who want to learn the basic concepts of machine learning. If you want to contribute or see any error, push your request to me.
