@@ -136,6 +136,8 @@ dotplot(feature_results,main="Low Correlation Features")
 
 # Evaluate Algorithnms: Box-Cox Transform
 
+# See https://socialsciences.mcmaster.ca/jfox/Courses/Brazil-2009/slides-handout.pdf for explanation of Box-Cox
+
 # Run algorithms using 10-fold cross validation
 control <- trainControl(method="repeatedcv", number=10, repeats=3)
 metric <- "RMSE"
@@ -199,6 +201,9 @@ ensemble_results <- resamples(list(RF=fit.rf, GBM=fit.gbm, CUBIST=fit.cubist))
 summary(ensemble_results)
 dotplot(ensemble_results,main="Ensemble Models")
 
+#Cubist seems to be the best model, so we will choose it's tuning parameters
+fit.cubist$bestTune #20 committees and 5 neighbors
+
 
 # Finalize Model
 
@@ -210,7 +215,7 @@ y <- boston_training[,14]
 preprocessParams <- preProcess(x, method=c("BoxCox"))
 trans_x <- predict(preprocessParams, x)
 # train the final model
-finalModel <- cubist(x=trans_x, y=y, committees=20)
+finalModel <- cubist(x=trans_x, y=y, committees=20) #derived from fit.cubist$bestTune
 summary(finalModel)
 
 # transform the validation dataset
@@ -219,7 +224,7 @@ val_x <- boston_test[,1:13]
 trans_val_x <- predict(preprocessParams, val_x)
 val_y <- boston_test[,14]
 # use final model to make predictions on the validation dataset
-predictions <- predict(finalModel, newdata=trans_val_x, neighbors=3)
+predictions <- predict(finalModel, newdata=trans_val_x, neighbors=3) #adjusted from fit.cubist$bestTune
 # calculate RMSE
 rmse <- RMSE(predictions, val_y)
 r2 <- R2(predictions, val_y)
